@@ -1,5 +1,6 @@
 package com.example.mind_fire
 
+import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,9 +29,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -39,7 +41,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -76,7 +77,8 @@ fun BonfireSettingsDialog(
     onDateExpandedChange: (Boolean) -> Unit,
     onRingtoneChange: (Uri?) -> Unit,
     onSilentChange: (Boolean) -> Unit,
-    onSave: (Float, Float, Float, Float, String, String) -> Unit,
+    onShowPresets: () -> Unit,
+    onSave: (String, Float, Float, Float, Float, String, String) -> Unit,
     onDismiss: () -> Unit
 ) {
     var temperature by remember { mutableStateOf(initialTemperature) }
@@ -100,6 +102,9 @@ fun BonfireSettingsDialog(
     var envExpanded by remember { mutableStateOf(false) }
     var weatherExpanded by remember { mutableStateOf(false) }
 
+    var showSavePresetDialog by remember { mutableStateOf(false) }
+    var presetName by remember { mutableStateOf("") }
+
     val environments = mapOf("Forest" to "숲", "Beach" to "해변", "Snow" to "설원", "Fireplace" to "벽난로","SimpleBlack" to "단순 검정")
     val weathers = mapOf("Clear" to "맑음", "Rain" to "비", "Snow" to "눈", "Thunder" to "천둥")
 
@@ -109,6 +114,57 @@ fun BonfireSettingsDialog(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         onRingtoneChange(uri)
+    }
+
+    if (showSavePresetDialog) {
+        Dialog(onDismissRequest = { showSavePresetDialog = false }) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFF1E1E1E),
+                contentColor = Color.White
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("프리셋 저장", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = presetName,
+                        onValueChange = { presetName = it },
+                        label = { Text("프리셋 이름") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            cursorColor = Color.White,
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.Gray,
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        OutlinedButton(onClick = {
+                            showSavePresetDialog = false
+                            presetName = ""
+                        }) {
+                            Text("취소")
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(onClick = {
+                            if (presetName.isNotBlank()) {
+                                onSave(presetName, temperature, intensity, windSpeed, logSize, environment, weather)
+                                showSavePresetDialog = false
+                                presetName = ""
+                            } else {
+                                Toast.makeText(context, "프리셋 이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                            }
+                        }) {
+                            Text("저장")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
@@ -299,7 +355,16 @@ fun BonfireSettingsDialog(
                         }
                     }
                 }
-
+                item {
+                    Button(
+                        onClick = onShowPresets,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF333333)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("프리셋 보기", color = Color.White)
+                    }
+                }
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -313,7 +378,7 @@ fun BonfireSettingsDialog(
                         }
                         Button(
                             onClick = {
-                                onSave(temperature, intensity, windSpeed, logSize, environment, weather)
+                                showSavePresetDialog = true
                             },
                             modifier = Modifier.weight(1f)
                         ) {

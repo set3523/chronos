@@ -1,6 +1,6 @@
 package com.example.mind_fire
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,21 +25,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.boguszpawlowski.composecalendar.SelectableCalendar
@@ -50,9 +40,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,11 +48,6 @@ fun HistoryScreen(onBack: () -> Unit) {
         initialMonth = YearMonth.now(),
         initialSelectionMode = SelectionMode.Period,
     )
-
-    // States to hold the coordinates of the day cells and the canvas
-    var day30Coords by remember { mutableStateOf<LayoutCoordinates?>(null) }
-    var day31Coords by remember { mutableStateOf<LayoutCoordinates?>(null) }
-    var canvasCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     Scaffold(
         containerColor = Color(0xFF121212), // Dark background
@@ -127,8 +109,7 @@ fun HistoryScreen(onBack: () -> Unit) {
                     },
                     dayContent = { dayState ->
                         CompositionLocalProvider(LocalContentColor provides Color.White) {
-                            val alpha = if (dayState.isFromCurrentMonth) 1f else 0.5f
-                            Box() {
+                            Box {
                                 DefaultDay(
                                     state = dayState,
                                     selectionColor = Color(0xFFE65100),
@@ -174,8 +155,14 @@ fun HistoryScreen(onBack: () -> Unit) {
                         }
                     }
                 )
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .background(Color.White)
+                )
             }
         }
     }
 }
-

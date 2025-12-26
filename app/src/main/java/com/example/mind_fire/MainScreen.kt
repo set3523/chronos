@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +44,10 @@ fun MainScreen() {
     val context = LocalContext.current
     val activity = context as? Activity
     val prefs = remember { context.getSharedPreferences("BonfirePrefs", Context.MODE_PRIVATE) }
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val iconSize = screenWidth / 15
 
     var temperature by remember { mutableStateOf(prefs.getFloat("temperature", 2500f)) }
     var intensity by remember { mutableStateOf(prefs.getFloat("intensity", 1.0f)) }
@@ -58,6 +64,7 @@ fun MainScreen() {
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showBonfireSettingsDialog by remember { mutableStateOf(false) }
     var showHistoryScreen by remember { mutableStateOf(false) }
+    var showPresetScreen by remember { mutableStateOf(false) }
 
     val initialLangCode = prefs.getString("language", "ko") ?: "ko"
     var currentLanguageDisplay by remember {
@@ -96,6 +103,19 @@ fun MainScreen() {
 
     if (showHistoryScreen) {
         HistoryScreen(onBack = { showHistoryScreen = false })
+    } else if (showPresetScreen) {
+        PresetScreen(
+            onBack = { showPresetScreen = false },
+            onPresetSelected = {
+                temperature = prefs.getFloat("preset_${it}_temperature", temperature)
+                intensity = prefs.getFloat("preset_${it}_intensity", intensity)
+                windSpeed = prefs.getFloat("preset_${it}_windSpeed", windSpeed)
+                logSize = prefs.getFloat("preset_${it}_logSize", logSize)
+                environment = prefs.getString("preset_${it}_environment", environment) ?: environment
+                weather = prefs.getString("preset_${it}_weather", weather) ?: weather
+                showPresetScreen = false
+            }
+        )
     } else {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -105,10 +125,10 @@ fun MainScreen() {
                     title = { },
                     actions = {
                         IconButton(onClick = { showHistoryScreen = true }) {
-                            Icon(Icons.Filled.History, "Record", tint = Color.White)
+                            Icon(Icons.Filled.History, contentDescription = "Record", tint = Color.White, modifier = Modifier.size(iconSize))
                         }
                         IconButton(onClick = { showSettingsDialog = true }) {
-                            Icon(Icons.Filled.Settings, "Settings", tint = Color.White)
+                            Icon(Icons.Filled.Settings, contentDescription = "Settings", tint = Color.White, modifier = Modifier.size(iconSize))
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -128,7 +148,11 @@ fun MainScreen() {
                     modifier = Modifier.clickable { showBonfireSettingsDialog = true }
                 )
                 if (!isAdRemoved) {
-                    Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(60.dp).background(Color.Black)) {
+                    Box(modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .background(Color.Black)) {
                         Text("광고 배너 영역 (Google AdMob)", color = Color.White, modifier = Modifier.align(Alignment.Center), fontSize = 14.sp)
                     }
                 }
@@ -172,7 +196,22 @@ fun MainScreen() {
                         transparency = dialogTransparency,
                         onRingtoneChange = { ringtoneUri = it },
                         onSilentChange = { isSilent = it },
-                         onSave = { newTemp, newIntensity, newWind, newLog, newEnv, newWeather ->
+                        onShowPresets = { showPresetScreen = true },
+                        onSave = { presetName, newTemp, newIntensity, newWind, newLog, newEnv, newWeather ->
+                            val editor = prefs.edit()
+                            val presets = prefs.getStringSet("presets", null)
+                            val newPresets = if (presets != null) presets.toMutableSet() else mutableSetOf()
+                            newPresets.add(presetName)
+                            editor.putStringSet("presets", newPresets)
+
+                            editor.putFloat("preset_${presetName}_temperature", newTemp)
+                            editor.putFloat("preset_${presetName}_intensity", newIntensity)
+                            editor.putFloat("preset_${presetName}_windSpeed", newWind)
+                            editor.putFloat("preset_${presetName}_logSize", newLog)
+                            editor.putString("preset_${presetName}_environment", newEnv)
+                            editor.putString("preset_${presetName}_weather", newWeather)
+                            editor.apply()
+
                             temperature = newTemp
                             intensity = newIntensity
                             windSpeed = newWind
