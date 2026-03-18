@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Mind_fire" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Chronos" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_clock_hands</item>
+        <item name="postSplashScreenTheme">@style/Theme.Chronos</item>
+    </style>
 </resources>

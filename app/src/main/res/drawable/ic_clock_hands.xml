@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+
+  <!-- Hour hand (white) - pointing to 10 -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="4"
+      android:strokeLineCap="round"
+      android:pathData="M36,36 L24,28" />
+
+  <!-- Minute hand (white) - pointing to 2 -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="3"
+      android:strokeLineCap="round"
+      android:pathData="M36,36 L48,32" />
+
+  <!-- Second hand (red) - pointing to 6 -->
+  <path
+      android:strokeColor="#FF0000"
+      android:strokeWidth="1.5"
+      android:strokeLineCap="round"
+      android:pathData="M36,36 L36,56" />
+</vector>

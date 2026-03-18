@@ -3,4 +3,4 @@
 // but it exports nothing useful.
 export const checkApiKey = async () => false;
 export const promptForApiKey = async () => {};
-export const generateBonfireVideo = async () => "";
+export const generateChronosVideo = async () => "";

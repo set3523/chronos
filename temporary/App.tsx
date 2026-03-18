@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { AspectRatio, Environment, FuelType, Weather, BonfireSettings } from './types';
+import { AspectRatio, Environment, FuelType, Weather, ChronosSettings } from './types';
 import { FlameIcon, DownloadIcon, RefreshIcon } from './components/Icons';
-import BonfireCanvas from './components/BonfireCanvas';
+import ChronosCanvas from './components/ChronosCanvas';
 import AndroidCodeModal from './components/AndroidCodeModal';
 
 function App() {
-  const [settings, setSettings] = useState<BonfireSettings>({
+  const [settings, setSettings] = useState<ChronosSettings>({
     aspectRatio: AspectRatio.Portrait,
     environment: Environment.Forest,
     fuelType: FuelType.Wood,
@@ -33,20 +33,20 @@ function App() {
 
   const getLabel = (key: string): string => {
     const labels: {[key: string]: string} = {
-      [AspectRatio.Portrait]: "모바일 (9:16)",
-      [AspectRatio.Landscape]: "데스크탑 (16:9)",
-      [AspectRatio.Square]: "정방형 (1:1)",
-      [Environment.Forest]: "깊은 숲속",
-      [Environment.Beach]: "밤바다",
-      [Environment.Snowy]: "설원",
-      [Environment.SimpleBlack]: "심플 블랙",
-      [FuelType.Wood]: "장작 (나무)",
-      [FuelType.Paper]: "종이/지푸라기",
-      [FuelType.Charcoal]: "숯 (Charcoal)",
-      [FuelType.Chemical]: "화학 물질",
+      [AspectRatio.Portrait]: "모바??(9:16)",
+      [AspectRatio.Landscape]: "?�스?�탑 (16:9)",
+      [AspectRatio.Square]: "?�방??(1:1)",
+      [Environment.Forest]: "깊�? ?�속",
+      [Environment.Beach]: "밤바??,
+      [Environment.Snowy]: "?�원",
+      [Environment.SimpleBlack]: "?�플 블랙",
+      [FuelType.Wood]: "?�작 (?�무)",
+      [FuelType.Paper]: "종이/지?�라�?,
+      [FuelType.Charcoal]: "??(Charcoal)",
+      [FuelType.Chemical]: "?�학 물질",
       [Weather.Clear]: "맑음",
-      [Weather.Rainy]: "비",
-      [Weather.Snowy]: "눈",
+      [Weather.Rainy]: "�?,
+      [Weather.Snowy]: "??,
       [Weather.Windy]: "바람",
     };
     return labels[key] || key;
@@ -88,7 +88,7 @@ function App() {
     const canvas = document.querySelector('canvas');
     if (canvas) {
         const link = document.createElement('a');
-        link.download = `bonfire-${Date.now()}.png`;
+        link.download = `Chronos-${Date.now()}.png`;
         link.href = canvas.toDataURL();
         link.click();
     }
@@ -106,9 +106,9 @@ function App() {
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-              모닥불 메이커 Pro
+              모닥�?메이�?Pro
             </h1>
-            <p className="text-xs text-gray-400">물리 기반 파티클 엔진</p>
+            <p className="text-xs text-gray-400">물리 기반 ?�티???�진</p>
           </div>
         </div>
 
@@ -117,12 +117,12 @@ function App() {
           {/* Timer Control */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
               <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium text-gray-200">연소 타이머</span>
+                  <span className="text-sm font-medium text-gray-200">?�소 ?�?�머</span>
                   <button 
                     onClick={() => setIsExtendedTimer(!isExtendedTimer)}
                     className="text-[10px] px-2 py-1 rounded border border-white/20 hover:bg-white/5 transition-colors text-gray-400"
                   >
-                      {isExtendedTimer ? "간편 모드 (시:분:초)" : "확장 모드 (년:월:일...)"}
+                      {isExtendedTimer ? "간편 모드 (??�?�?" : "?�장 모드 (??????..)"}
                   </button>
               </div>
               
@@ -166,25 +166,24 @@ function App() {
                     onClick={startTimer}
                     className="flex-1 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-bold shadow-lg shadow-orange-900/50 transition-all active:scale-95"
                   >
-                      {isTimerRunning ? "타이머 재설정 (Restart)" : "불 붙이기 (Ignite)"}
+                      {isTimerRunning ? "?�?�머 ?�설??(Restart)" : "�?붙이�?(Ignite)"}
                   </button>
                   {isTimerRunning && (
                     <button 
                         onClick={resetInfinite}
                         className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-xs"
                     >
-                        무제한
-                    </button>
+                        무제??                    </button>
                   )}
               </div>
               <p className="text-[10px] text-gray-500 mt-2 text-center">
-                  설정된 시간 동안 불이 타오르며, 연료가 다 되면 서서히 꺼집니다.
+                  ?�정???�간 ?�안 불이 ?�?�르�? ?�료가 ???�면 ?�서??꺼집?�다.
               </p>
           </div>
 
           {/* Aspect Ratio */}
           <div className="space-y-3">
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">화면 설정</label>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">?�면 ?�정</label>
               <div className="grid grid-cols-3 gap-2">
                 {Object.values(AspectRatio).map((ratio) => (
                   <button
@@ -204,7 +203,7 @@ function App() {
 
           {/* Environment & Weather */}
           <div className="space-y-3">
-             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">환경 설정</label>
+             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">?�경 ?�정</label>
              <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="text-xs text-gray-400 block mb-2">배경</label>
@@ -219,7 +218,7 @@ function App() {
                     </select>
                 </div>
                 <div>
-                    <label className="text-xs text-gray-400 block mb-2">날씨</label>
+                    <label className="text-xs text-gray-400 block mb-2">?�씨</label>
                     <select
                     value={settings.weather}
                     onChange={(e) => setSettings({ ...settings, weather: e.target.value as Weather })}
@@ -235,7 +234,7 @@ function App() {
 
           {/* Fuel Type */}
            <div className="space-y-3">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">연료 (재질)</label>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">?�료 (?�질)</label>
                 <div className="grid grid-cols-2 gap-2">
                     {Object.values(FuelType).map(f => (
                         <button
@@ -259,7 +258,7 @@ function App() {
                 {/* Temperature */}
                 <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-400">
-                        <span>연소 온도 (색상 변화)</span>
+                        <span>?�소 ?�도 (?�상 변??</span>
                         <span style={{ color: settings.temperature < 3000 ? '#ff4500' : settings.temperature < 6000 ? '#ffcc00' : '#88ccff' }}>
                             {settings.temperature}K
                         </span>
@@ -278,7 +277,7 @@ function App() {
                 {/* Intensity */}
                 <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-400">
-                        <span>불꽃 크기</span>
+                        <span>불꽃 ?�기</span>
                         <span>{Math.round(settings.intensity * 100)}%</span>
                     </div>
                     <input 
@@ -295,7 +294,7 @@ function App() {
                 {/* Playback Speed */}
                 <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-400">
-                        <span>재생 속도 (시간 조절)</span>
+                        <span>?�생 ?�도 (?�간 조절)</span>
                         <span>{settings.playbackSpeed}x</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -337,14 +336,14 @@ function App() {
                     className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-xl font-medium flex items-center justify-center gap-2 transition-colors"
                 >
                     <DownloadIcon className="w-5 h-5" />
-                    현재 화면 저장 (PNG)
+                    ?�재 ?�면 ?�??(PNG)
                 </button>
                 <button
                     onClick={() => setIsCodeModalOpen(true)}
                     className="w-full py-3 bg-green-900/40 hover:bg-green-800/50 border border-green-500/20 text-green-200 rounded-xl font-medium flex items-center justify-center gap-2 transition-colors"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12c-2.9 0-5.2-2.3-5.2-5.2 0-4.8 6.3-8.8 6.3-8.8s6.3 4 6.3 8.8c0 2.9-2.3 5.2-5.2 5.2"/><path d="M12 14v8"/><path d="M16 18h-8"/></svg>
-                    안드로이드 소스 (Kotlin)
+                    ?�드로이???�스 (Kotlin)
                 </button>
            </div>
         </div>
@@ -364,7 +363,7 @@ function App() {
                     maxHeight: '85vh'
                 }}
              >
-                <BonfireCanvas settings={settings} />
+                <ChronosCanvas settings={settings} />
                 
                 {/* Overlay Indicators */}
                 <div className="absolute top-4 right-4 flex flex-col items-end gap-2 pointer-events-none">

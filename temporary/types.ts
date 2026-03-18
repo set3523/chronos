@@ -25,7 +25,7 @@ export enum Weather {
   Windy = "Windy"
 }
 
-export interface BonfireSettings {
+export interface ChronosSettings {
   aspectRatio: AspectRatio;
   environment: Environment;
   fuelType: FuelType;

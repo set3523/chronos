@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.set.Chronos" />
+                  <option name="mobileSdkAppId" value="1:404278556012:android:5e2a45c50fed0b048d6f49" />
+                  <option name="projectId" value="chronos-63dd5" />
+                  <option name="projectNumber" value="404278556012" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

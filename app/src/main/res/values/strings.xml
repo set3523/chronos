@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Mind_fire</string>
+    <string name="app_name">크로노스</string>
     <string name="remove_ads">광고 제거 (결제)</string>
     <string name="settings_transparency">설정창 투명도</string>
     <string name="language">언어</string>
+    <string name="apply">적용</string>
 </resources>

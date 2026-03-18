@@ -1,92 +1,27 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
+    android:viewportWidth="72"
+    android:viewportHeight="72">
 
-    <!-- Logs -->
-    <!-- Flames (various colors and opacities) -->
-    <!-- Large base flames -->
-    <path
-        android:pathData="M 54,80 m -10,0 a 10,10 0 1,0 20,0 a 10,10 0 1,0 -20,0"
-        android:fillColor="#FFC107" />
-    <path
-        android:pathData="M 29.5,90 h 40 q 3,0 3,3 v 4 q 0,3 -3,3 h -30 q -10,0 -7,-3 v -4 q 0,-3 3,-3 Z"
-        android:fillColor="#5D4037" />
-    <path
-        android:pathData="M 45,85 m -9,0 a 9,9 0 1,0 18,0 a 9,9 0 1,0 -18,0"
-        android:fillColor="#FF9800" />
+  <!-- Hour hand (white) - pointing to 10 -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="4"
+      android:strokeLineCap="round"
+      android:pathData="M36,36 L24,28" />
 
-    <path
-        android:pathData="M 62,84 m -8,0 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0"
-        android:fillColor="#FF5722" />
+  <!-- Minute hand (white) - pointing to 2 -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="3"
+      android:strokeLineCap="round"
+      android:pathData="M36,36 L48,32" />
 
-
-    <!-- Rising embers and smaller flames -->
-    <path
-        android:pathData="M 52,70 m -7,0 a 7,7 0 1,0 14,0 a 7,7 0 1,0 -14,0"
-        android:fillColor="#FFA726" />
-
-    <path
-        android:pathData="M 58,75 m -6,0 a 6,6 0 1,0 12,0 a 6,6 0 1,0 -12,0"
-        android:fillColor="#FFB74D" />
-
-    <path
-        android:pathData="M 48,78 m -5,0 a 5,5 0 1,0 10,0 a 5,5 0 1,0 -10,0"
-        android:fillColor="#FFCC80" />
-
-
-    <!-- Sparks/Embers rising upwards with transparency -->
-    <path
-        android:pathData="M 54,60 m -4,0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0"
-        android:fillColor="#B3FFCC80" /> <!-- 70% opacity -->
-
-
-    <path
-        android:pathData="M 51,52 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0"
-        android:fillColor="#99FFB74D" /> <!-- 60% opacity -->
-
-
-    <path
-        android:pathData="M 59,48 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0"
-        android:fillColor="#80FFA726" /> <!-- 50% opacity -->
-
-
-    <path
-        android:pathData="M 55,40 m -2.5,0 a 2.5,2.5 0 1,0 5,0 a 2.5,2.5 0 1,0 -5,0"
-        android:fillColor="#66FFCC80" /> <!-- 40% opacity -->
-
-    <!-- Stars -->
-    <path
-        android:pathData="M 25,20 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#80FFFFFF" />
-    <path
-        android:pathData="M 15,35 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-    <path
-        android:pathData="M 40,15 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-    <path
-        android:pathData="M 68,12 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-    <path
-        android:pathData="M 85,18 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-    <path
-        android:pathData="M 93,30 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-    <path
-        android:pathData="M 75,38 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-    <path
-        android:pathData="M 50,28 m -1,0 a 1,1 0 1,0 2,0 a 1,1 0 1,0 -2,0"
-        android:fillColor="#FFFFFF" />
-
-    <!-- Logs -->
-    <!-- Logs -->
-
-
-
-
-
+  <!-- Second hand (red) - pointing to 6 -->
+  <path
+      android:strokeColor="#FF0000"
+      android:strokeWidth="1.5"
+      android:strokeLineCap="round"
+      android:pathData="M36,36 L36,56" />
 </vector>

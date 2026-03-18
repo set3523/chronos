@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "404278556012",
+    "project_id": "chronos-63dd5",
+    "storage_bucket": "chronos-63dd5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404278556012:android:5e2a45c50fed0b048d6f49",
+        "android_client_info": {
+          "package_name": "com.set.Chronos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8fJld5tjPEYJ3qAHvWI7FaLwAmzGNdZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
