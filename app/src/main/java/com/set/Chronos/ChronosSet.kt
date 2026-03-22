@@ -123,7 +123,8 @@ fun AlarmSettingsDialog(
     alarmSettings: List<AlarmSetting>,
     onAlarmSettingsChange: (List<AlarmSetting>) -> Unit,
     onSave: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    isOverdriveEnabled: Boolean
 ) {
     val context = LocalContext.current
 
@@ -182,7 +183,8 @@ fun AlarmSettingsDialog(
                             alarmSetting = setting,
                             isOnlyOne = alarmSettings.size == 1, // 하나 남았을 땐 삭제 버튼 숨기기용
                             onDelete = { onAlarmSettingsChange(alarmSettings.filterNot { it.id == setting.id }) },
-                            onUpdate = { updatedSetting -> onAlarmSettingsChange(alarmSettings.map { if (it.id == updatedSetting.id) updatedSetting else it }) }
+                            onUpdate = { updatedSetting -> onAlarmSettingsChange(alarmSettings.map { if (it.id == updatedSetting.id) updatedSetting else it }) },
+                            isOverdriveEnabled = isOverdriveEnabled
                         )
                     }
                 } // LazyColumn 끝
@@ -209,6 +211,64 @@ fun AlarmSettingsDialog(
             } // 전체 감싸는 Column 끝
         }
     }
+    if (showPresetDialog) {
+        AlertDialog(
+            onDismissRequest = { showPresetDialog = false },
+            title = { Text("프리셋 저장", color = ThemeTextPrimary) },
+            text = {
+                Column {
+                    Text("이 설정을 프리셋으로 저장합니다.", color = ThemeTextSecondary, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = presetNameInput,
+                        onValueChange = { presetNameInput = it },
+                        label = { Text("프리셋 이름 (예: 평일 아침)") },
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = ThemeTextPrimary,
+                            unfocusedTextColor = ThemeTextPrimary,
+                            focusedBorderColor = AccentColor
+                        )
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (presetNameInput.isNotBlank()) {
+                        // 💾 여기서 실제로 SharedPreferences에 저장하는 로직 호출!
+                        savePresetToPrefs(context, presetNameInput, alarmSettings)
+
+                        showPresetDialog = false
+                        presetNameInput = ""
+                        Toast.makeText(context, "프리셋이 저장되었습니다!", Toast.LENGTH_SHORT).show()
+                    }
+                }) {
+                    Text("저장", color = AccentColor, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPresetDialog = false }) {
+                    Text("취소", color = ThemeIconMuted)
+                }
+            },
+            containerColor = Color.Black.copy(alpha = 0.9f) // 배경 투명도 유지
+        )
+    }
+}
+fun savePresetToPrefs(context: Context, name: String, settings: List<AlarmSetting>) {
+    val prefs = context.getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
+    val json = Json.encodeToString(settings) // 알람 리스트를 통째로 글자로 변환
+
+    with(prefs.edit()) {
+        // 1. 프리셋 이름 목록 업데이트 (나중에 목록 보여줄 때 사용)
+        val existingNames = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
+        val newNames = existingNames.toMutableSet().apply { add(name) }
+        putStringSet("preset_names", newNames)
+
+        // 2. 실제 데이터 저장
+        putString("preset_${name}_alarmSettings", json)
+        apply()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -217,7 +277,8 @@ fun AlarmSettingItem(
     alarmSetting: AlarmSetting,
     isOnlyOne: Boolean,
     onDelete: () -> Unit,
-    onUpdate: (AlarmSetting) -> Unit
+    onUpdate: (AlarmSetting) -> Unit,
+    isOverdriveEnabled: Boolean
 ) {
     val context = LocalContext.current
     val ringtoneTitle = alarmSetting.soundUri?.let {
@@ -362,7 +423,7 @@ fun AlarmSettingItem(
                 SettingSlider(icon = Icons.Default.Timer, valueText = "${alarmSetting.duration}s", value = alarmSetting.duration.toFloat(), range = 1f..300f, onValueChange = { onUpdate(alarmSetting.copy(duration = it.toInt())) })
             }
         }
-        SettingSlider(icon = Icons.AutoMirrored.Filled.VolumeUp, valueText = "${(alarmSetting.volume * 100).toInt()}%", value = alarmSetting.volume, range = 0f..1f, onValueChange = { onUpdate(alarmSetting.copy(volume = it)) })
+        SettingSlider(icon = Icons.AutoMirrored.Filled.VolumeUp, valueText = "${(alarmSetting.volume * 100).toInt()}%", value = alarmSetting.volume, range = 0f..(if (isOverdriveEnabled) 2f else 1f), color = if (alarmSetting.volume > 1.0f) Color.Red else AccentColor,onValueChange = { onUpdate(alarmSetting.copy(volume = it)) })
 
         // 7. 알람 반복 스위치
         Row(

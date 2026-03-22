@@ -35,7 +35,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialPagerOverlay(onDismiss: () -> Unit) {
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    // 💡 수정 1: 전체 페이지 수를 6으로 변경 (0, 1, 2, 3, 4, 5)
+    val pagerState = rememberPagerState(pageCount = { 6 })
     val coroutineScope = rememberCoroutineScope()
 
     Box(
@@ -57,42 +58,55 @@ fun TutorialPagerOverlay(onDismiss: () -> Unit) {
             ) {
                 when (page) {
                     0 -> {
+                        Text("🎁", fontSize = 80.sp)
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text("베타 테스터 특별 이벤트", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "상위 사용량 1,000분께 정식 출시 후\n유료 기능을 무료로 개방합니다!\n\n이벤트 참여를 위한 구글 로그인은\n우측 상단의 '설정(⚙️)' 메뉴에서 진행해 주세요.",
+                            color = Color.LightGray,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 24.sp
+                        )
+                    }
+                    1 -> {
                         Text("⏱️", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text("메인 화면", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text("중앙의 시계를 터치해 알람을 추가하고,\n우측 상단에서 기록과 설정을 확인하세요.", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
                     }
-                    1 -> {
+                    2 -> {
                         Text("👆", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text("시계 화면 조작법", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             "• 가볍게 터치 : 알람 설정창 열기\n" +
-                                    "• 따닥! 두 번 터치 : 모든 알람 취소\n" +  // 👇 이거 추가!
+                                    "• 따닥! 두 번 터치 : 모든 알람 취소\n" +
+                                    "• 따닥! 두 번 터치 : 알람이 울리는 경우 알람 종료\n" +
                                     "• 꾹~ 길게 누르기 : 진동과 함께 최근 알람 재시작",
                             color = Color.LightGray,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center
                         )
                     }
-                    2 -> {
-                        // 새 페이지: 설정창 아이콘 설명
+                    3 -> {
                         Text("🧐", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text("설정창 아이콘 안내", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text("⏳ : 타이머(상대 시간) 모드 전환\n📈 : 볼륨 서서히 증가 (크레센도)\n♾️ : 끌 때까지 무한 반복\n🗣️ : 목소리로 읽어주기 (TTS)", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Start)
                     }
-                    3 -> {
+                    4 -> {
                         Text("🎛️", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text("디테일한 알람 설정", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text("상대 시간, 볼륨, 지속 시간부터\n크레센도까지 내 마음대로 설정하세요.", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
                     }
-                    4 -> {
+                    5 -> {
                         Text("⚙️", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text("앱 설정", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -112,8 +126,8 @@ fun TutorialPagerOverlay(onDismiss: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 건너뛰기 버튼 (마지막 페이지가 아닐 때만 표시)
-            if (pagerState.currentPage < 2) {
+            // 💡 수정 2: 마지막 페이지(5)가 아닐 때만 '건너뛰기' 표시
+            if (pagerState.currentPage < 5) {
                 TextButton(onClick = onDismiss) {
                     Text("건너뛰기", color = Color.Gray)
                 }
@@ -126,7 +140,8 @@ fun TutorialPagerOverlay(onDismiss: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                repeat(3) { index ->
+                // 💡 수정 3: 점의 개수를 6개로 변경
+                repeat(6) { index ->
                     val isSelected = pagerState.currentPage == index
                     Box(
                         modifier = Modifier
@@ -140,18 +155,20 @@ fun TutorialPagerOverlay(onDismiss: () -> Unit) {
             // 다음 / 시작하기 버튼
             Button(
                 onClick = {
-                    if (pagerState.currentPage < 2) {
+                    // 💡 수정 4: 마지막 페이지(5)가 아니면 다음 페이지로
+                    if (pagerState.currentPage < 5) {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     } else {
-                        onDismiss()
+                        onDismiss() // 마지막 페이지면 튜토리얼 종료
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF07D22)),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text(if (pagerState.currentPage == 2) "시작하기" else "다음", color = Color.White, fontWeight = FontWeight.Bold)
+                // 💡 수정 5: 마지막 페이지(5)일 때만 "시작하기" 문구 출력
+                Text(if (pagerState.currentPage == 5) "시작하기" else "다음", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
     }

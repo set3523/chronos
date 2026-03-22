@@ -18,8 +18,8 @@ android {
         applicationId = "com.set.Chronos"
         minSdk = 25
         targetSdk = 36
-        versionCode = 7
-        versionName = "2.0.1"
+        versionCode = 12
+        versionName = "2.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,22 +59,26 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("com.google.android.gms:play-services-ads:24.9.0")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    implementation("com.google.android.gms:play-services-ads:25.1.0")
+    implementation("androidx.core:core-splashscreen:1.2.0")
+    implementation("com.google.code.gson:gson:2.13.2")
 
 
-    implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
 
-    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("com.google.zxing:core:3.5.4")
 
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    implementation("io.github.boguszpawlowski.composecalendar:composecalendar:1.3.0")
-    implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    implementation("io.github.boguszpawlowski.composecalendar:composecalendar:1.4.0")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.9")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

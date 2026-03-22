@@ -48,16 +48,36 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Headset
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> Unit) {
+fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> Unit,onStopAlarm: () -> Unit,onSignInClick: () -> Unit) {
     val context = LocalContext.current
     val activity = context as? Activity
     val prefs = remember { context.getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE) }
 
     val isFirstLaunch = remember { prefs.getBoolean("isFirstLaunch", true) }
     var showTutorial by remember { mutableStateOf(isFirstLaunch) }
+
+
     val haptic = LocalHapticFeedback.current
 
     LaunchedEffect(Unit) {
@@ -89,6 +109,8 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     var dialogTransparency by remember { mutableStateOf(prefs.getFloat("dialogTransparency", 0.95f)) }
 
     var isAdRemoved by remember { mutableStateOf(prefs.getBoolean("isAdRemoved", false)) }
+    var isOverdriveEnabled by remember { mutableStateOf(prefs.getBoolean("isOverdriveEnabled", false)) }
+
     var ringtoneUri by remember { mutableStateOf(prefs.getString("ringtoneUri", null)?.let { Uri.parse(it) }) }
     var isSilent by remember { mutableStateOf(false) }
 
@@ -101,18 +123,23 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     var alarmSettings by remember {
         mutableStateOf(if (allSavedAlarms.isNotEmpty()) allSavedAlarms else listOf(AlarmSetting(id = "MAIN_ALARM")))
     }
-    var isAlarmActive by remember { mutableStateOf(true) }
+    var isAlarmActive by remember { mutableStateOf(prefs.getBoolean("isAlarmActive", allSavedAlarms.isNotEmpty())) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showAnalogClockSettingsDialog by remember { mutableStateOf(false) }
     var showHistoryScreen by remember { mutableStateOf(false) }
 
     var showPresetScreen by remember { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var isEarphoneModeEnabled by remember { mutableStateOf(prefs.getBoolean("isEarphoneModeEnabled", false)) }
 
     LaunchedEffect(isAdRemoved, ringtoneUri, dialogTransparency, alarmSettings) {
         with(prefs.edit()) {
             putBoolean("isAdRemoved", isAdRemoved)
             putString("ringtoneUri", ringtoneUri?.toString())
             putFloat("dialogTransparency", dialogTransparency)
+            putBoolean("isOverdriveEnabled", isOverdriveEnabled) // ✨ 저장 로직 추가
+            putBoolean("isAlarmActive", isAlarmActive)
+            putBoolean("isEarphoneModeEnabled", isEarphoneModeEnabled)
             apply()
         }
     }
@@ -153,15 +180,8 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 TopAppBar(
                     title = { },
                     actions = {
-                        IconButton(onClick = { showPresetScreen = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Save,
-                                contentDescription = "Open Presets",
-                                tint = Color.White
-                            )
-                        }
-                        IconButton(onClick = { showSettingsDialog = true }) {
-                            Icon(Icons.Filled.Settings, contentDescription = "Settings", tint = Color.White, modifier = Modifier.size(iconSize))
+                        IconButton(onClick = { showBottomSheet = true }) {
+                            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -177,9 +197,18 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             detectTapGestures(
                                 onTap = { showAnalogClockSettingsDialog = true },
                                 onDoubleTap = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onCancelAll() // 실제 알람 매니저 취소
-                                    isAlarmActive = false // ✨ 화면에서 점만 싹 숨김! (데이터는 안전함)
+                                    if (AlarmService.isRinging) {
+                                        // [상황 A] 알람이 울리고 있을 때
+                                        // -> 당장 울리는 소리만 끄고, 화면의 점이나 다음 알람은 그대로 둡니다!
+                                        onStopAlarm()
+                                        //Toast.makeText(context, "알람이 해제되었습니다.", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        // [상황 B] 평상시 (알람이 안 울릴 때)
+                                        // -> 원래 기획하셨던 대로 '모든 알람 취소 및 점 숨기기'로 작동합니다.
+                                        onCancelAll()
+                                        isAlarmActive = false
+                                        //Toast.makeText(context, "모든 알람이 취소되었습니다", Toast.LENGTH_SHORT).show()
+                                    }
                                 },
                                 onLongPress = {
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -198,7 +227,12 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             showSettingsDialog = false
                             showTutorial = true
                         },
-                        onDismiss = { showSettingsDialog = false }
+                        onDismiss = { showSettingsDialog = false },
+                        onSignInClick = { (context as? MainActivity)?.signIn() },
+
+                        // ✨ [2단계] 오버드라이브 스위치 연결
+                        isOverdriveEnabled = isOverdriveEnabled,
+                        onOverdriveChange = { isOverdriveEnabled = it }
                     )
                 }
 
@@ -207,13 +241,120 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                         transparency = dialogTransparency,
                         alarmSettings = alarmSettings,
                         onAlarmSettingsChange = { alarmSettings = it },
+
+                        // ✨ [3단계] 슬라이더 범위를 위해 이 값을 넘겨줍니다.
+                        isOverdriveEnabled = isOverdriveEnabled,
+
                         onSave = {
                             isAlarmActive = true
-                            // ✨ 설정창에서 저장할 때는 이 문구로 넘김!
+
+                            // 📊 [분석 데이터] 저장할 때 상세 정보를 서버로 쏩니다.
+                            val analytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(context)
+                            val totalSubAlarms = alarmSettings.sumOf { it.repeatCount }
+                            val alarmTimes = alarmSettings.joinToString(", ") { it.alarmTime }
+
+                            val params = android.os.Bundle().apply {
+                                putInt("main_alarm_count", alarmSettings.size)
+                                putInt("additional_alarm_count", totalSubAlarms)
+                                putString("alarm_times", alarmTimes)
+                            }
+                            analytics.logEvent("alarm_save_action", params)
+
                             onSave(alarmSettings, "알람이 저장되었습니다.")
                         },
                         onDismiss = { showAnalogClockSettingsDialog = false }
                     )
+                }
+                if (showBottomSheet) {
+                    ModalBottomSheet(
+                        onDismissRequest = { showBottomSheet = false },
+                        containerColor = Color(0xFF080808), // 고급스러운 다크그레이
+                        contentColor = Color.White
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+
+                            // 1. 이어폰 모드 (독서실 모드) 토글 스위치
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    // ✨ 아이콘 색상 수정: 포인트 컬러(노란색) 적용
+                                    Icon(Icons.Default.Headset, contentDescription = "Earphone Mode", tint = Color(0xFFE5C07B))
+                                    Spacer(Modifier.width(16.dp))
+                                    Column {
+                                        // ✨ 텍스트 색상 수정: 흰색으로 강조
+                                        Text("독서실 모드 (이어폰 전용)", fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                        // ✨ 서브 텍스트 색상 수정: 연한 회색으로 가독성 확보
+                                        Text("알람이 미디어 볼륨으로 재생됩니다.", fontSize = 12.sp, color = Color.LightGray)
+                                    }
+                                }
+                                Switch(
+                                    checked = isEarphoneModeEnabled,
+                                    onCheckedChange = { isEarphoneModeEnabled = it },
+                                    // ✨ 스위치 색상 수정: 포인트 컬러(노란색)로 통일
+                                    colors = SwitchDefaults.colors(
+                                        checkedThumbColor = Color(0xFFE5C07B),
+                                        checkedTrackColor = Color(0xFFE5C07B).copy(alpha = 0.5f),
+                                        uncheckedThumbColor = Color.Gray,
+                                        uncheckedTrackColor = Color.Gray.copy(alpha = 0.5f)
+                                    )
+                                )
+                            }
+                            // ✨ 구분선 색상 수정: 더 은은한 진회색으로 변경
+                            HorizontalDivider(color = Color(0xFF333333), modifier = Modifier.padding(bottom = 8.dp))
+
+                            // 2. 프리셋 버튼
+                            Row(
+                                modifier = Modifier.fillMaxWidth().clickable {
+                                    // ✨ 프리셋 진입 분석 코드 추가
+                                    val analytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(context)
+                                    analytics.logEvent("open_preset_screen", null)
+
+                                    showPresetScreen = true
+                                    showBottomSheet = false
+                                }.padding(vertical = 16.dp, horizontal = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // ✨ 아이콘 색상 수정: 포인트 컬러(노란색) 적용
+                                Icon(Icons.Default.Save, contentDescription = "Presets", tint = Color(0xFFE5C07B))
+                                Spacer(Modifier.width(16.dp))
+                                // ✨ 텍스트 색상 수정: 흰색으로 통일
+                                Text("프리셋 불러오기 / 공유", fontSize = 18.sp, color = Color.White)
+                            }
+
+                            // 3. 기록 (History) 버튼 - 일단 클릭 방지 처리
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                // ✨ 아이콘 색상 수정: 비활성화된 느낌을 주는 회색 적용
+                                Icon(Icons.Default.History, contentDescription = "History", tint = Color.Gray)
+                                Spacer(Modifier.width(16.dp))
+                                // ✨ 텍스트 색상 수정: 비활성화된 느낌을 주는 회색 적용
+                                Text("사용 기록 (준비 중)", fontSize = 18.sp, color = Color.Gray)
+                            }
+
+                            // 4. 앱 설정 버튼
+                            Row(
+                                modifier = Modifier.fillMaxWidth().clickable {
+                                    // ✨ 설정창 진입 분석 코드 복구!
+                                    val analytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(context)
+                                    analytics.logEvent("open_settings_dialog", null)
+
+                                    showSettingsDialog = true
+                                    showBottomSheet = false
+                                }.padding(vertical = 16.dp, horizontal = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // ✨ 아이콘 색상 수정: 포인트 컬러(노란색) 적용
+                                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color(0xFFE5C07B))
+                                Spacer(Modifier.width(16.dp))
+                                // ✨ 텍스트 색상 수정: 흰색으로 통일
+                                Text("앱 설정 (투명도, 계정)", fontSize = 18.sp, color = Color.White)
+                            }
+
+                            Spacer(modifier = Modifier.height(32.dp)) // 하단 여백
+                        }
+                    }
                 }
                 if (showTutorial) {
                     TutorialPagerOverlay(onDismiss = { showTutorial = false })
@@ -257,16 +398,10 @@ fun AnalogClock(
             val targetCalendar = Calendar.getInstance()
 
             // 👇 상대시간 / 절대시간 나눠서 캘린더 세팅
-            if (alarm.isRelative) {
-                val timeParts = alarm.relativeTime.split(":")
-                targetCalendar.add(Calendar.HOUR_OF_DAY, timeParts.getOrNull(0)?.toIntOrNull() ?: 0)
-                targetCalendar.add(Calendar.MINUTE, timeParts.getOrNull(1)?.toIntOrNull() ?: 0)
-                targetCalendar.add(Calendar.SECOND, timeParts.getOrNull(2)?.toIntOrNull() ?: 0)
-            } else {
-                val timeParts = alarm.alarmTime.split(":")
-                targetCalendar.set(Calendar.HOUR_OF_DAY, timeParts.getOrNull(0)?.toIntOrNull() ?: 0)
-                targetCalendar.set(Calendar.MINUTE, timeParts.getOrNull(1)?.toIntOrNull() ?: 0)
-            }
+            val timeParts = alarm.alarmTime.split(":")
+            targetCalendar.set(Calendar.HOUR_OF_DAY, timeParts.getOrNull(0)?.toIntOrNull() ?: 0)
+            targetCalendar.set(Calendar.MINUTE, timeParts.getOrNull(1)?.toIntOrNull() ?: 0)
+            targetCalendar.set(Calendar.SECOND, timeParts.getOrNull(2)?.toIntOrNull() ?: 0)
 
             // 세팅된 시간으로 각도 계산
             val targetHour = targetCalendar.get(Calendar.HOUR_OF_DAY)

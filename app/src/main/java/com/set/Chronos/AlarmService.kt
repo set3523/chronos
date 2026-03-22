@@ -34,6 +34,10 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
     private var remainingTtsCount = 0
     private var currentTtsVolume = 1.0f
 
+    companion object {
+        var isRinging = false
+    }
+
     override fun onCreate() {
         super.onCreate()
         tts = TextToSpeech(this, this) // TTS 초기화
@@ -44,6 +48,14 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             tts?.language = Locale.KOREAN // 기본 언어 한국어 설정
 
             // 한 번 읽는 게 끝났을 때의 이벤트 리스너
+            val prefs = getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
+            val isEarphoneMode = prefs.getBoolean("isEarphoneModeEnabled", false)
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(if (isEarphoneMode) AudioAttributes.USAGE_MEDIA else AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build()
+            tts?.setAudioAttributes(audioAttributes)
+
             tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {}
                 override fun onDone(utteranceId: String?) {
@@ -77,52 +89,38 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             stopSelf()
             return START_NOT_STICKY
         }
+        isRinging = true
 
+        // 1. 데이터 가져오기
         val ringtoneUriString = intent?.getStringExtra("RINGTONE_URI")
-        val isSilent = intent?.getBooleanExtra("IS_SILENT", false) ?: false
-        //val duration = intent?.getIntExtra("ALARM_DURATION", -1) ?: -1
-        val notifTitle = intent?.getStringExtra("NOTIF_TITLE") ?: "Alarm!"
-        val notifText = intent?.getStringExtra("NOTIF_TEXT") ?: "Your Chronos is waiting."
-
-        val duration = intent?.getIntExtra("ALARM_DURATION", 60) ?: 60 // 기본 60�?
+        val duration = intent?.getIntExtra("ALARM_DURATION", 60) ?: 60
         val volume = intent?.getFloatExtra("ALARM_VOLUME", 1.0f) ?: 1.0f
-
         val isTtsMode = intent?.getBooleanExtra("IS_TTS_MODE", false) ?: false
         val ttsText = intent?.getStringExtra("TTS_TEXT") ?: "알람이 울립니다."
         val ttsRepeatCount = intent?.getIntExtra("TTS_REPEAT_COUNT", 3) ?: 3
-
         val isCrescendo = intent?.getBooleanExtra("IS_CRESCENDO", false) ?: false
         val repeatUntilOff = intent?.getBooleanExtra("REPEAT_UNTIL_OFF", false) ?: false
+        val notifTitle = intent?.getStringExtra("NOTIF_TITLE") ?: "Chronos Alarm"
+        val notifText = intent?.getStringExtra("NOTIF_TEXT") ?: "일어날 시간입니다!"
 
+        // 2. 알림 띄우기 (포그라운드 서비스 시작)
         showNotification(notifTitle, notifText)
 
-        if (!isSilent) {
-            startAlarm(ringtoneUriString, volume,isCrescendo)
-        }
-
-        if (!repeatUntilOff && duration > 0) {
-            handler.postDelayed({
-                stopSelf()
-            }, duration * 1000L)
-        }
-
-        if (duration > 0) {
-            handler.postDelayed({
-                stopSelf()
-            }, duration * 1000L)
-        }
-
+        // 3. [핵심] TTS 모드와 벨소리 모드 분기 처리
         if (isTtsMode) {
-            // TTS 모드는 여기서 횟수 제어를 담당함
+            // TTS 모드 실행 (벨소리는 여기서 안 나옴)
             startTtsAlarm(ttsText, volume, isCrescendo, ttsRepeatCount, repeatUntilOff)
         } else {
             // 벨소리 모드 실행
-            startAlarm(intent?.getStringExtra("RINGTONE_URI"), volume, isCrescendo)
+            startAlarm(ringtoneUriString, volume, isCrescendo)
         }
 
-        // 👇 일반 벨소리 모드(isTtsMode == false)이고 무한반복이 아닐 때만 초(duration) 기반 타이머 작동 👇
-        if (!isTtsMode && !repeatUntilOff && duration > 0) {
-            handler.postDelayed({ stopSelf() }, duration * 1000L)
+        // 4. 종료 타이머 (무한반복이 아닐 때만 작동)
+        if (!repeatUntilOff && duration > 0) {
+            handler.removeCallbacksAndMessages(null) // 기존 타이머 제거
+            handler.postDelayed({
+                stopSelf()
+            }, duration * 1000L)
         }
 
         return START_STICKY
@@ -143,14 +141,32 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(this@AlarmService, alert)
+
+                // ✨ 수정: 벨소리 이어폰 모드 적용
+                val prefs = getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
+                val isEarphoneMode = prefs.getBoolean("isEarphoneModeEnabled", false)
+                val usage = if (isEarphoneMode) AudioAttributes.USAGE_MEDIA else AudioAttributes.USAGE_ALARM
+
                 setAudioAttributes(
                     AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(usage)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build()
                 )
-                val initialVolume = if (isCrescendo) 0.05f else volume
-                setVolume(volume, volume)
+                if (volume > 1.0f) {
+                    setVolume(1.0f, 1.0f) // 하드웨어 볼륨은 최대로 고정
+
+                    // 디지털 증폭 (1.1f -> +200mB, 2.0f -> +2000mB)
+                    val gain = ((volume - 1.0f) * 2000).toInt()
+                    val enhancer = android.media.audiofx.LoudnessEnhancer(audioSessionId)
+                    enhancer.setTargetGain(gain)
+                    enhancer.enabled = true
+                } else {
+                    // 일반 볼륨 혹은 크레센도 시작 볼륨
+                    val initialVol = if (isCrescendo) 0.05f else volume
+                    setVolume(initialVol, initialVol)
+                }
+
                 isLooping = true
                 prepare()
                 start()
@@ -296,5 +312,6 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         keepLoopingTts = false
         tts?.stop()
         tts?.shutdown()
+        isRinging = false
     }
 }
