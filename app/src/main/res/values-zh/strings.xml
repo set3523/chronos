@@ -3,4 +3,182 @@
     <string name="remove_ads">移除广告 (付款)</string>
     <string name="settings_transparency">设置窗口透明度</string>
     <string name="language">语言</string>
+    <string name="apply">应用</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">观看广告后保存 (测试)</string>
+
+    <string name="toast_ad_fail">广告加载失败</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">暂无广告，已免费获取！ ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">闹钟响了！</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">闹钟响了。</string>
+    <string name="default_notif_text">该起床了！</string>
+    <string name="channel_name_high">闹钟声音通知</string>
+    <string name="channel_name_low">闹钟静音通知</string>
+    <string name="common_stop">停止</string>
+    <string name="log_alarm_started">闹钟已启动</string>
+    <string name="log_routine_stopped">用户已停止常规 💨</string>
+    <string name="log_single_alarm_completed">单次闹钟完成 🔥</string>
+    <string name="default_preset_name">未命名常规</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">需要精确闹钟权限。</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">未命名常规</string>
+    <string name="setting_mode_relative">模式：相对时间 (倒计时)</string>
+    <string name="setting_mode_absolute">模式：绝对时间 (闹钟)</string>
+    <string name="preset_save_title">保存预设</string>
+    <string name="preset_name_hint">预设名称 (例如: 工作日早晨)</string>
+    <string name="preset_color_label">轨道颜色</string>
+    <string name="preset_icon_label">中心图标</string>
+    <string name="toast_preset_saved">预设已保存！</string>
+    <string name="common_save">保存</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_confirm">确认</string>
+    <string name="setting_unknown_ringtone">未知铃声</string>
+    <string name="setting_default_ringtone">默认铃声</string>
+    <string name="setting_tts_hint">语音播报文本</string>
+    <string name="setting_ringtone_picker_title">选择闹钟铃声</string>
+    <string name="setting_repeat_times_format">%1$d次</string>
+    <string name="setting_duration_format">%1$d秒</string>
+    <string name="setting_repeat_h">重复(时)</string>
+    <string name="setting_repeat_m">重复(分)</string>
+    <string name="setting_repeat_s">重复(秒)</string>
+    <string name="setting_repeat_count_format">重复 %1$d 次</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">需要登录。</string>
+    <string name="toast_backup_success">云端备份完成！</string>
+    <string name="toast_backup_fail">备份失败: %1$s</string>
+    <string name="toast_restore_success">云端恢复完成！</string>
+    <string name="toast_restore_empty">没有备份数据。</string>
+    <string name="toast_restore_fail">恢复失败: %1$s</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">重置</string>
+    <string name="history_long_press_guide">长按项目以显示详细菜单。</string>
+    <string name="history_detail_timeline">详细信息 (时间轴)</string>
+    <string name="history_hide_from_calendar">从日历中全部隐藏</string>
+    <string name="history_completed_format">%1$d / %2$d 完成 (%3$d%%)</string>
+    <string name="history_default_sound">🎵 默认铃声</string>
+    <string name="history_infinite_repeat">无限重复</string>
+    <string name="history_repeat_count_format">重复 %1$d 次</string>
+    <string name="history_no_repeat">不重复</string>
+    <string name="history_crescendo_active">🔥 渐强音效已激活</string>
+    <string name="history_close">关闭</string>
+    <string name="history_unknown_time">未知</string>
+
+    <string name="history_aborted">Aborted</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">预设 \'%1$s\' 已添加！</string>
+    <string name="toast_invalid_qr">无效的二维码。</string>
+    <string name="toast_login_fail">登录失败: %1$s</string>
+    <string name="toast_login_success">登录成功！</string>
+    <string name="toast_auth_fail">认证失败</string>
+    <string name="toast_alarm_permission_request">请允许权限以使用精确闹钟。</string>
+    <string name="toast_alarm_set_fail">闹钟设置失败。</string>
+    <string name="toast_exact_alarm_needed">为确保闹钟可靠运行，需要 \'允许使用精确闹钟\' 权限！</string>
+    <string name="toast_battery_opt_needed">为确保闹钟可靠运行，需要 \'忽略电池优化\'！</string>
+    <string name="toast_logout_success">已退出登录。</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ 数据同步冲突</string>
+    <string name="main_sync_conflict_desc">其他设备上保存的记录与当前手机不同。请选择要保留的数据。</string>
+    <string name="main_sync_local_data">📱 本机数据</string>
+    <string name="main_sync_cloud_data">☁️ 云端数据</string>
+    <string name="main_sync_latest_badge"> [最新 ✨]</string>
+    <string name="main_sync_no_record">无记录</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ 覆盖为云端数据 (推荐)</string>
+    <string name="main_sync_load_cloud">☁️ 加载云端数据</string>
+    <string name="main_sync_keep_local_rec">📱 保留本机数据 (推荐)</string>
+    <string name="main_sync_keep_local">📱 保留本机数据</string>
+    <string name="toast_need_charge">⚡ 免费次数已用完。请点击右上角的闪电图标获取更多次数！</string>
+
+    <string name="toast_preset_load_fail">加载预设失败。</string>
+    <string name="toast_alarm_restarted">闹钟已重新启动。</string>
+    <string name="toast_alarm_saved">闹钟已保存。</string>
+
+    <string name="main_menu_earphone_title">自习室模式 (仅限耳机)</string>
+    <string name="main_menu_earphone_desc">闹钟将通过媒体音量播放。</string>
+    <string name="main_menu_preset">加载 / 分享预设</string>
+    <string name="main_menu_history">使用记录</string>
+    <string name="main_menu_settings">应用设置 (透明度, 账号)</string>
+    <string name="toast_preset_applied">已应用 \'%1$s\' 预设。</string>
+
+    ``preset``
+    <string name="preset_screen_title">预设</string>
+    <string name="preset_empty_message">没有已保存的预设。</string>
+    <string name="toast_preset_deleted">已删除 \'%1$s\' 预设。</string>
+    <string name="toast_preset_corrupted">预设已损坏或过时。请重新保存。</string>
+    <string name="preset_receipt_infinite_repeat">无限重复</string>
+    <string name="preset_receipt_repeat_count">重复 %1$d 次</string>
+    <string name="preset_receipt_repeat_interval">🔁 间隔 %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 您收到了来自 Chronos 应用的 \'%1$s\' 常规！\n\n点击下方链接立即应用到您的手机：\n%2$s</string>
+    <string name="preset_share_intent_title">分享常规</string>
+    <string name="preset_btn_share_link">通过消息发送链接</string>
+    <string name="toast_link_copied">链接已复制！发送图片后，请在聊天框中粘贴。</string>
+    <string name="toast_image_save_fail">图片保存失败，将以文本形式分享。</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 再次查看应用教程</string>
+    <string name="settings_account_link">🔗 账号绑定</string>
+    <string name="settings_tos_agree">[必填] 我同意为提供特别优惠的条款和隐私政策。</string>
+    <string name="settings_google_login">使用 Google 登录</string>
+    <string name="settings_linked_account">已绑定账号: %1$s</string>
+    <string name="settings_logout">退出登录</string>
+    <string name="settings_overdrive_title">超频模式</string>
+    <string name="settings_overdrive_desc">超越系统限制，音量放大 200%% (警告！)</string>
+    <string name="settings_language">语言设置 (Language)</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">测试用户特别活动</string>
+    <string name="tutorial_desc_0">正式发布后，使用量前 1,000 名的用户将免费获得高级功能！\n\n请在右上角的 \'设置 (⚙️)\' 菜单中登录 Google 以参与活动。</string>
+
+    <string name="tutorial_title_1">主屏幕</string>
+    <string name="tutorial_desc_1">触摸中央的钟表添加闹钟，并在右上角查看历史记录和设置。</string>
+
+    <string name="tutorial_title_2">钟表操作说明</string>
+    <string name="tutorial_desc_2">• 轻触：打开闹钟设置\n• 双击：取消所有闹钟\n• 双击：停止响铃的闹钟\n• 长按：伴随振动重新启动最近的闹钟</string>
+
+    <string name="tutorial_title_3">设置图标指南</string>
+    <string name="tutorial_desc_3">⏳ : 切换计时器 (相对时间) 模式\n📈 : 音量逐渐增加 (渐强)\n♾️ : 无限重复直到关闭\n🗣️ : 语音播报 (TTS)</string>
+
+    <string name="tutorial_title_4">详细的闹钟设置</string>
+    <string name="tutorial_desc_4">从相对时间、音量、持续时间到渐强，随心所欲地自定义。</string>
+
+    <string name="tutorial_title_5">保存与分享常规</string>
+    <string name="tutorial_desc_5">将您精心设置的闹钟保存为预设，\n并通过炫酷的收据和二维码与朋友分享！</string>
+
+    <string name="tutorial_title_6">应用设置</string>
+    <string name="tutorial_desc_6">调整背景透明度或随时再次查看此教程。</string>
+
+    <string name="tutorial_skip">跳过</string>
+    <string name="tutorial_next">下一步</string>
+    <string name="tutorial_start">开始</string>
+
+    <string name="tutorial_mock_title">⏰ 闹钟详细设置</string>
+
+    <string name="tutorial_mock_crescendo_title">渐强</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ 声音逐渐变大！</string>
+
+    <string name="tutorial_mock_infinite_title">无限重复</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ 一直响直到关闭！</string>
+
+    <string name="tutorial_mock_tts_title">TTS 模式</string>
+    <string name="tutorial_mock_tts_desc">⬅️ 朗读您输入的文本！</string>
+
+    <string name="tutorial_mock_repeat_title">间隔重复</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ 贪睡（n分钟后再次响起）功能！</string>
+
+    <string name="tutorial_mock_footer">💡 开启图标旁边的开关\n打造您专属的完美日常！</string>
+
+    <string name="tutorial_title_energy">免费能量系统</string>
+    <string name="tutorial_desc_energy">运行闹钟需要消耗能量。\n别担心！每天会自动\n补充3次能量。</string>
 </resources>

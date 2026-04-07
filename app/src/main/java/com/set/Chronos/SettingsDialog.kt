@@ -1,5 +1,6 @@
 package com.set.Chronos
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,10 +26,13 @@ import com.set.Chronos.ui.components.SettingSlider
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.getValue
@@ -49,13 +53,29 @@ fun ComplexSettingsDialog(
     onDismiss: () -> Unit,
     onSignInClick: () -> Unit,
     isOverdriveEnabled: Boolean,
-    onOverdriveChange: (Boolean) -> Unit
+    onOverdriveChange: (Boolean) -> Unit,
+    currentLanguage: String,
+    onLanguageChange: (String) -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
 
-    val auth = FirebaseAuth.getInstance()
-    // 현재 로그인된 유저 정보를 가져옵니다. (로그인 안 되어 있으면 null)
+// 1. 초기값은 현재 로그인 상태로 세팅
     var currentUser by remember { mutableStateOf(auth.currentUser) }
+    androidx.compose.runtime.DisposableEffect(auth) {
+        val listener = com.google.firebase.auth.FirebaseAuth.AuthStateListener { firebaseAuth ->
+            // 유저가 구글 팝업에서 로그인을 마치거나, 로그아웃 버튼을 누를 때마다 여기가 자동으로 실행됨!
+            currentUser = firebaseAuth.currentUser
+        }
+        auth.addAuthStateListener(listener)
+
+        onDispose {
+            auth.removeAuthStateListener(listener) // 다이얼로그 닫히면 CCTV 철수
+        }
+    }
     var isConsentChecked by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) } // 메뉴 열림 상태
+    val languages = listOf("ko" to "🇰🇷 한국어", "en" to "🇺🇸 English", "ja" to "🇯🇵 日本語", "zh" to "🇨🇳 中文")
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(
@@ -83,7 +103,7 @@ fun ComplexSettingsDialog(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF333333)),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("💡 앱 사용 튜토리얼 다시 보기", color = Color.White)
+                        Text(stringResource(R.string.settings_tutorial_btn), color = Color.White)
                     }
                 }
                 item {
@@ -92,13 +112,13 @@ fun ComplexSettingsDialog(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Button(
-                            onClick = onDismiss, // "적용" 버튼을 누르면 onDismiss 콜백을 호출하여 창을 닫습니다.
-                            modifier = Modifier.fillMaxWidth(0.5f), // 버튼 너비를 부모의 50%로 설정
+                            onClick = onDismiss,
+                            modifier = Modifier.fillMaxWidth(0.5f),
                             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = stringResource(id = R.string.apply), // "적용" 문자열 리소스 사용
+                                text = stringResource(id = R.string.apply),
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold
                             )
@@ -108,12 +128,10 @@ fun ComplexSettingsDialog(
                 item {
                     HorizontalDivider(color = Color.DarkGray, modifier = Modifier.padding(vertical = 8.dp))
 
-                    Text("🔗 계정 연동", color = Color(0xFFE5C07B), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(stringResource(R.string.settings_account_link), color = Color(0xFFE5C07B), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // 동의 체크박스 영역
                     if (currentUser == null) {
-                        // [상태 1] 로그인이 안 된 경우 -> 체크박스 + 로그인 버튼
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 checked = isConsentChecked,
@@ -121,7 +139,7 @@ fun ComplexSettingsDialog(
                                 colors = CheckboxDefaults.colors(checkedColor = Color(0xFFE5C07B))
                             )
                             Text(
-                                text = "[필수] 특별 혜택 제공을 위한 이용약관 및 개인정보 수집·이용에 동의합니다.",
+                                text = stringResource(R.string.settings_tos_agree),
                                 color = Color.LightGray,
                                 fontSize = 12.sp,
                                 modifier = Modifier.clickable { isConsentChecked = !isConsentChecked }
@@ -129,29 +147,27 @@ fun ComplexSettingsDialog(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
-                            onClick = onSignInClick, // 부모(MainScreen)에게 로그인 팝업 띄우라고 요청
+                            onClick = onSignInClick,
                             enabled = isConsentChecked,
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                         ) {
-                            Text("G Google 계정으로 로그인", color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.settings_google_login), color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                     } else {
-                        // 로그인 후
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "연동된 계정: ${currentUser?.email}",
+                                stringResource(R.string.settings_linked_account, currentUser?.email ?: ""),
                                 color = Color.White,
                                 fontSize = 14.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = {
-                                    auth.signOut()
-                                    currentUser = null
+                                    (context as? MainActivity)?.signOut()
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
@@ -161,7 +177,46 @@ fun ComplexSettingsDialog(
                                 ),
                                 shape = RoundedCornerShape(8.dp)
                             ) {
-                                Text("로그아웃", color = Color.White)
+                                Text(stringResource(R.string.settings_logout), color = Color.White)
+                            }
+                        }
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(stringResource(R.string.settings_language), color = Color.White, fontWeight = FontWeight.Bold)
+
+                        Box {
+                            // 현재 선택된 언어 표시 버튼
+                            val displayLabel = languages.find { it.first == currentLanguage }?.second ?: "English"
+                            Text(
+                                text = "$displayLabel ▾",
+                                color = Color(0xFFE5C07B),
+                                modifier = Modifier
+                                    .background(Color(0xFF333333), RoundedCornerShape(8.dp))
+                                    .clickable { expanded = true }
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+
+                            // 팝업 메뉴
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false },
+                                modifier = Modifier.background(Color(0xFF1E1E1E))
+                            ) {
+                                languages.forEach { (code, label) ->
+                                    DropdownMenuItem(
+                                        text = { Text(label, color = Color.White) },
+                                        onClick = {
+                                            onLanguageChange(code)
+                                            expanded = false
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -172,8 +227,8 @@ fun ComplexSettingsDialog(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("오버드라이브 모드", color = Color.White, fontWeight = FontWeight.Bold)
-                            Text("시스템 한계를 넘어 200% 볼륨 증폭 (주의!)", color = Color.Gray, fontSize = 12.sp)
+                            Text(stringResource(R.string.settings_overdrive_title), color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.settings_overdrive_desc), color = Color.Gray, fontSize = 12.sp)
                         }
                         Switch(
                             checked = isOverdriveEnabled,

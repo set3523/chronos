@@ -1,5 +1,6 @@
 package com.set.Chronos
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -11,8 +12,9 @@ import java.util.Calendar
 
 class AlarmReceiver : BroadcastReceiver() {
 
+    @SuppressLint("ScheduleExactAlarm")
     override fun onReceive(context: Context, intent: Intent) {
-        Toast.makeText(context, "알람이 울립니다!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, context.getString(R.string.toast_alarm_ringing), Toast.LENGTH_SHORT).show()
         // Start the foreground service to play the alarm
         val serviceIntent = Intent(context, AlarmService::class.java)
         if (intent.extras != null) {

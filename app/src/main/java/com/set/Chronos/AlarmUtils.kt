@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import com.set.Chronos.AlarmReceiver
+import com.set.Chronos.R
 
 fun scheduleAlarm(
     context: Context, 
@@ -24,8 +25,8 @@ fun scheduleAlarm(
         putExtra("IS_CRESCENDO", isCrescendo) // Pass isCrescendo
         putExtra("ALARM_DURATION", duration)
         putExtra("ALARM_VOLUME", volume)
-        putExtra("NOTIF_TITLE", "알람!")
-        putExtra("NOTIF_TEXT", "설정한 시간이 되었습니다.")
+        putExtra("NOTIF_TITLE", "Chronos")
+        putExtra("NOTIF_TEXT", "Alarm!")
     }
 
     val requestCode = timeInMillis.toInt()
@@ -40,7 +41,7 @@ fun scheduleAlarm(
         if (alarmManager.canScheduleExactAlarms()) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
         } else {
-            Toast.makeText(context, "정확한 알람 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.toast_exact_alarm_permission), Toast.LENGTH_LONG).show()
             val settingsIntent = Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
             context.startActivity(settingsIntent)
         }

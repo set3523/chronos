@@ -19,13 +19,22 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.set.Chronos.data.AlarmSetting
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun TimerInput(label: String, value: String, onValueChange: (String) -> Unit) {
@@ -104,4 +113,30 @@ fun SettingSlider(
         }
         Slider(value = value, onValueChange = onValueChange, valueRange = valueRange)
     }
+}
+
+@Composable
+fun AutoSizeText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    targetTextSize: TextUnit = 18.sp,
+    fontWeight: FontWeight? = null
+) {
+    var textSize by remember(text) { mutableStateOf(targetTextSize) }
+    Text(
+        text = text,
+        color = color,
+        fontSize = textSize,
+        fontWeight = fontWeight,
+        maxLines = 1, // 무조건 한 줄로 고정
+        softWrap = false, // 줄바꿈 금지
+        modifier = modifier,
+        onTextLayout = { textLayoutResult ->
+            // 글씨가 정해진 칸을 넘어갔다면?
+            if (textLayoutResult.hasVisualOverflow) {
+                textSize *= 0.95f // 폰트 크기를 5% 줄이고 다시 그림
+            }
+        }
+    )
 }

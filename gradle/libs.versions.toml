@@ -8,6 +8,7 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 composeBom = "2026.03.00"
+playServicesAds = "25.1.0"
 playServicesAdsApi = "25.1.0"
 firebaseBom = "34.10.0"
 
@@ -32,6 +33,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 
 # Google Services & Ads
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version = "21.5.1" }
 play-services-ads-api = { group = "com.google.android.gms", name = "play-services-ads-api", version.ref = "playServicesAdsApi" }
 

@@ -3,4 +3,182 @@
     <string name="remove_ads">Remove Ads (Payment)</string>
     <string name="settings_transparency">Settings window transparency</string>
     <string name="language">Language</string>
+    <string name="apply">Apply</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">Saved after watching ad (Test)</string>
+
+    <string name="toast_ad_fail">Failed to load ad</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">No ads available. Charged for free! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">Alarm is ringing!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">Alarm is ringing.</string>
+    <string name="default_notif_text">Time to wake up!</string>
+    <string name="channel_name_high">Alarm Sound Notification</string>
+    <string name="channel_name_low">Alarm Silent Notification</string>
+    <string name="common_stop">Stop</string>
+    <string name="log_alarm_started">Alarm started</string>
+    <string name="log_routine_stopped">Routine stopped by user 💨</string>
+    <string name="log_single_alarm_completed">Single alarm completed 🔥</string>
+    <string name="default_preset_name">Unnamed Routine</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">Exact alarm permission is required.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">Unnamed Routine</string>
+    <string name="setting_mode_relative">Mode: Relative Time</string>
+    <string name="setting_mode_absolute">Mode: Absolute Time</string>
+    <string name="preset_save_title">Save Preset</string>
+    <string name="preset_name_hint">Preset Name (e.g., Morning)</string>
+    <string name="preset_color_label">Orbit Color</string>
+    <string name="preset_icon_label">Center Icon</string>
+    <string name="toast_preset_saved">Preset saved!</string>
+    <string name="common_save">Save</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="setting_unknown_ringtone">Unknown Ringtone</string>
+    <string name="setting_default_ringtone">Default Sound</string>
+    <string name="setting_tts_hint">Text to speak</string>
+    <string name="setting_ringtone_picker_title">Select Alarm Sound</string>
+    <string name="setting_repeat_times_format">%1$d times</string>
+    <string name="setting_duration_format">%1$ds</string>
+    <string name="setting_repeat_h">Rep.(H)</string>
+    <string name="setting_repeat_m">Rep.(M)</string>
+    <string name="setting_repeat_s">Rep.(S)</string>
+    <string name="setting_repeat_count_format">Repeat %1$d times</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">Login required.</string>
+    <string name="toast_backup_success">Cloud backup complete!</string>
+    <string name="toast_backup_fail">Backup failed: %1$s</string>
+    <string name="toast_restore_success">Cloud restore complete!</string>
+    <string name="toast_restore_empty">No backed up data found.</string>
+    <string name="toast_restore_fail">Restore failed: %1$s</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">Reset</string>
+    <string name="history_long_press_guide">Long press an item to show the detailed menu.</string>
+    <string name="history_detail_timeline">Details (Timeline)</string>
+    <string name="history_hide_from_calendar">Hide all from calendar</string>
+    <string name="history_completed_format">%1$d / %2$d Completed (%3$d%%)</string>
+    <string name="history_default_sound">🎵 Default Sound</string>
+    <string name="history_infinite_repeat">Infinite Repeat</string>
+    <string name="history_repeat_count_format">Repeat %1$d times</string>
+    <string name="history_no_repeat">No Repeat</string>
+    <string name="history_crescendo_active">🔥 Crescendo Active</string>
+    <string name="history_close">Close</string>
+    <string name="history_unknown_time">Unknown</string>
+    <string name="history_aborted">Aborted</string>
+
+
+    ``MainActivity``
+    <string name="toast_preset_added">Preset \'%1$s\' added!</string>
+    <string name="toast_invalid_qr">Invalid QR code.</string>
+    <string name="toast_login_fail">Login failed: %1$s</string>
+    <string name="toast_login_success">Login successful!</string>
+    <string name="toast_auth_fail">Authentication failed</string>
+    <string name="toast_alarm_permission_request">Please allow permission for exact alarms.</string>
+    <string name="toast_alarm_set_fail">Failed to set alarm.</string>
+    <string name="toast_exact_alarm_needed">\'Allow exact alarms\' is required for reliable alarms!</string>
+    <string name="toast_battery_opt_needed">\'Ignore battery optimization\' is required for reliable alarms!</string>
+    <string name="toast_logout_success">로그아웃 되었습니다.</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ Data Sync Conflict</string>
+    <string name="main_sync_conflict_desc">Records on another device differ from this phone. Please choose which data to keep.</string>
+    <string name="main_sync_local_data">📱 My Phone Data</string>
+    <string name="main_sync_cloud_data">☁️ Cloud Data</string>
+    <string name="main_sync_latest_badge"> [Latest ✨]</string>
+    <string name="main_sync_no_record">No records</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ Overwrite with Cloud Data (Recommended)</string>
+    <string name="main_sync_load_cloud">☁️ Load Cloud Data</string>
+    <string name="main_sync_keep_local_rec">📱 Keep Phone Data (Recommended)</string>
+    <string name="main_sync_keep_local">📱 Keep Phone Data</string>
+    <string name="toast_need_charge">⚡ Out of free uses. Tap the lightning bolt icon at the top right to recharge!</string>
+
+    <string name="toast_preset_load_fail">Failed to load preset.</string>
+    <string name="toast_alarm_restarted">Alarm restarted.</string>
+    <string name="toast_alarm_saved">Alarm saved.</string>
+
+    <string name="main_menu_earphone_title">Study Room Mode\n(Earphones Only)</string>
+    <string name="main_menu_earphone_desc">Alarms will play through media volume.</string>
+    <string name="main_menu_preset">Load / Share Presets</string>
+    <string name="main_menu_history">History</string>
+    <string name="main_menu_settings">App Settings\n(Transparency, Account)</string>
+    <string name="toast_preset_applied">Applied \'%1$s\' preset.</string>
+
+    ``preset``
+    <string name="preset_screen_title">Presets</string>
+    <string name="preset_empty_message">No saved presets.</string>
+    <string name="toast_preset_deleted">\'%1$s\' preset deleted.</string>
+    <string name="toast_preset_corrupted">Corrupted or old preset. Please save again.</string>
+    <string name="preset_receipt_infinite_repeat">Infinite Repeat</string>
+    <string name="preset_receipt_repeat_count">Repeat %1$d times</string>
+    <string name="preset_receipt_repeat_interval">🔁 %1$s interval / %2$s</string>
+    <string name="preset_share_message">🔥 You received the \'%1$s\' routine from Chronos!\n\nTap the link below to apply it to your phone:\n%2$s</string>
+    <string name="preset_share_intent_title">Share Routine</string>
+    <string name="preset_btn_share_link">Share Link via Messenger</string>
+    <string name="toast_link_copied">Link copied! Please paste it in the chat after sending the image.</string>
+    <string name="toast_image_save_fail">Failed to save image. Sharing as text instead.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 View App Tutorial Again</string>
+    <string name="settings_account_link">🔗 Link Account</string>
+    <string name="settings_tos_agree">[Required] I agree to the terms and privacy policy for special benefits.</string>
+    <string name="settings_google_login">Sign in with Google</string>
+    <string name="settings_linked_account">Linked Account: %1$s</string>
+    <string name="settings_logout">Logout</string>
+    <string name="settings_overdrive_title">Overdrive Mode</string>
+    <string name="settings_overdrive_desc">Boost volume to 200%% beyond system limits (Warning!)</string>
+    <string name="settings_language">Language</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">Beta Tester Special Event</string>
+    <string name="tutorial_desc_0">Top 1,000 active users will get premium features for free upon official release!\n\nPlease sign in with Google in the \'Settings (⚙️)\' menu at the top right to participate.</string>
+
+    <string name="tutorial_title_1">Main Screen</string>
+    <string name="tutorial_desc_1">Touch the clock in the center to add an alarm, and check history and settings at the top right.</string>
+
+    <string name="tutorial_title_2">Clock Controls</string>
+    <string name="tutorial_desc_2">• Tap: Open alarm settings\n• Double Tap: Cancel all alarms\n• Double Tap: Stop ringing alarm\n• Long Press: Restart recent alarms with vibration</string>
+
+    <string name="tutorial_title_3">Settings Icons Guide</string>
+    <string name="tutorial_desc_3">⏳ : Toggle Timer (Relative) Mode\n📈 : Gradual Volume Increase (Crescendo)\n♾️ : Repeat until dismissed\n🗣️ : Text-To-Speech (TTS)</string>
+
+    <string name="tutorial_title_4">Detailed Alarm Settings</string>
+    <string name="tutorial_desc_4">Customize relative time, volume, duration, and crescendo to your liking.</string>
+
+    <string name="tutorial_title_5">Save &amp; Share Routines</string>
+    <string name="tutorial_desc_5">Save your perfect alarm settings as a preset\nand share them with friends via cool receipts &amp; QR codes!</string>
+
+    <string name="tutorial_title_6">App Settings</string>
+    <string name="tutorial_desc_6">Adjust background transparency or view this tutorial again anytime.</string>
+
+    <string name="tutorial_skip">Skip</string>
+    <string name="tutorial_next">Next</string>
+    <string name="tutorial_start">Start</string>
+
+    <string name="tutorial_mock_title">⏰ Alarm Details</string>
+
+    <string name="tutorial_mock_crescendo_title">Crescendo</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ Sound gets louder!</string>
+
+    <string name="tutorial_mock_infinite_title">Infinite Repeat</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ Rings until you turn it off!</string>
+
+    <string name="tutorial_mock_tts_title">TTS Mode</string>
+    <string name="tutorial_mock_tts_desc">⬅️ Reads your text aloud!</string>
+
+    <string name="tutorial_mock_repeat_title">Interval Repeat</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ Snooze (rings again in n mins)!</string>
+
+    <string name="tutorial_mock_footer">💡 Turn on the switches next to the icons\nto create your perfect routine!</string>
+
+    <string name="tutorial_title_energy">Free Energy System</string>
+    <string name="tutorial_desc_energy">Energy is required to run the alarm.\nDon\'t worry! It recharges automatically\n3 times every day.</string>
 </resources>

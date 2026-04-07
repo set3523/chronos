@@ -18,8 +18,8 @@ android {
         applicationId = "com.set.Chronos"
         minSdk = 25
         targetSdk = 36
-        versionCode = 12
-        versionName = "2.0.6"
+        versionCode = 23
+        versionName = "2.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -46,6 +46,12 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    bundle {
+        language {
+            enableSplit = false
+        }
     }
 }
 
@@ -60,7 +66,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material-icons-extended")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
-    implementation("com.google.android.gms:play-services-ads:25.1.0")
+    implementation(libs.play.services.ads)
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("com.google.code.gson:gson:2.13.2")
 
@@ -73,6 +79,12 @@ dependencies {
 
 
     implementation("com.google.zxing:core:3.5.4")
+
+    implementation("androidx.security:security-crypto:1.1.0")
+
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+
+    implementation("com.google.firebase:firebase-firestore")
 
 
 

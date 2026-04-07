@@ -1,6 +1,185 @@
 <resources>
     <string name="app_name">Chronos</string>
-    <string name="remove_ads">広告を削除 (決済)</string>
-    <string name="settings_transparency">設定ウィンドウの透明度</string>
+    <string name="remove_ads">広告を削除 (有料)</string>
+    <string name="settings_transparency">設定画面の透明度</string>
     <string name="language">言語</string>
+    <string name="apply">適用</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">広告視聴後に保存されます（テスト）</string>
+
+    <string name="toast_ad_fail">広告の読み込みに失敗しました</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">広告の在庫がないため、無料でチャージしました！ ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">アラームが鳴っています！</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">アラームが鳴っています。</string>
+    <string name="default_notif_text">起きる時間です！</string>
+    <string name="channel_name_high">アラーム音の通知</string>
+    <string name="channel_name_low">アラームのサイレント通知</string>
+    <string name="common_stop">停止</string>
+    <string name="log_alarm_started">アラーム開始</string>
+    <string name="log_routine_stopped">ユーザーによりルーティンが停止されました 💨</string>
+    <string name="log_single_alarm_completed">単一アラーム完了 🔥</string>
+    <string name="default_preset_name">名前のないルーティン</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">正確なアラームの権限が必要です。</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">名前のないルーティン</string>
+    <string name="setting_mode_relative">モード: 相対時間 (タイマー)</string>
+    <string name="setting_mode_absolute">モード: 絶対時間 (アラーム)</string>
+    <string name="preset_save_title">プリセットを保存</string>
+    <string name="preset_name_hint">プリセット名 (例: 朝のルーティン)</string>
+    <string name="preset_color_label">軌道カラー</string>
+    <string name="preset_icon_label">中央アイコン</string>
+    <string name="toast_preset_saved">プリセットが保存されました！</string>
+    <string name="common_save">保存</string>
+    <string name="common_cancel">キャンセル</string>
+    <string name="common_confirm">確認</string>
+    <string name="setting_unknown_ringtone">不明な着信音</string>
+    <string name="setting_default_ringtone">デフォルト音</string>
+    <string name="setting_tts_hint">読み上げるテキスト</string>
+    <string name="setting_ringtone_picker_title">アラーム音を選択</string>
+    <string name="setting_repeat_times_format">%1$d回</string>
+    <string name="setting_duration_format">%1$d秒</string>
+    <string name="setting_repeat_h">反復(時)</string>
+    <string name="setting_repeat_m">反復(分)</string>
+    <string name="setting_repeat_s">反復(秒)</string>
+    <string name="setting_repeat_count_format">%1$d回繰り返す</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">ログインが必要です。</string>
+    <string name="toast_backup_success">クラウドへのバックアップが完了しました！</string>
+    <string name="toast_backup_fail">バックアップ失敗: %1$s</string>
+    <string name="toast_restore_success">クラウドからの復元が完了しました！</string>
+    <string name="toast_restore_empty">バックアップデータが見つかりません。</string>
+    <string name="toast_restore_fail">復元失敗: %1$s</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">リセット</string>
+    <string name="history_long_press_guide">項目を長押しすると詳細メニューが表示されます。</string>
+    <string name="history_detail_timeline">詳細 (タイムライン)</string>
+    <string name="history_hide_from_calendar">カレンダーからすべて非表示</string>
+    <string name="history_completed_format">%1$d / %2$d 完了 (%3$d%%)</string>
+    <string name="history_default_sound">🎵 デフォルト音</string>
+    <string name="history_infinite_repeat">無限リピート</string>
+    <string name="history_repeat_count_format">%1$d回繰り返す</string>
+    <string name="history_no_repeat">繰り返しなし</string>
+    <string name="history_crescendo_active">🔥 クレッシェンド有効</string>
+    <string name="history_close">閉じる</string>
+    <string name="history_unknown_time">不明</string>
+
+
+    <string name="history_aborted">Aborted</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">プリセット \'%1$s\' を追加しました！</string>
+    <string name="toast_invalid_qr">無効なQRコードです。</string>
+    <string name="toast_login_fail">ログイン失敗: %1$s</string>
+    <string name="toast_login_success">ログインに成功しました！</string>
+    <string name="toast_auth_fail">認証に失敗しました</string>
+    <string name="toast_alarm_permission_request">正確なアラームの権限を許可してください。</string>
+    <string name="toast_alarm_set_fail">アラームの設定に失敗しました。</string>
+    <string name="toast_exact_alarm_needed">確実なアラームには「正確なアラームの使用を許可」が必要です！</string>
+    <string name="toast_battery_opt_needed">確実なアラームには「バッテリー最適化を無視」が必要です！</string>
+    <string name="toast_logout_success">로그아웃 되었습니다.</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ データ同期の競合</string>
+    <string name="main_sync_conflict_desc">他のデバイスとデータが異なります。保持するデータを選択してください。</string>
+    <string name="main_sync_local_data">📱 このスマホのデータ</string>
+    <string name="main_sync_cloud_data">☁️ クラウドのデータ</string>
+    <string name="main_sync_latest_badge"> [最新 ✨]</string>
+    <string name="main_sync_no_record">記録なし</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ クラウドのデータで上書き (推奨)</string>
+    <string name="main_sync_load_cloud">☁️ クラウドのデータを読み込む</string>
+    <string name="main_sync_keep_local_rec">📱 スマホのデータを保持 (推奨)</string>
+    <string name="main_sync_keep_local">📱 スマホのデータを保持</string>
+    <string name="toast_need_charge">⚡ 無料の使用回数を使い切りました。右上の雷アイコンをタップしてチャージしてください！</string>
+
+    <string name="toast_preset_load_fail">プリセットの読み込みに失敗しました。</string>
+    <string name="toast_alarm_restarted">アラームを再起動しました。</string>
+    <string name="toast_alarm_saved">アラームを保存しました。</string>
+
+    <string name="main_menu_earphone_title">自習室モード (イヤホン専用)</string>
+    <string name="main_menu_earphone_desc">アラームがメディア音量で再生されます。</string>
+    <string name="main_menu_preset">プリセットの読み込み / 共有</string>
+    <string name="main_menu_history">使用履歴</string>
+    <string name="main_menu_settings">アプリ設定 (透明度、アカウント)</string>
+    <string name="toast_preset_applied">\'%1$s\' プリセットを適用しました。</string>
+
+    ``preset``
+    <string name="preset_screen_title">プリセット</string>
+    <string name="preset_empty_message">保存されたプリセットがありません。</string>
+    <string name="toast_preset_deleted">\'%1$s\' プリセットを削除しました。</string>
+    <string name="toast_preset_corrupted">破損した、または古いプリセットです。もう一度保存してください。</string>
+    <string name="preset_receipt_infinite_repeat">無限リピート</string>
+    <string name="preset_receipt_repeat_count">%1$d回繰り返す</string>
+    <string name="preset_receipt_repeat_interval">🔁 %1$s 間隔 / %2$s</string>
+    <string name="preset_share_message">🔥 Chronosアプリから \'%1$s\' ルーティンが共有されました！\n\n以下のリンクをタップしてスマホに適用してください：\n%2$s</string>
+    <string name="preset_share_intent_title">ルーティンを共有する</string>
+    <string name="preset_btn_share_link">メッセンジャーでリンクを共有</string>
+    <string name="toast_link_copied">リンクをコピーしました！画像を送信した後、チャットに貼り付けてください。</string>
+    <string name="toast_image_save_fail">画像の保存に失敗しました。代わりにテキストとして共有します。</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 アプリのチュートリアルをもう一度見る</string>
+    <string name="settings_account_link">🔗 アカウント連携</string>
+    <string name="settings_tos_agree">[必須] 特別な特典のための利用規約とプライバシーポリシーに同意します。</string>
+    <string name="settings_google_login">Google でログイン</string>
+    <string name="settings_linked_account">連携済みアカウント: %1$s</string>
+    <string name="settings_logout">ログアウト</string>
+    <string name="settings_overdrive_title">オーバードライブモード</string>
+    <string name="settings_overdrive_desc">システムの限界を超えて音量を200%%増幅させます (注意！)</string>
+    <string name="settings_language">言語設定 (Language)</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">ベータテスター特別イベント</string>
+    <string name="tutorial_desc_0">使用量上位1,000名様に、正式リリース後、有料機能を無料で開放します！\n\nイベント参加のためのGoogleログインは、右上の「設定（⚙️）」メニューから行ってください。</string>
+
+    <string name="tutorial_title_1">メイン画面</string>
+    <string name="tutorial_desc_1">中央の時計をタッチしてアラームを追加し、右上で履歴や設定を確認できます。</string>
+
+    <string name="tutorial_title_2">時計画面の操作方法</string>
+    <string name="tutorial_desc_2">• タップ：アラーム設定を開く\n• ダブルタップ：すべてのアラームをキャンセル\n• ダブルタップ：鳴っているアラームを停止\n• 長押し：バイブレーションと共に最近のアラームを再起動</string>
+
+    <string name="tutorial_title_3">設定アイコンの案内</string>
+    <string name="tutorial_desc_3">⏳ : タイマー(相対時間)モードに切り替え\n📈 : 徐々に音量を上げる (クレッシェンド)\n♾️ : 止めるまで無限リピート\n🗣️ : 音声で読み上げる (TTS)</string>
+
+    <string name="tutorial_title_4">詳細なアラーム設定</string>
+    <string name="tutorial_desc_4">相対時間、音量、持続時間からクレッシェンドまで、お好みに合わせて設定してください。</string>
+
+    <string name="tutorial_title_5">ルーティンの保存と共有</string>
+    <string name="tutorial_desc_5">こだわりのアラーム設定をプリセットとして保存し、\nおしゃれなレシートやQRコードで友達にシェアしましょう！</string>
+
+    <string name="tutorial_title_6">アプリ設定</string>
+    <string name="tutorial_desc_6">背景の透明度を調整したり、いつでもこのチュートリアルを再確認できます。</string>
+
+    <string name="tutorial_skip">スキップ</string>
+    <string name="tutorial_next">次へ</string>
+    <string name="tutorial_start">はじめる</string>
+
+    <string name="tutorial_mock_title">⏰ アラーム詳細設定</string>
+
+    <string name="tutorial_mock_crescendo_title">クレッシェンド</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ 音が徐々に大きくなります！</string>
+
+    <string name="tutorial_mock_infinite_title">無限リピート</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ 止めるまで鳴り続けます！</string>
+
+    <string name="tutorial_mock_tts_title">TTSモード</string>
+    <string name="tutorial_mock_tts_desc">⬅️ 入力したテキストを読み上げます！</string>
+
+    <string name="tutorial_mock_repeat_title">間隔リピート</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ スヌーズ（n分後に再通知）機能！</string>
+
+    <string name="tutorial_mock_footer">💡 アイコンの横のスイッチをオンにして\n自分だけの完璧なルーティンを作りましょう！</string>
+
+    <string name="tutorial_title_energy">無料エネルギーシステム</string>
+    <string name="tutorial_desc_energy">アラームの実行にはエネルギーが必要です。\nご安心ください！毎日3回、\n自動でエネルギーが補充されます。</string>
 </resources>

@@ -26,25 +26,49 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.AllInclusive
+import androidx.compose.material.icons.filled.RecordVoiceOver
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.layout.width
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialPagerOverlay(onDismiss: () -> Unit) {
-    // 💡 수정 1: 전체 페이지 수를 6으로 변경 (0, 1, 2, 3, 4, 5)
-    val pagerState = rememberPagerState(pageCount = { 6 })
+    // ✨ 페이지 수를 7개로 늘렸습니다.
+    val pagerState = rememberPagerState(pageCount = { 4 })
+    val lastPageIndex = pagerState.pageCount - 1
     val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF121212).copy(alpha = 0.95f)) // 어두운 반투명 배경
+            .background(Color(0xFF121212).copy(alpha = 0.95f))
     ) {
-        // 좌우 스와이프가 가능한 Pager
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
@@ -58,90 +82,75 @@ fun TutorialPagerOverlay(onDismiss: () -> Unit) {
             ) {
                 when (page) {
                     0 -> {
-                        Text("🎁", fontSize = 80.sp)
+                        Text("⏱️", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
-                        Text("베타 테스터 특별 이벤트", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.tutorial_title_1), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(stringResource(R.string.tutorial_desc_1), color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
+                    }
+                    1 -> {
+                        TutorialPage4_MockAlarmSettings()
+                    }
+//                    4 -> {
+//                        // ✨ [새로 추가된 프리셋 공유 페이지]
+//                        Text("🧾", fontSize = 80.sp)
+//                        Spacer(modifier = Modifier.height(24.dp))
+//                        Text(stringResource(R.string.tutorial_title_5), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+//                        Spacer(modifier = Modifier.height(16.dp))
+//                        Text(stringResource(R.string.tutorial_desc_5), color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
+//                    }
+                    2 -> {
+                        // ⚡ [새로 추가: 번개/에너지 설명]
+                        Text("⚡", fontSize = 80.sp)
+                        Spacer(modifier = Modifier.height(24.dp))
+                        // strings.xml에 tutorial_title_energy, tutorial_desc_energy를 추가하세요!
+                        Text(stringResource(R.string.tutorial_title_energy), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "상위 사용량 1,000분께 정식 출시 후\n유료 기능을 무료로 개방합니다!\n\n이벤트 참여를 위한 구글 로그인은\n우측 상단의 '설정(⚙️)' 메뉴에서 진행해 주세요.",
+                            stringResource(R.string.tutorial_desc_energy), // "하루 3번 자동으로 충전되니 마음껏 사용하세요!"
                             color = Color.LightGray,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center,
                             lineHeight = 24.sp
                         )
                     }
-                    1 -> {
-                        Text("⏱️", fontSize = 80.sp)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text("메인 화면", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("중앙의 시계를 터치해 알람을 추가하고,\n우측 상단에서 기록과 설정을 확인하세요.", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
-                    }
-                    2 -> {
-                        Text("👆", fontSize = 80.sp)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text("시계 화면 조작법", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            "• 가볍게 터치 : 알람 설정창 열기\n" +
-                                    "• 따닥! 두 번 터치 : 모든 알람 취소\n" +
-                                    "• 따닥! 두 번 터치 : 알람이 울리는 경우 알람 종료\n" +
-                                    "• 꾹~ 길게 누르기 : 진동과 함께 최근 알람 재시작",
-                            color = Color.LightGray,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
                     3 -> {
-                        Text("🧐", fontSize = 80.sp)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text("설정창 아이콘 안내", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("⏳ : 타이머(상대 시간) 모드 전환\n📈 : 볼륨 서서히 증가 (크레센도)\n♾️ : 끌 때까지 무한 반복\n🗣️ : 목소리로 읽어주기 (TTS)", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Start)
-                    }
-                    4 -> {
-                        Text("🎛️", fontSize = 80.sp)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text("디테일한 알람 설정", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("상대 시간, 볼륨, 지속 시간부터\n크레센도까지 내 마음대로 설정하세요.", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
-                    }
-                    5 -> {
+                        // ✨ (기존 5번이었던 앱 설정 페이지)
                         Text("⚙️", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
-                        Text("앱 설정", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.tutorial_title_6), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text("배경 투명도를 조절하거나\n언제든 이 튜토리얼을 다시 볼 수 있어요.", color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
+                        Text(stringResource(R.string.tutorial_desc_6), color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
                     }
                 }
             }
         }
 
-        // 하단 컨트롤 (인디케이터 & 버튼)
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
+                .navigationBarsPadding()
+                .height(160.dp)
                 .padding(32.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 💡 수정 2: 마지막 페이지(5)가 아닐 때만 '건너뛰기' 표시
-            if (pagerState.currentPage < 5) {
+            // ✨ 마지막 페이지 인덱스가 6으로 변경됨
+            if (pagerState.currentPage < lastPageIndex) {
                 TextButton(onClick = onDismiss) {
-                    Text("건너뛰기", color = Color.Gray)
+                    Text(stringResource(R.string.tutorial_skip), color = Color.Gray)
                 }
             } else {
-                Spacer(modifier = Modifier.size(64.dp)) // 영역 맞추기용
+                Spacer(modifier = Modifier.size(64.dp))
             }
 
-            // 점(Dot) 인디케이터
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 💡 수정 3: 점의 개수를 6개로 변경
-                repeat(6) { index ->
+                // ✨ 점 개수 7개로 변경
+                repeat(pagerState.pageCount) { index ->
                     val isSelected = pagerState.currentPage == index
                     Box(
                         modifier = Modifier
@@ -152,24 +161,110 @@ fun TutorialPagerOverlay(onDismiss: () -> Unit) {
                 }
             }
 
-            // 다음 / 시작하기 버튼
             Button(
                 onClick = {
-                    // 💡 수정 4: 마지막 페이지(5)가 아니면 다음 페이지로
-                    if (pagerState.currentPage < 5) {
+                    if (pagerState.currentPage < lastPageIndex) {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     } else {
-                        onDismiss() // 마지막 페이지면 튜토리얼 종료
+                        onDismiss()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF07D22)),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                // 💡 수정 5: 마지막 페이지(5)일 때만 "시작하기" 문구 출력
-                Text(if (pagerState.currentPage == 5) "시작하기" else "다음", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(if (pagerState.currentPage == lastPageIndex) stringResource(R.string.tutorial_start) else stringResource(R.string.tutorial_next), color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
+    }
+}
+
+@Composable
+fun TutorialPage4_MockAlarmSettings() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.85f)),
+        contentAlignment = Alignment.Center
+    ) {
+        // =========================================================
+        // 가짜(Mock) 알람 설정창 UI 생성
+        // =========================================================
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.9f) // 화면 너비의 90% 차지
+                .background(Color(0xFF1E1E1E), RoundedCornerShape(16.dp))
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.tutorial_mock_title),
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            HorizontalDivider(color = Color.DarkGray)
+
+            // Mock 아이콘 1: 크레센도
+            AlarmGuideRow(
+                icon = Icons.AutoMirrored.Filled.TrendingUp,
+                title = stringResource(R.string.tutorial_mock_crescendo_title),
+                description = stringResource(R.string.tutorial_mock_crescendo_desc)
+            )
+
+            // Mock 아이콘 2: 무한 반복
+            AlarmGuideRow(
+                icon = Icons.Default.AllInclusive,
+                title = stringResource(R.string.tutorial_mock_infinite_title),
+                description = stringResource(R.string.tutorial_mock_infinite_desc)
+            )
+
+            // Mock 아이콘 3: TTS 모드
+            AlarmGuideRow(
+                icon = Icons.Default.RecordVoiceOver,
+                title = stringResource(R.string.tutorial_mock_tts_title),
+                description = stringResource(R.string.tutorial_mock_tts_desc)
+            )
+
+            // Mock 아이콘 4: 간격 반복
+            AlarmGuideRow(
+                icon = Icons.Default.Repeat,
+                title = stringResource(R.string.tutorial_mock_repeat_title),
+                description = stringResource(R.string.tutorial_mock_repeat_desc)
+            )
+
+            HorizontalDivider(color = Color.DarkGray)
+
+            Text(
+                text = stringResource(R.string.tutorial_mock_footer),
+                color = Color.LightGray,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                lineHeight = 22.sp
+            )
+        }
+    }
+}
+
+// 화살표와 텍스트를 한 줄에 예쁘게 배치해 주는 헬퍼 함수
+@Composable
+fun AlarmGuideRow(icon: ImageVector, title: String, description: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(imageVector = icon, contentDescription = title, tint = Color(0xFFE5C07B), modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // 가짜 스위치 (크기를 살짝 줄여서 예쁘게 배치)
+        Switch(checked = true, onCheckedChange = {}, modifier = Modifier.scale(0.8f))
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // 직관적인 화살표 설명
+        Text(text = description, color = Color(0xFFF07D22), fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }

@@ -4,4 +4,181 @@
     <string name="settings_transparency">설정창 투명도</string>
     <string name="language">언어</string>
     <string name="apply">적용</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">광고 시청 후 저장됩니다 (테스트)</string>
+
+    <string name="toast_ad_fail">광고 실패</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">광고가 없어 무료 충전되었습니다! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">알람이 울립니다!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">알람이 울립니다.</string>
+    <string name="default_notif_text">일어날 시간입니다!</string>
+    <string name="channel_name_high">알람 소리 알림</string>
+    <string name="channel_name_low">알람 무음 알림</string>
+    <string name="common_stop">중지</string>
+    <string name="log_alarm_started">알람 시작됨</string>
+    <string name="log_routine_stopped">사용자에 의해 루틴 중단 💨</string>
+    <string name="log_single_alarm_completed">단일 알람 완료 🔥</string>
+    <string name="default_preset_name">이름 없는 루틴</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">정확한 알람 권한이 필요합니다.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">이름 없는 루틴</string>
+    <string name="setting_mode_relative">모드: 상대 시간 (타이머)</string>
+    <string name="setting_mode_absolute">모드: 절대 시간 (알람)</string>
+    <string name="preset_save_title">프리셋 저장</string>
+    <string name="preset_name_hint">프리셋 이름 (예: 평일 아침)</string>
+    <string name="preset_color_label">궤도 색상</string>
+    <string name="preset_icon_label">중앙 아이콘</string>
+    <string name="toast_preset_saved">프리셋이 저장되었습니다!</string>
+    <string name="common_save">저장</string>
+    <string name="common_cancel">취소</string>
+    <string name="common_confirm">확인</string>
+    <string name="setting_unknown_ringtone">알 수 없는 벨소리</string>
+    <string name="setting_default_ringtone">기본음</string>
+    <string name="setting_tts_hint">읽어줄 문구</string>
+    <string name="setting_ringtone_picker_title">알람음 선택</string>
+    <string name="setting_repeat_times_format">%1$d번</string>
+    <string name="setting_duration_format">%1$ds</string>
+    <string name="setting_repeat_h">반복(H)</string>
+    <string name="setting_repeat_m">반복(M)</string>
+    <string name="setting_repeat_s">반복(S)</string>
+    <string name="setting_repeat_count_format">%1$d번 반복</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">로그인이 필요합니다.</string>
+    <string name="toast_backup_success">클라우드 백업 완료!</string>
+    <string name="toast_backup_fail">백업 실패: %1$s</string>
+    <string name="toast_restore_success">클라우드 복구 완료!</string>
+    <string name="toast_restore_empty">백업된 데이터가 없습니다.</string>
+    <string name="toast_restore_fail">복구 실패: %1$s</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">초기화</string>
+    <string name="history_long_press_guide">항목을 길게 누르면 상세 메뉴가 나타납니다.</string>
+    <string name="history_detail_timeline">상세보기 (타임라인)</string>
+    <string name="history_hide_from_calendar">달력에서 모두 숨기기</string>
+    <string name="history_completed_format">%1$d / %2$d 완료 (%3$d%%)</string>
+    <string name="history_default_sound">🎵 기본 알람음</string>
+    <string name="history_infinite_repeat">무한 반복</string>
+    <string name="history_repeat_count_format">%1$d회 반복</string>
+    <string name="history_no_repeat">반복 없음</string>
+    <string name="history_crescendo_active">🔥 크레센도 활성화됨</string>
+    <string name="history_close">닫기</string>
+    <string name="history_unknown_time">알 수 없음</string>
+    <string name="history_aborted">중단됨</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">\'%1$s\' 프리셋이 추가되었습니다!</string>
+    <string name="toast_invalid_qr">유효하지 않은 QR 코드입니다.</string>
+    <string name="toast_login_fail">로그인 실패: %1$s</string>
+    <string name="toast_login_success">로그인 성공!</string>
+    <string name="toast_auth_fail">인증 실패</string>
+    <string name="toast_alarm_permission_request">정확한 알람을 위해 권한을 허용해주세요.</string>
+    <string name="toast_alarm_set_fail">알람 설정에 실패했습니다.</string>
+    <string name="toast_exact_alarm_needed">정확한 알람을 위해 \'정확한 알람 허용\'이 필요합니다!</string>
+    <string name="toast_battery_opt_needed">안정적인 알람을 위해 \'배터리 최적화 제외\'가 필요합니다!</string>
+    <string name="toast_logout_success">로그아웃 되었습니다.</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ 데이터 동기화 충돌</string>
+    <string name="main_sync_conflict_desc">다른 기기에서 저장한 기록과 현재 폰의 기록이 다릅니다. 유지할 데이터를 선택해 주세요.</string>
+    <string name="main_sync_local_data">📱 내 폰 데이터</string>
+    <string name="main_sync_cloud_data">☁️ 클라우드</string>
+    <string name="main_sync_latest_badge"> [최신 ✨]</string>
+    <string name="main_sync_no_record">기록 없음</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ 클라우드 데이터로 덮어쓰기 (추천)</string>
+    <string name="main_sync_load_cloud">☁️ 클라우드 데이터 불러오기</string>
+    <string name="main_sync_keep_local_rec">📱 내 폰 데이터로 유지 (추천)</string>
+    <string name="main_sync_keep_local">📱 내 폰 데이터로 유지</string>
+    <string name="toast_need_charge">⚡ 무료 횟수를 모두 사용했습니다. 우측 상단 번개를 눌러 충전해주세요!</string>
+
+    <string name="toast_preset_load_fail">프리셋을 불러오는데 실패했습니다.</string>
+    <string name="toast_alarm_restarted">알람이 다시 시작되었습니다.</string>
+    <string name="toast_alarm_saved">알람이 저장되었습니다.</string>
+
+    <string name="main_menu_earphone_title">독서실 모드 (이어폰 전용)</string>
+    <string name="main_menu_earphone_desc">알람이 미디어 볼륨으로 재생됩니다.</string>
+    <string name="main_menu_preset">프리셋 불러오기 / 공유</string>
+    <string name="main_menu_history">사용 기록</string>
+    <string name="main_menu_settings">앱 설정 (투명도, 계정)</string>
+    <string name="toast_preset_applied">\'%1$s\' 프리셋을 적용했습니다.</string>
+
+    ``preset``
+    <string name="preset_screen_title">프리셋</string>
+    <string name="preset_empty_message">저장된 프리셋이 없습니다.</string>
+    <string name="toast_preset_deleted">\'%1$s\' 프리셋이 삭제되었습니다.</string>
+    <string name="toast_preset_corrupted">오래되거나 손상된 프리셋입니다. 다시 저장해주세요.</string>
+    <string name="preset_receipt_infinite_repeat">무한 반복</string>
+    <string name="preset_receipt_repeat_count">%1$d회 반복</string>
+    <string name="preset_receipt_repeat_interval">🔁 %1$s 간격 / %2$s</string>
+    <string name="preset_share_message">🔥 Chronos 앱에서 \'%1$s\' 루틴을 공유받았습니다!\n\n아래 링크를 눌러 내 폰에 바로 적용해보세요:\n%2$s</string>
+    <string name="preset_share_intent_title">루틴 공유하기</string>
+    <string name="preset_btn_share_link">메신저로 링크 공유하기</string>
+    <string name="toast_link_copied">링크가 복사되었습니다! 이미지 전송 후 채팅창에 붙여넣기 해주세요.</string>
+    <string name="toast_image_save_fail">이미지 저장 실패. 텍스트로 공유합니다.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 앱 사용 튜토리얼 다시 보기</string>
+    <string name="settings_account_link">🔗 계정 연동</string>
+    <string name="settings_tos_agree">[필수] 특별 혜택 제공을 위한 이용약관 및 개인정보 수집·이용에 동의합니다.</string>
+    <string name="settings_google_login">G Google 계정으로 로그인</string>
+    <string name="settings_linked_account">연동된 계정: %1$s</string>
+    <string name="settings_logout">로그아웃</string>
+    <string name="settings_overdrive_title">오버드라이브 모드</string>
+    <string name="settings_overdrive_desc">시스템 한계를 넘어 200%% 볼륨 증폭 (주의!)</string>
+    <string name="settings_language">언어 설정 (Language)</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">베타 테스터 특별 이벤트</string>
+    <string name="tutorial_desc_0">상위 사용량 1,000분께 정식 출시 후\n유료 기능을 무료로 개방합니다!\n\n이벤트 참여를 위한 구글 로그인은\n우측 상단의 \'설정(⚙️)\' 메뉴에서 진행해 주세요.</string>
+
+    <string name="tutorial_title_1">메인 화면</string>
+    <string name="tutorial_desc_1">중앙의 시계를 터치해 알람을 추가하고,\n우측 상단에서 기록과 설정을 확인하세요.</string>
+
+    <string name="tutorial_title_2">시계 화면 조작법</string>
+    <string name="tutorial_desc_2">• 가볍게 터치 : 알람 설정창 열기\n• 따닥! 두 번 터치 : 모든 알람 취소\n• 따닥! 두 번 터치 : 알람이 울리는 경우 알람 종료\n• 꾹~ 길게 누르기 : 진동과 함께 최근 알람 재시작</string>
+
+    <string name="tutorial_title_3">설정창 아이콘 안내</string>
+    <string name="tutorial_desc_3">⏳ : 타이머(상대 시간) 모드 전환\n📈 : 볼륨 서서히 증가 (크레센도)\n♾️ : 끌 때까지 무한 반복\n🗣️ : 목소리로 읽어주기 (TTS)</string>
+
+    <string name="tutorial_title_4">디테일한 알람 설정</string>
+    <string name="tutorial_desc_4">상대 시간, 볼륨, 지속 시간부터\n크레센도까지 내 마음대로 설정하세요.</string>
+
+    <string name="tutorial_title_5">루틴 저장 및 공유</string>
+    <string name="tutorial_desc_5">공들여 만든 알람 세팅을 프리셋으로 저장하고,\n멋진 영수증과 QR 코드로 친구들에게 공유해 보세요!</string>
+
+    <string name="tutorial_title_6">앱 설정</string>
+    <string name="tutorial_desc_6">배경 투명도를 조절하거나\n언제든 이 튜토리얼을 다시 볼 수 있어요.</string>
+
+    <string name="tutorial_skip">건너뛰기</string>
+    <string name="tutorial_next">다음</string>
+    <string name="tutorial_start">시작하기</string>
+
+    <string name="tutorial_mock_title">⏰ 알람 세부 설정</string>
+
+    <string name="tutorial_mock_crescendo_title">크레센도</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ 소리가 점점 커져요!</string>
+
+    <string name="tutorial_mock_infinite_title">무한 반복</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ 끌 때까지 계속 울려요!</string>
+
+    <string name="tutorial_mock_tts_title">TTS 모드</string>
+    <string name="tutorial_mock_tts_desc">⬅️ 입력한 문장을 직접 읽어줘요!</string>
+
+    <string name="tutorial_mock_repeat_title">간격 반복</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ 스누즈(n분 뒤 다시 울림) 기능!</string>
+
+    <string name="tutorial_mock_footer">💡 아이콘 옆 스위치를 켜서\n나만의 완벽한 루틴을 만들어보세요!</string>
+
+    <string name="tutorial_title_energy">무료 에너지 시스템</string>
+    <string name="tutorial_desc_energy">알람 실행에는 에너지가 필요합니다.\n하지만 걱정 마세요! 매일 3번\n자동으로 에너지를 충전해 드립니다.</string>
+
 </resources>

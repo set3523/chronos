@@ -24,6 +24,8 @@ import kotlinx.serialization.json.Json
 import java.util.Calendar
 import java.util.Locale
 import android.app.KeyguardManager
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.view.WindowManager
 import com.set.Chronos.utils.toAlarmSetting
@@ -35,17 +37,36 @@ class MainActivity : ComponentActivity() {
 
 
     override fun attachBaseContext(newBase: Context) {
-        val sharedPreferences = newBase.getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
-        val language = sharedPreferences.getString("language", "ko") ?: "ko"
+        val sharedPreferences = getSecurePrefs(newBase)
+
+        // ✨ [핵심] 현재 내 앱이 번역을 지원하는 언어 코드 목록!
+        // (나중에 언어가 추가되면 여기에 "fr", "es" 등을 계속 적어주면 됩니다)
+        val supportedLanguages = listOf("ko", "en", "ja", "zh")
+
+        // 폰의 기본 시스템 언어를 가져옵니다.
+        val systemLang = java.util.Locale.getDefault().language
+
+        // 시스템 언어가 지원 목록에 있으면 그걸 쓰고, 없으면 무조건 "en"(영어)로 빠집니다!
+        val defaultLang = if (systemLang in supportedLanguages) systemLang else "en"
+
+        // 저장된 언어가 없으면 위에서 똑똑하게 계산한 defaultLang을 사용합니다.
+        val language = sharedPreferences.getString("language", defaultLang) ?: defaultLang
         val locale = java.util.Locale.Builder().setLanguage(language).build()
         val context = updateBaseContextLocale(newBase, locale)
         super.attachBaseContext(context)
     }
+    companion object {
+        var isForeground = false
+    }
+
     override fun onResume() {
         super.onResume()
-
-        // 1,000명 테스터들의 '알람 생존'을 위한 무한 체크 로직
+        isForeground = true // ✨ 화면을 보고 있을 때 켜짐!
         checkPermissions()
+    }
+    override fun onPause() {
+        super.onPause()
+        isForeground = false // ✨ 홈 화면으로 나가거나 화면 끄면 꺼짐!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +119,7 @@ class MainActivity : ComponentActivity() {
                 val alarms = sharedPreset.a.map { it.toAlarmSetting() }
 
                 // SharedPreferences에 자동 저장
-                val prefs = getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
+                val prefs = getSecurePrefs(this)
                 val newPresetName = "${sharedPreset.cn}의 ${sharedPreset.pn}"
                 val existingNames = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
 
@@ -107,9 +128,10 @@ class MainActivity : ComponentActivity() {
                     putString("preset_${newPresetName}_alarmSettings", Json.encodeToString(alarms))
                     apply()
                 }
-                Toast.makeText(this, "'$newPresetName' 프리셋이 추가되었습니다!", Toast.LENGTH_LONG).show()
+                com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
+                Toast.makeText(this, getString(R.string.toast_preset_added, newPresetName), Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this, "유효하지 않은 QR 코드입니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_invalid_qr), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -122,7 +144,7 @@ class MainActivity : ComponentActivity() {
                 val account = task.getResult(com.google.android.gms.common.api.ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: Exception) {
-                Toast.makeText(this, "로그인 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_login_fail, e.message), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -132,9 +154,11 @@ class MainActivity : ComponentActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
+                    window.setWindowAnimations(android.R.style.Animation_Toast) // 깜빡임 방지용
+                    recreate()
                 } else {
-                    Toast.makeText(this, "인증 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_auth_fail), Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -144,6 +168,15 @@ class MainActivity : ComponentActivity() {
     fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+    fun signOut() {
+        auth.signOut() // 파이어베이스 로그아웃
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            Toast.makeText(this, getString(R.string.toast_logout_success), Toast.LENGTH_SHORT).show()
+            // 로그아웃 되었으니 UI 갱신을 위해 액티비티 부드럽게 재시작!
+            window.setWindowAnimations(android.R.style.Animation_Toast)
+            recreate()
+        }
     }
     // ✨ 핵심 3: AlarmService를 강제로 종료시키는 함수 추가
     private fun stopAlarmService() {
@@ -183,7 +216,7 @@ class MainActivity : ComponentActivity() {
 
         // 1. Check for necessary permissions/settings before proceeding
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            Toast.makeText(this, "정확한 알람을 위해 권한을 허용해주세요.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.toast_alarm_permission_request), Toast.LENGTH_LONG).show()
             Intent().also { intent ->
                 intent.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
                 startActivity(intent)
@@ -192,7 +225,7 @@ class MainActivity : ComponentActivity() {
         }
 
         try {
-            val sharedPreferences = getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
+            val sharedPreferences = getSecurePrefs(this)
             val editor = sharedPreferences.edit()
             val intent = Intent(this, AlarmReceiver::class.java)
             val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
@@ -232,24 +265,30 @@ class MainActivity : ComponentActivity() {
             // 3. Save new alarm settings to storage
             val newJson = Json.encodeToString(alarmSettings)
             editor.putString("alarmSettings", newJson)
+            editor.putBoolean("isAlarmActive", true)
+            editor.putLong("current_session_id", System.currentTimeMillis())
+
+            if (getSecurePrefs(this).getString("currentPresetName", "").isNullOrEmpty()) {
+                editor.putString("currentPresetName", "")
+                editor.putString("currentPresetIcon", "Clock")
+                editor.putString("currentPresetColor", "#E5C07B")
+            }
             editor.apply()
 
             // 4. Set new alarms using their stable IDs
             alarmSettings.forEach { setting ->
                 val calendar = Calendar.getInstance().apply {
                     if (setting.isRelative) {
-                        val timeParts = setting.alarmTime.split(":")
+                        // 🚨 [핵심 수술 2] 문자열 오차를 없애고, 밀리초 단위까지 정확하게 현재 시간에서 더합니다!
+                        val timeParts = setting.relativeTime.split(":")
                         if (timeParts.size == 3) {
-                            set(Calendar.HOUR_OF_DAY, timeParts[0].toIntOrNull() ?: 0)
-                            set(Calendar.MINUTE, timeParts[1].toIntOrNull() ?: 0)
-                            set(Calendar.SECOND, timeParts[2].toIntOrNull() ?: 0)
-                            set(Calendar.MILLISECOND, 0)
-
-                            if (System.currentTimeMillis() > timeInMillis) {
-                                add(Calendar.DATE, 1)
-                            }
+                            timeInMillis = System.currentTimeMillis() // ✨ 현재 시간의 밀리초를 그대로 가져옴!
+                            add(Calendar.HOUR_OF_DAY, timeParts[0].toIntOrNull() ?: 0)
+                            add(Calendar.MINUTE, timeParts[1].toIntOrNull() ?: 0)
+                            add(Calendar.SECOND, timeParts[2].toIntOrNull() ?: 0)
                         }
                     } else {
+                        // 절대 시간은 기존 방식 그대로 유지
                         val timeParts = setting.alarmTime.split(":")
                         if (timeParts.size == 3) {
                             set(Calendar.HOUR_OF_DAY, timeParts[0].toInt())
@@ -283,17 +322,33 @@ class MainActivity : ComponentActivity() {
                 val requestCode = setting.id.hashCode()
                 val pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, flags)
 
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                val delayMillis = calendar.timeInMillis - System.currentTimeMillis()
+
+                if (delayMillis in 1..4999) {
+                    // 5초 미만이면 앱 내부 타이머(Handler)로 다이렉트 슛!
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        sendBroadcast(alarmIntent) // AlarmManager 대신 내가 직접 리시버 호출!
+                    }, delayMillis)
+                } else {
+                    // 5초 이상이거나 과거 시간이면 원래대로 AlarmManager에게 맡김
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                }
             }
-            //Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
+
+            // ✨ [수정 1] 클라우드에 올리기 전에 로컬 타임스탬프를 먼저 최신화합니다!
+            getSecurePrefs(this).edit().putLong("last_modified", System.currentTimeMillis()).apply()
+
+            // ✨ [수정 2] 최신 시간이 찍힌 데이터를 클라우드에 조용히 백업합니다.
+            com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
+
         } catch (t: Throwable) {
-            Toast.makeText(this, "알람 설정에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_alarm_set_fail), Toast.LENGTH_SHORT).show()
             t.printStackTrace()
         }
     }
     private fun cancelAllAlarms() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val sharedPreferences = getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = getSecurePrefs(this)
         val oldJson = sharedPreferences.getString("alarmSettings", null)
 
         val intent = Intent(this, AlarmReceiver::class.java)
@@ -325,7 +380,7 @@ class MainActivity : ComponentActivity() {
                     data = Uri.parse("package:$packageName")
                 }
                 startActivity(intent)
-                Toast.makeText(this, "정확한 알람을 위해 '정확한 알람 허용'이 필요합니다!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.toast_exact_alarm_needed), Toast.LENGTH_LONG).show()
                 return // 하나씩 해결하게 리턴
             }
         }
@@ -337,7 +392,7 @@ class MainActivity : ComponentActivity() {
                     data = Uri.parse("package:$packageName")
                 }
                 startActivity(intent)
-                Toast.makeText(this, "죽지 않는 알람을 위해 '배터리 최적화 제외'가 필요합니다!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.toast_battery_opt_needed), Toast.LENGTH_LONG).show()
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

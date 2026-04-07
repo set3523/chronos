@@ -1,56 +1,40 @@
 package com.set.Chronos
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -58,48 +42,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import kotlinx.serialization.Serializable
-import java.util.UUID
-import kotlin.math.abs
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.HourglassTop
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.VolumeUp
-import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.Repeat
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.Alarm
-import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material.icons.filled.AllInclusive
-import androidx.compose.material.icons.filled.Add
-import android.content.Context
-import androidx.compose.material3.AlertDialog
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import androidx.compose.material.icons.filled.RecordVoiceOver
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Filter1
+import java.util.UUID
+import kotlin.math.abs
 
-val MysticPurple = Color(0xFF9D4EDD) // 신비롭고 깊은 보라색
-val ChampagneGold = Color(0xFFE5C07B) // 고급스러운 금색
-val AccentColor = ChampagneGold // 테마 컬러 지정
-val ThemeTextSecondary = AccentColor.copy(alpha = 0.8f)  // 은은한 텍스트 (기존 흰색/회색 대체)
-val ThemeBorder = AccentColor.copy(alpha = 0.3f)         // 테두리, 구분선 (기존 다크그레이 대체)
-val ThemeInactive = AccentColor.copy(alpha = 0.1f)       // 꺼진 스위치 배경 (유리 느낌)
+val MysticPurple = Color(0xFF9D4EDD)
+val ChampagneGold = Color(0xFFE5C07B)
+val AccentColor = ChampagneGold
+val ThemeTextSecondary = AccentColor.copy(alpha = 0.8f)
+val ThemeBorder = AccentColor.copy(alpha = 0.3f)
+val ThemeInactive = AccentColor.copy(alpha = 0.1f)
 val ThemeIconMuted = AccentColor.copy(alpha = 0.5f)
 val uncheckedThumbColor = Color.White.copy(alpha = 0.5f)
 val ThemeTextPrimary = Color(0xFFF5F5F7)
 
-@Serializable // Add this annotation for JSON serialization
+@Serializable
 data class AlarmSetting(
-    val id: String = UUID.randomUUID().toString(), // Use UUID for a unique, stable ID
+    val id: String = UUID.randomUUID().toString(),
     var alarmTime: String = "00:00:00",
     var isCrescendo: Boolean = false,
     var repeatUntilOff: Boolean = false,
@@ -112,27 +75,67 @@ data class AlarmSetting(
     var isRelative: Boolean = false,
     var relativeTime: String = "00:00:00",
     var isTtsMode: Boolean = false,
-    var ttsText: String = "일어날 시간입니다!",
+    var ttsText: String = "Chronos",
     var ttsRepeatCount: Int = 3
 )
+
+fun getIconByName(name: String): ImageVector {
+    return when (name) {
+        "Fire" -> Icons.Default.LocalFireDepartment
+        "Clock" -> Icons.Default.Schedule
+        "Dumbbell" -> Icons.Default.FitnessCenter
+        "Computer" -> Icons.Default.Computer
+        "Book" -> Icons.Default.MenuBook
+        else -> Icons.Default.Schedule
+    }
+}
+
+fun String.formatTime(): String {
+    val parts = this.split(":")
+    val h = parts.getOrNull(0)?.toIntOrNull() ?: 0
+    val m = parts.getOrNull(1)?.toIntOrNull() ?: 0
+    val s = parts.getOrNull(2)?.toIntOrNull() ?: 0
+    return String.format(java.util.Locale.getDefault(), "%02d:%02d:%02d", h, m, s)
+}
+
+fun AlarmSetting.normalize(): AlarmSetting {
+    return this.copy(
+        alarmTime = this.alarmTime.formatTime(),
+        relativeTime = this.relativeTime.formatTime(),
+        repeatInterval = this.repeatInterval.formatTime()
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmSettingsDialog(
     transparency: Float,
     alarmSettings: List<AlarmSetting>,
+    currentPresetName: String = "",
+    currentPresetIcon: String = "Clock",
+    currentPresetColor: String = "#E5C07B",
     onAlarmSettingsChange: (List<AlarmSetting>) -> Unit,
+    onPresetSaved: (String, String, String) -> Unit,
     onSave: () -> Unit,
     onDismiss: () -> Unit,
     isOverdriveEnabled: Boolean
 ) {
     val context = LocalContext.current
 
-    val prefs = remember { context.getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE) }
+    val pickerTitle = stringResource(R.string.setting_ringtone_picker_title)
+    val prefs = remember { getSecurePrefs(context) }
 
-    // 👇 프리셋 저장을 위한 상태값 2개 추가 👇
     var showPresetDialog by remember { mutableStateOf(false) }
     var presetNameInput by remember { mutableStateOf("") }
+
+    val presetColorOptions = listOf(Color(0xFFE5C07B), Color(0xFFFF5722), Color(0xFF4CAF50), Color(0xFF2196F3), Color(0xFF9C27B0), Color(0xFFFFEB3B), Color(0xFF00BCD4))
+    var selectedPresetColor by remember { mutableStateOf(presetColorOptions[0]) }
+
+    val presetIconOptions = listOf("Fire", "Clock", "Dumbbell", "Computer", "Book")
+    var selectedPresetIcon by remember { mutableStateOf(presetIconOptions[0]) }
+
+    // ✨ [수정] Toast용 메시지를 미리 빼둡니다!
+    val toastSavedMsg = stringResource(R.string.toast_preset_saved)
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(
@@ -144,12 +147,9 @@ fun AlarmSettingsDialog(
             color = Color.Black.copy(alpha = transparency),
             contentColor = ThemeTextPrimary
         ) {
-            // 👇 전체를 감싸는 Column 추가 👇
             Column(modifier = Modifier.padding(16.dp)) {
 
-                // ==========================================
-                // [헤더 영역 - 고정]
-                // ==========================================
+                // [헤더 영역]
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -159,43 +159,110 @@ fun AlarmSettingsDialog(
                         Icon(Icons.Default.Close, contentDescription = "Close", tint = ThemeIconMuted)
                     }
                     Row {
-                        IconButton(onClick = { showPresetDialog = true }) { // 아까 만든 프리셋 저장 버튼
+                        IconButton(onClick = {
+                            presetNameInput = ""
+                            selectedPresetColor = presetColorOptions[0]
+                            selectedPresetIcon = presetIconOptions[0]
+                            showPresetDialog = true
+                        }) {
                             Icon(Icons.Default.Save, contentDescription = "Save Preset", tint = ThemeTextPrimary)
                         }
-                        IconButton(onClick = { onSave(); onDismiss() }) {
+                        IconButton(onClick = {
+                            // ✨ [핵심 수정] 저장 버튼을 누르는 순간,
+                            // 뒤죽박죽된 알람 모드들을 상단의 '상대/절대 시간' 스위치 상태로 멱살 잡고 강제 통일시킵니다!
+                            val isGlobalRelative = alarmSettings.firstOrNull()?.isRelative == true
+                            val normalizedAlarms = alarmSettings.map {
+                                it.normalize().copy(isRelative = isGlobalRelative)
+                            }
+
+                            onAlarmSettingsChange(normalizedAlarms)
+                            onSave()
+                            onDismiss()
+                        }) {
                             Icon(Icons.Default.Check, contentDescription = "Apply", tint = AccentColor)
                         }
                     }
                 }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    val displayIcon = if (currentPresetName.isNotEmpty()) currentPresetIcon else "Clock"
+                    val displayName = if (currentPresetName.isNotEmpty()) currentPresetName else stringResource(R.string.preset_default_name)
+                    val displayColor = if (currentPresetName.isNotEmpty()) currentPresetColor else "#E5C07B"
+                    val parsedColor = try { Color(android.graphics.Color.parseColor(displayColor)) } catch (e: Exception) { AccentColor }
+
+                    OrbitalTimeIndicator(
+                        color = parsedColor,
+                        percent = 100,
+                        iconName = displayIcon,
+                        indicatorSize = 32.dp
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    com.set.Chronos.ui.components.AutoSizeText(
+                        text = displayName,
+                        color = ThemeTextPrimary,
+                        targetTextSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        // ✨ fill = false를 주면 중앙 정렬을 유지하면서, 최대 너비만 제한해서 글씨를 줄입니다!
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                }
                 HorizontalDivider(color = ThemeBorder, modifier = Modifier.padding(bottom = 8.dp))
 
-                // ==========================================
+                val isGlobalRelative = alarmSettings.firstOrNull()?.isRelative == true
+                Row(
+                    modifier = Modifier.fillMaxWidth().background(ThemeInactive, RoundedCornerShape(8.dp)).padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.HourglassTop, contentDescription = "Mode", tint = if (isGlobalRelative) AccentColor else Color.Gray)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(if (isGlobalRelative) stringResource(R.string.setting_mode_relative) else stringResource(R.string.setting_mode_absolute), color = ThemeTextPrimary, fontWeight = FontWeight.Bold)
+                    }
+                    Switch(
+                        checked = isGlobalRelative,
+                        onCheckedChange = { isRel ->
+                            val updatedAlarms = alarmSettings.map { it.copy(isRelative = isRel) }
+                            onAlarmSettingsChange(updatedAlarms)
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = Color(0xFFE5C07B),
+                            uncheckedThumbColor = Color.White,
+                            uncheckedTrackColor = Color(0xFF9D4EDD)
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
                 // [본문 영역 - 스크롤]
-                // ==========================================
-                // 👇 modifier = Modifier.weight(1f) 를 주어 남는 공간을 모두 차지하게 합니다. 👇
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // ✨ 메인/추가 구분 없이 하나로 통일해서 뿌리기!
                     items(items = alarmSettings, key = { it.id }) { setting ->
                         AlarmSettingItem(
                             alarmSetting = setting,
-                            isOnlyOne = alarmSettings.size == 1, // 하나 남았을 땐 삭제 버튼 숨기기용
+                            isOnlyOne = alarmSettings.size == 1,
                             onDelete = { onAlarmSettingsChange(alarmSettings.filterNot { it.id == setting.id }) },
                             onUpdate = { updatedSetting -> onAlarmSettingsChange(alarmSettings.map { if (it.id == updatedSetting.id) updatedSetting else it }) },
                             isOverdriveEnabled = isOverdriveEnabled
                         )
                     }
-                } // LazyColumn 끝
+                }
 
-                // ==========================================
-                // [푸터 영역 - 고정]
-                // ==========================================
+                // [푸터 영역]
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        onAlarmSettingsChange(alarmSettings + AlarmSetting())
+                        // ✨ [수정] 새 알람을 추가할 때, 현재 모드(상대/절대)를 똑같이 복사해서 태어나게 합니다!
+                        val currentMode = alarmSettings.firstOrNull()?.isRelative == true
+                        onAlarmSettingsChange(alarmSettings + AlarmSetting(isRelative = currentMode))
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = ThemeInactive),
@@ -208,67 +275,94 @@ fun AlarmSettingsDialog(
                         modifier = Modifier.padding(end = 8.dp)
                     )
                 }
-            } // 전체 감싸는 Column 끝
+            }
         }
     }
+
     if (showPresetDialog) {
         AlertDialog(
             onDismissRequest = { showPresetDialog = false },
-            title = { Text("프리셋 저장", color = ThemeTextPrimary) },
+            title = { Text(stringResource(R.string.preset_save_title), color = ThemeTextPrimary) },
             text = {
                 Column {
-                    Text("이 설정을 프리셋으로 저장합니다.", color = ThemeTextSecondary, fontSize = 14.sp)
-                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = presetNameInput,
                         onValueChange = { presetNameInput = it },
-                        label = { Text("프리셋 이름 (예: 평일 아침)") },
+                        label = { Text(stringResource(R.string.preset_name_hint)) },
                         singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = ThemeTextPrimary,
-                            unfocusedTextColor = ThemeTextPrimary,
-                            focusedBorderColor = AccentColor
-                        )
+                        colors = OutlinedTextFieldDefaults.colors(focusedTextColor = ThemeTextPrimary, unfocusedTextColor = ThemeTextPrimary, focusedBorderColor = AccentColor)
                     )
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(stringResource(R.string.preset_color_label), color = ThemeTextSecondary, fontSize = 12.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        items(presetColorOptions) { color ->
+                            Box(
+                                modifier = Modifier.size(36.dp).clip(CircleShape).background(color)
+                                    .border(if (selectedPresetColor == color) 3.dp else 0.dp, if (selectedPresetColor == color) Color.White else Color.Transparent, CircleShape)
+                                    .clickable { selectedPresetColor = color }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(stringResource(R.string.preset_icon_label), color = ThemeTextSecondary, fontSize = 12.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        items(presetIconOptions) { iconName ->
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp).clip(CircleShape)
+                                    .background(if (selectedPresetIcon == iconName) Color.DarkGray else Color.Transparent)
+                                    .border(if (selectedPresetIcon == iconName) 1.dp else 0.dp, if (selectedPresetIcon == iconName) Color.White else Color.Transparent, CircleShape)
+                                    .clickable { selectedPresetIcon = iconName },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(imageVector = getIconByName(iconName), contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                            }
+                        }
+                    }
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
                     if (presetNameInput.isNotBlank()) {
-                        // 💾 여기서 실제로 SharedPreferences에 저장하는 로직 호출!
-                        savePresetToPrefs(context, presetNameInput, alarmSettings)
-
+                        val colorHex = String.format("#%06X", 0xFFFFFF and selectedPresetColor.toArgb())
+                        val normalizedAlarms = alarmSettings.map { it.normalize() }
+                        savePresetToPrefs(context, presetNameInput, normalizedAlarms, colorHex, selectedPresetIcon)
+                        onPresetSaved(presetNameInput, selectedPresetIcon, colorHex)
                         showPresetDialog = false
                         presetNameInput = ""
-                        Toast.makeText(context, "프리셋이 저장되었습니다!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, toastSavedMsg, Toast.LENGTH_SHORT).show() // 👈 4번 수정 완료
                     }
                 }) {
-                    Text("저장", color = AccentColor, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.common_save), color = AccentColor, fontWeight = FontWeight.Bold)
                 }
             },
-            dismissButton = {
-                TextButton(onClick = { showPresetDialog = false }) {
-                    Text("취소", color = ThemeIconMuted)
-                }
-            },
-            containerColor = Color.Black.copy(alpha = 0.9f) // 배경 투명도 유지
+            dismissButton = { TextButton(onClick = { showPresetDialog = false }) { Text(stringResource(R.string.common_cancel), color = ThemeIconMuted) } },
+            containerColor = Color.Black.copy(alpha = 0.9f)
         )
     }
 }
-fun savePresetToPrefs(context: Context, name: String, settings: List<AlarmSetting>) {
-    val prefs = context.getSharedPreferences("ChronosPrefs", Context.MODE_PRIVATE)
-    val json = Json.encodeToString(settings) // 알람 리스트를 통째로 글자로 변환
 
+fun savePresetToPrefs(context: Context, name: String, settings: List<AlarmSetting>, colorHex: String, iconName: String) {
+    val prefs = getSecurePrefs(context)
+    val json = Json.encodeToString(settings)
     with(prefs.edit()) {
-        // 1. 프리셋 이름 목록 업데이트 (나중에 목록 보여줄 때 사용)
         val existingNames = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
         val newNames = existingNames.toMutableSet().apply { add(name) }
         putStringSet("preset_names", newNames)
 
-        // 2. 실제 데이터 저장
         putString("preset_${name}_alarmSettings", json)
+        putString("preset_${name}_color", colorHex)
+        putString("preset_${name}_icon", iconName)
+        putString("preset_${name}_version", "BETA")
+        putLong("last_modified", System.currentTimeMillis())
         apply()
     }
+    com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(context)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -281,13 +375,17 @@ fun AlarmSettingItem(
     isOverdriveEnabled: Boolean
 ) {
     val context = LocalContext.current
+    val unknownRingtone = stringResource(R.string.setting_unknown_ringtone)
+    val defaultRingtone = stringResource(R.string.setting_default_ringtone)
+    val pickerTitle = stringResource(R.string.setting_ringtone_picker_title)
     val ringtoneTitle = alarmSetting.soundUri?.let {
         try {
             RingtoneManager.getRingtone(context, Uri.parse(it)).getTitle(context)
         } catch (e: Exception) {
-            "알 수 없는 벨소리"
+            unknownRingtone // 👈 1번 수정 완료
         }
-    } ?: "기본음"
+    } ?: defaultRingtone
+
     val ringtonePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
@@ -311,26 +409,16 @@ fun AlarmSettingItem(
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         HorizontalDivider(color = ThemeBorder, modifier = Modifier.padding(vertical = 8.dp))
 
-        // 1. 헤더 (알람 아이콘 & 삭제 버튼) -> "알람 설정" 글씨 삭제
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.HourglassTop, contentDescription = "Relative", tint = if (alarmSetting.isRelative) AccentColor else ThemeIconMuted, modifier = Modifier.padding(end = 8.dp))
-                Switch(
-                    checked = alarmSetting.isRelative,
-                    onCheckedChange = { onUpdate(alarmSetting.copy(isRelative = it)) },
-                    colors = SwitchDefaults.colors(checkedThumbColor = ThemeTextPrimary, checkedTrackColor = AccentColor, uncheckedThumbColor = uncheckedThumbColor, uncheckedTrackColor = ThemeBorder)
-                )
-            }
             if (!isOnlyOne) {
                 IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Delete", tint = ThemeIconMuted) }
             }
         }
 
-        // 2. 타이머 입력 (HOUR, MIN, SEC -> H, M, S 로 심플하게 변경)
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val updateTime = { newH: String, newM: String, newS: String ->
                 val newTime = "$newH:$newM:$newS"
@@ -344,7 +432,6 @@ fun AlarmSettingItem(
         Spacer(Modifier.height(16.dp))
 
 
-        // 4. 끌 때까지 반복 -> 무한대(AllInclusive) 아이콘으로 교체
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -358,7 +445,6 @@ fun AlarmSettingItem(
             )
         }
 
-        // 4. 무한 반복
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -372,7 +458,6 @@ fun AlarmSettingItem(
             )
         }
 
-        // 5. TTS 모드 스위치
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -386,12 +471,11 @@ fun AlarmSettingItem(
             )
         }
 
-        // 알람음 & TTS 텍스트
         if (alarmSetting.isTtsMode) {
             OutlinedTextField(
                 value = alarmSetting.ttsText,
                 onValueChange = { onUpdate(alarmSetting.copy(ttsText = it)) },
-                label = { Text("읽어줄 문구", color = ThemeTextSecondary) },
+                label = { Text(stringResource(R.string.setting_tts_hint), color = ThemeTextSecondary) },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 colors = OutlinedTextFieldDefaults.colors(focusedTextColor = ThemeTextPrimary, unfocusedTextColor = ThemeTextPrimary)
             )
@@ -405,7 +489,7 @@ fun AlarmSettingItem(
                 Text(ringtoneTitle, color = AccentColor, modifier = Modifier.clickable {
                     val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
                         putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
-                        putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "알람음 선택")
+                        putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, pickerTitle)
                         putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, alarmSetting.soundUri?.let { Uri.parse(it) })
                         putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
                         putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
@@ -415,17 +499,15 @@ fun AlarmSettingItem(
             }
         }
 
-        // 6. 슬라이더 (지속시간 & 볼륨)
         if (!alarmSetting.repeatUntilOff) {
             if (alarmSetting.isTtsMode) {
-                SettingSlider(icon = Icons.Default.Repeat, valueText = "${alarmSetting.ttsRepeatCount}번", value = alarmSetting.ttsRepeatCount.toFloat(), range = 1f..10f, onValueChange = { onUpdate(alarmSetting.copy(ttsRepeatCount = it.toInt())) })
+                SettingSlider(icon = Icons.Default.Repeat, valueText = stringResource(R.string.setting_repeat_times_format, alarmSetting.ttsRepeatCount), value = alarmSetting.ttsRepeatCount.toFloat(), range = 1f..10f, onValueChange = { onUpdate(alarmSetting.copy(ttsRepeatCount = it.toInt())) })
             } else {
-                SettingSlider(icon = Icons.Default.Timer, valueText = "${alarmSetting.duration}s", value = alarmSetting.duration.toFloat(), range = 1f..300f, onValueChange = { onUpdate(alarmSetting.copy(duration = it.toInt())) })
+                SettingSlider(icon = Icons.Default.Timer, valueText = stringResource(R.string.setting_duration_format, alarmSetting.duration), value = alarmSetting.duration.toFloat(), range = 1f..300f, onValueChange = { onUpdate(alarmSetting.copy(duration = it.toInt())) })
             }
         }
         SettingSlider(icon = Icons.AutoMirrored.Filled.VolumeUp, valueText = "${(alarmSetting.volume * 100).toInt()}%", value = alarmSetting.volume, range = 0f..(if (isOverdriveEnabled) 2f else 1f), color = if (alarmSetting.volume > 1.0f) Color.Red else AccentColor,onValueChange = { onUpdate(alarmSetting.copy(volume = it)) })
 
-        // 7. 알람 반복 스위치
         Row(
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -439,8 +521,7 @@ fun AlarmSettingItem(
             )
         }
 
-        // 8. 알람 반복 주기 슬라이더
-        if (alarmSetting.isRepeatEnabled && !alarmSetting.repeatUntilOff) {
+        if (alarmSetting.isRepeatEnabled) {
             val repParts = alarmSetting.repeatInterval.split(":")
             val rHour = repParts.getOrNull(0) ?: "00"
             val rMin = repParts.getOrNull(1) ?: "05"
@@ -453,16 +534,16 @@ fun AlarmSettingItem(
                 val updateRepeatTime = { newH: String, newM: String, newS: String ->
                     onUpdate(alarmSetting.copy(repeatInterval = "$newH:$newM:$newS"))
                 }
-                TimerInput(modifier = Modifier.weight(1f), label = "반복(H)", value = rHour, onValueChange = { updateRepeatTime(it, rMin, rSec) })
-                TimerInput(modifier = Modifier.weight(1f), label = "반복(M)", value = rMin, onValueChange = { updateRepeatTime(rHour, it, rSec) })
-                TimerInput(modifier = Modifier.weight(1f), label = "반복(S)", value = rSec, onValueChange = { updateRepeatTime(rHour, rMin, it) })
+                TimerInput(modifier = Modifier.weight(1f), label = stringResource(R.string.setting_repeat_h), value = rHour, onValueChange = { updateRepeatTime(it, rMin, rSec) })
+                TimerInput(modifier = Modifier.weight(1f), label = stringResource(R.string.setting_repeat_m), value = rMin, onValueChange = { updateRepeatTime(rHour, it, rSec) })
+                TimerInput(modifier = Modifier.weight(1f), label = stringResource(R.string.setting_repeat_s), value = rSec, onValueChange = { updateRepeatTime(rHour, rMin, it) })
             }
             if (!alarmSetting.repeatUntilOff) {
                 SettingSlider(
-                    icon = Icons.Default.Filter1, // 횟수를 의미하는 적당한 아이콘 (원하시는 걸로 변경 가능!)
-                    valueText = "${alarmSetting.repeatCount}번 반복",
+                    icon = Icons.Default.Filter1,
+                    valueText = stringResource(R.string.setting_repeat_count_format, alarmSetting.repeatCount),
                     value = alarmSetting.repeatCount.toFloat(),
-                    range = 1f..10f, // 최대 10번 정도로 제한 (직접 입력 다이얼로그가 있으니 유연함)
+                    range = 1f..10f,
                     onValueChange = { onUpdate(alarmSetting.copy(repeatCount = it.toInt())) }
                 )
             }
@@ -481,11 +562,9 @@ fun SettingSlider(
     onValueChange: (Float) -> Unit,
     color: Color = AccentColor
 ) {
-    // 팝업(다이얼로그) 표시 여부와 입력 텍스트를 저장하는 상태 추가
     var showDialog by remember { mutableStateOf(false) }
     var inputText by remember { mutableStateOf("") }
 
-    // 숫자 직접 입력 다이얼로그
     if (showDialog) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -509,25 +588,24 @@ fun SettingSlider(
                 TextButton(onClick = {
                     val newValue = inputText.toFloatOrNull()
                     if (newValue != null) {
-                        // 볼륨(0.0~1.0)과 지속시간(1~300)의 스케일 차이 보정
                         val finalValue = if (range.endInclusive <= 1f) {
-                            (newValue / 100f).coerceIn(range) // 볼륨: 70 입력 시 -> 0.7f 적용
+                            (newValue / 100f).coerceIn(range)
                         } else {
-                            newValue.coerceIn(range) // 지속시간: 60 입력 시 -> 60f 적용
+                            newValue.coerceIn(range)
                         }
                         onValueChange(finalValue)
                     }
                     showDialog = false
                 }) {
-                    Text("확인", color = color, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.common_confirm), color = color, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text("취소", color = ThemeIconMuted)
+                    Text(stringResource(R.string.common_cancel), color = ThemeIconMuted)
                 }
             },
-            containerColor = AccentColor // 설정창 배경색과 통일
+            containerColor = AccentColor
         )
     }
 
@@ -542,7 +620,7 @@ fun SettingSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = range,
-            modifier = Modifier.weight(1f), // ✨ 슬라이더가 가운데 공간을 꽉 채우게 만듭니다!
+            modifier = Modifier.weight(1f),
             colors = SliderDefaults.colors(
                 thumbColor = ThemeTextPrimary,
                 activeTrackColor = color,
@@ -571,9 +649,9 @@ fun SettingSlider(
 @Composable
 fun TimerInput(
     modifier: Modifier = Modifier,
-    label: String, 
-    value: String, 
-    onValueChange: (String) -> Unit, 
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
     maxLength: Int = 2
 ) {
     var dragAccumulator by remember { mutableStateOf(0f) }
@@ -598,7 +676,7 @@ fun TimerInput(
                         onDragStart = { dragAccumulator = 0f },
                         onVerticalDrag = { change, dragAmount ->
                             change.consume()
-                            dragAccumulator -= dragAmount // Drag up to increment
+                            dragAccumulator -= dragAmount
                             val sensitivity = 20f
 
                             if (abs(dragAccumulator) >= sensitivity) {
@@ -606,13 +684,15 @@ fun TimerInput(
                                 val currentValue = value.toIntOrNull() ?: 0
                                 val newValue = currentValue + steps
 
-                                val validatedNewValue = when (label) {
-                                    "HOUR" -> newValue.coerceIn(0, 23)
-                                    "MIN", "SEC" -> newValue.coerceIn(0, 59)
+                                // ✨ [버그 수정 완료] 다국어 라벨이 들어와도 H, M, S를 인식해서 안전하게 차단합니다!
+                                val validatedNewValue = when {
+                                    label.contains("H") || label.contains("HOUR", ignoreCase = true) -> newValue.coerceIn(0, 23)
+                                    label.contains("M") || label.contains("MIN", ignoreCase = true) ||
+                                            label.contains("S") || label.contains("SEC", ignoreCase = true) -> newValue.coerceIn(0, 59)
                                     else -> newValue
                                 }
 
-                                onValueChange(validatedNewValue.toString())
+                                onValueChange(String.format(java.util.Locale.getDefault(), "%02d", validatedNewValue))
                                 dragAccumulator %= sensitivity
                             }
                         }
@@ -630,4 +710,18 @@ fun TimerInput(
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
         )
     }
+}
+
+fun getSecurePrefs(context: Context): SharedPreferences {
+    val masterKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+
+    return EncryptedSharedPreferences.create(
+        context,
+        "ChronosSecurePrefs",
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
 }
