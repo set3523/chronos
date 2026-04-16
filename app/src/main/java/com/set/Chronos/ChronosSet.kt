@@ -45,10 +45,12 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.UUID
 import kotlin.math.abs
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 val MysticPurple = Color(0xFF9D4EDD)
 val ChampagneGold = Color(0xFFE5C07B)
@@ -76,7 +78,8 @@ data class AlarmSetting(
     var relativeTime: String = "00:00:00",
     var isTtsMode: Boolean = false,
     var ttsText: String = "Chronos",
-    var ttsRepeatCount: Int = 3
+    var ttsRepeatCount: Int = 3,
+    var taskLine: Int = 0
 )
 
 fun getIconByName(name: String): ImageVector {
@@ -122,9 +125,6 @@ fun AlarmSettingsDialog(
 ) {
     val context = LocalContext.current
 
-    val pickerTitle = stringResource(R.string.setting_ringtone_picker_title)
-    val prefs = remember { getSecurePrefs(context) }
-
     var showPresetDialog by remember { mutableStateOf(false) }
     var presetNameInput by remember { mutableStateOf("") }
 
@@ -136,6 +136,9 @@ fun AlarmSettingsDialog(
 
     // ✨ [수정] Toast용 메시지를 미리 빼둡니다!
     val toastSavedMsg = stringResource(R.string.toast_preset_saved)
+
+    val pagerState = rememberPagerState(pageCount = { alarmSettings.size })
+    val coroutineScope = rememberCoroutineScope()
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(
@@ -241,17 +244,51 @@ fun AlarmSettingsDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // [본문 영역 - 스크롤]
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.weight(1f)
+                ) { page ->
+                    val setting = alarmSettings[page]
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        item {
+                            AlarmSettingItem(
+                                alarmSetting = setting,
+                                isOnlyOne = alarmSettings.size == 1,
+                                onDelete = {
+                                    val newList = alarmSettings.filterNot { it.id == setting.id }
+                                    onAlarmSettingsChange(newList)
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage((page - 1).coerceAtLeast(0))
+                                    }
+                                },
+                                onUpdate = { updatedSetting ->
+                                    onAlarmSettingsChange(alarmSettings.map {
+                                        if (it.id == updatedSetting.id) updatedSetting else it
+                                    })
+                                },
+                                isOverdriveEnabled = isOverdriveEnabled
+                            )
+                        }
+                    }
+                }
+
+// 도트 인디케이터
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(items = alarmSettings, key = { it.id }) { setting ->
-                        AlarmSettingItem(
-                            alarmSetting = setting,
-                            isOnlyOne = alarmSettings.size == 1,
-                            onDelete = { onAlarmSettingsChange(alarmSettings.filterNot { it.id == setting.id }) },
-                            onUpdate = { updatedSetting -> onAlarmSettingsChange(alarmSettings.map { if (it.id == updatedSetting.id) updatedSetting else it }) },
-                            isOverdriveEnabled = isOverdriveEnabled
+                    alarmSettings.forEachIndexed { index, _ ->
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .size(if (pagerState.currentPage == index) 10.dp else 7.dp)
+                                .clip(CircleShape)
+                                .background(if (pagerState.currentPage == index) AccentColor else ThemeBorder)
+                                .clickable { coroutineScope.launch { pagerState.animateScrollToPage(index) } }
                         )
                     }
                 }
@@ -260,9 +297,12 @@ fun AlarmSettingsDialog(
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        // ✨ [수정] 새 알람을 추가할 때, 현재 모드(상대/절대)를 똑같이 복사해서 태어나게 합니다!
                         val currentMode = alarmSettings.firstOrNull()?.isRelative == true
-                        onAlarmSettingsChange(alarmSettings + AlarmSetting(isRelative = currentMode))
+                        val newList = alarmSettings + AlarmSetting(isRelative = currentMode)
+                        onAlarmSettingsChange(newList)
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(newList.lastIndex)
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = ThemeInactive),
@@ -425,9 +465,24 @@ fun AlarmSettingItem(
                 if (alarmSetting.isRelative) onUpdate(alarmSetting.copy(relativeTime = newTime))
                 else onUpdate(alarmSetting.copy(alarmTime = newTime))
             }
+
+            // [H], [M], [S] 3개의 다이얼 (비율을 1f로 줘서 균등 배분)
             TimerInput(modifier = Modifier.weight(1f), label = "H", value = hour, onValueChange = { updateTime(it, minute, second) })
             TimerInput(modifier = Modifier.weight(1f), label = "M", value = minute, onValueChange = { updateTime(hour, it, second) })
             TimerInput(modifier = Modifier.weight(1f), label = "S", value = second, onValueChange = { updateTime(hour, minute, it) })
+
+            // ✨ [여기에 4번째 다이얼 추가!]
+            // 똑같은 TimerInput을 재사용해서 '라인 번호' 입력기로 만듭니다.
+            TimerInput(
+                modifier = Modifier.weight(1f),
+                label = "LINE", // 라벨을 LINE으로 설정
+                value = alarmSetting.taskLine.toString(),
+                onValueChange = { newVal ->
+                    // 유저가 다이얼을 굴리거나 숫자를 입력하면, 안전하게 0~9 사이의 숫자로 제한합니다.
+                    val lineNum = newVal.toIntOrNull() ?: 0
+                    onUpdate(alarmSetting.copy(taskLine = lineNum.coerceIn(0, 9)))
+                }
+            )
         }
         Spacer(Modifier.height(16.dp))
 
@@ -501,7 +556,30 @@ fun AlarmSettingItem(
 
         if (!alarmSetting.repeatUntilOff) {
             if (alarmSetting.isTtsMode) {
-                SettingSlider(icon = Icons.Default.Repeat, valueText = stringResource(R.string.setting_repeat_times_format, alarmSetting.ttsRepeatCount), value = alarmSetting.ttsRepeatCount.toFloat(), range = 1f..10f, onValueChange = { onUpdate(alarmSetting.copy(ttsRepeatCount = it.toInt())) })
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 4.dp, bottom = 4.dp)
+                ) {
+                    // 왼쪽 얇은 세로선
+                    Box(
+                        modifier = Modifier
+                            .width(2.dp)
+                            .height(48.dp)
+                            .background(AccentColor.copy(alpha = 0.4f), RoundedCornerShape(1.dp))
+                            .align(Alignment.CenterVertically)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Box(modifier = Modifier.weight(1f)) {
+                        SettingSlider(
+                            icon = Icons.Default.Repeat,
+                            valueText = stringResource(R.string.setting_repeat_times_format, alarmSetting.ttsRepeatCount),
+                            value = alarmSetting.ttsRepeatCount.toFloat(),
+                            range = 1f..10f,
+                            onValueChange = { onUpdate(alarmSetting.copy(ttsRepeatCount = it.toInt())) }
+                        )
+                    }
+                }
             } else {
                 SettingSlider(icon = Icons.Default.Timer, valueText = stringResource(R.string.setting_duration_format, alarmSetting.duration), value = alarmSetting.duration.toFloat(), range = 1f..300f, onValueChange = { onUpdate(alarmSetting.copy(duration = it.toInt())) })
             }
@@ -712,16 +790,19 @@ fun TimerInput(
     }
 }
 
-fun getSecurePrefs(context: Context): SharedPreferences {
-    val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+private var securePrefsInstance: SharedPreferences? = null
 
-    return EncryptedSharedPreferences.create(
-        context,
-        "ChronosSecurePrefs",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+fun getSecurePrefs(context: Context): SharedPreferences {
+    return securePrefsInstance ?: run {
+        val masterKey = MasterKey.Builder(context.applicationContext)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        EncryptedSharedPreferences.create(
+            context.applicationContext,
+            "ChronosSecurePrefs",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        ).also { securePrefsInstance = it }
+    }
 }

@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.set.Chronos.data.AlarmSetting
+import com.set.Chronos.AlarmSetting
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.getValue
@@ -121,7 +121,9 @@ fun AutoSizeText(
     modifier: Modifier = Modifier,
     color: Color = Color.White,
     targetTextSize: TextUnit = 18.sp,
-    fontWeight: FontWeight? = null
+    fontWeight: FontWeight? = null,
+    maxLines: Int = 1,
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     var textSize by remember(text) { mutableStateOf(targetTextSize) }
     Text(
@@ -129,13 +131,13 @@ fun AutoSizeText(
         color = color,
         fontSize = textSize,
         fontWeight = fontWeight,
-        maxLines = 1, // 무조건 한 줄로 고정
-        softWrap = false, // 줄바꿈 금지
+        maxLines = maxLines,
+        softWrap = maxLines > 1,
+        textAlign = textAlign,
         modifier = modifier,
         onTextLayout = { textLayoutResult ->
-            // 글씨가 정해진 칸을 넘어갔다면?
             if (textLayoutResult.hasVisualOverflow) {
-                textSize *= 0.95f // 폰트 크기를 5% 줄이고 다시 그림
+                textSize *= 0.95f
             }
         }
     )

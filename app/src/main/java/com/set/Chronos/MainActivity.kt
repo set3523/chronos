@@ -24,16 +24,19 @@ import kotlinx.serialization.json.Json
 import java.util.Calendar
 import java.util.Locale
 import android.app.KeyguardManager
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.view.WindowManager
+import androidx.activity.SystemBarStyle
 import com.set.Chronos.utils.toAlarmSetting
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: com.google.firebase.auth.FirebaseAuth
     private lateinit var googleSignInClient: com.google.android.gms.auth.api.signin.GoogleSignInClient
     private val RC_SIGN_IN = 9001
+    private lateinit var adManager: AdManager
 
 
     override fun attachBaseContext(newBase: Context) {
@@ -63,6 +66,7 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         isForeground = true // ✨ 화면을 보고 있을 때 켜짐!
         checkPermissions()
+        adManager.reloadIfNeeded()
     }
     override fun onPause() {
         super.onPause()
@@ -72,6 +76,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        adManager = AdManager(this)
+        val viewModelFactory = MainViewModelFactory(application, adManager)
+        val viewModel = androidx.lifecycle.ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+
         // 💡 2. Firebase 및 Google 로그인 설정 초기화 (이게 없어서 에러가 난 거예요!)
         auth = com.google.firebase.auth.FirebaseAuth.getInstance()
         val gso = com.google.android.gms.auth.api.signin.GoogleSignInOptions.Builder(com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -79,6 +87,18 @@ class MainActivity : ComponentActivity() {
             .requestEmail()
             .build()
         googleSignInClient = com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso)
+
+        val currentUser = auth.currentUser
+        val prefs = getSecurePrefs(this)
+        val savedUsername = prefs.getString("username", "")
+
+        // 로그인 상태인데, 내 폰(로컬 금고)에 닉네임이 없다면? (기존 유저)
+        if (currentUser != null && savedUsername.isNullOrEmpty()) {
+            com.set.Chronos.CloudSyncManager.checkAndCreateProfile(this, currentUser.uid) {
+                // 백그라운드에서 닉네임 조용히 생성 완료!
+                // (여기서는 앱 시작 중이므로 굳이 Toast나 recreate()를 할 필요 없이 자연스럽게 넘어가면 됩니다)
+            }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -95,7 +115,8 @@ class MainActivity : ComponentActivity() {
         }
 
         installSplashScreen()
-        enableEdgeToEdge()
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         handleDeepLink(intent)
         setContent {
             ChronosTheme {
@@ -104,33 +125,66 @@ class MainActivity : ComponentActivity() {
                     onSave = { alarms, msg -> saveAlarmSettings(alarms, msg) },
                     onCancelAll = ::cancelAllAlarms,
                     onStopAlarm = ::stopAlarmService,
-                    onSignInClick = { signIn() } // 이 줄을 추가해야 합니다!
+                    onSignInClick = { signIn() },
+                    viewModel = viewModel
                 )
             }
         }
     }
     private fun handleDeepLink(intent: Intent?) {
         val data = intent?.data
+
+        // [Gate 1] 도메인 검증: 지정된 스키마와 호스트가 아니면 즉시 차단
         if (data != null && data.scheme == "chronos" && data.host == "preset") {
-            val encryptedData = data.getQueryParameter("data") ?: return
 
-            val sharedPreset = com.set.Chronos.utils.ChronosShareUtils.decryptAndDecompressPayload(encryptedData)
-            if (sharedPreset != null) {
-                val alarms = sharedPreset.a.map { it.toAlarmSetting() }
+            // [Gate 2] 안전한 파싱: 알 수 없는 예외로 인한 앱 크래시 방지
+            try {
+                val encryptedData = data.getQueryParameter("data")
 
-                // SharedPreferences에 자동 저장
-                val prefs = getSecurePrefs(this)
-                val newPresetName = "${sharedPreset.cn}의 ${sharedPreset.pn}"
-                val existingNames = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
-
-                with(prefs.edit()) {
-                    putStringSet("preset_names", existingNames.toMutableSet().apply { add(newPresetName) })
-                    putString("preset_${newPresetName}_alarmSettings", Json.encodeToString(alarms))
-                    apply()
+                // 데이터가 없거나, 지나치게 긴 데이터(악의적인 메모리 공격) 차단
+                if (encryptedData.isNullOrBlank() || encryptedData.length > 10000) {
+                    Toast.makeText(this, getString(R.string.toast_invalid_qr), Toast.LENGTH_SHORT).show()
+                    return
                 }
-                com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
-                Toast.makeText(this, getString(R.string.toast_preset_added, newPresetName), Toast.LENGTH_LONG).show()
-            } else {
+
+                // 복호화 시도
+                val sharedPreset = com.set.Chronos.utils.ChronosShareUtils.decryptAndDecompressPayload(encryptedData)
+
+                if (sharedPreset != null) {
+
+                    // [Gate 3] 살균 (Sanitize): 복호화된 데이터 내부의 텍스트 검증
+                    val safeCreatorName = sanitizeText(sharedPreset.cn, 20) // 닉네임 길이 제한
+                    val safePresetName = sanitizeText(sharedPreset.pn, 30)  // 프리셋 이름 길이 제한
+
+                    // 알람 리스트 내부의 텍스트(TTS 등)도 일일이 살균 처리
+                    val alarms = sharedPreset.a.map { minAlarm ->
+                        minAlarm.copy(
+                            tx = sanitizeText(minAlarm.tx, 100), // TTS 텍스트는 100자로 제한
+                            t = sanitizeTime(minAlarm.t),   // 기존: sanitizeText(minAlarm.t, 8)
+                            rt = sanitizeTime(minAlarm.rt)
+                        ).toAlarmSetting()
+                    }
+
+                    // SharedPreferences에 자동 저장
+                    val prefs = getSecurePrefs(this)
+                    val newPresetName = "${safeCreatorName}s ${safePresetName}"
+                    val existingNames = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
+
+                    with(prefs.edit()) {
+                        putStringSet("preset_names", existingNames.toMutableSet().apply { add(newPresetName) })
+                        putString("preset_${newPresetName}_alarmSettings", kotlinx.serialization.json.Json.encodeToString(alarms))
+                        apply()
+                    }
+
+                    com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
+                    Toast.makeText(this, getString(R.string.toast_preset_added, newPresetName), Toast.LENGTH_LONG).show()
+
+                } else {
+                    Toast.makeText(this, getString(R.string.toast_invalid_qr), Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                // 에러가 발생해도 앱이 죽지 않고 조용히 넘어가도록 처리
+                e.printStackTrace()
                 Toast.makeText(this, getString(R.string.toast_invalid_qr), Toast.LENGTH_SHORT).show()
             }
         }
@@ -265,15 +319,14 @@ class MainActivity : ComponentActivity() {
             // 3. Save new alarm settings to storage
             val newJson = Json.encodeToString(alarmSettings)
             editor.putString("alarmSettings", newJson)
-            editor.putBoolean("isAlarmActive", true)
             editor.putLong("current_session_id", System.currentTimeMillis())
-
             if (getSecurePrefs(this).getString("currentPresetName", "").isNullOrEmpty()) {
                 editor.putString("currentPresetName", "")
                 editor.putString("currentPresetIcon", "Clock")
                 editor.putString("currentPresetColor", "#E5C07B")
             }
             editor.apply()
+            getSecurePrefs(this).edit().putBoolean("isAlarmActive", true).apply()
 
             // 4. Set new alarms using their stable IDs
             alarmSettings.forEach { setting ->
@@ -324,7 +377,7 @@ class MainActivity : ComponentActivity() {
 
                 val delayMillis = calendar.timeInMillis - System.currentTimeMillis()
 
-                if (delayMillis in 1..4999) {
+                if (delayMillis in 0..4999) {
                     // 5초 미만이면 앱 내부 타이머(Handler)로 다이렉트 슛!
                     Handler(Looper.getMainLooper()).postDelayed({
                         sendBroadcast(alarmIntent) // AlarmManager 대신 내가 직접 리시버 호출!
@@ -401,5 +454,19 @@ class MainActivity : ComponentActivity() {
                 requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
             }
         }
+    }
+    private fun sanitizeText(input: String?, maxLength: Int = 50): String {
+        if (input.isNullOrBlank()) return ""
+
+        // HTML 태그 및 특수문자 제거 (XSS 스크립트 주입 방지)
+        // 영문, 숫자, 한글, 띄어쓰기, 기본적인 구두점만 허용
+        val safeString = input.replace(Regex("[\\x00-\\x1F]"), "")
+
+        // 비정상적으로 긴 텍스트로 인한 UI 파괴(오버플로우) 방지
+        return safeString.take(maxLength)
+    }
+    private fun sanitizeTime(input: String?): String {
+        if (input.isNullOrBlank()) return "00:00:00"
+        return input.replace(Regex("[^0-9:]"), "").take(8)
     }
 }

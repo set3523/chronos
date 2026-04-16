@@ -11,6 +11,7 @@ composeBom = "2026.03.00"
 playServicesAds = "25.1.0"
 playServicesAdsApi = "25.1.0"
 firebaseBom = "34.10.0"
+foundation = "1.10.6"
 
 [libraries]
 # AndroidX & Compose
@@ -41,6 +42,7 @@ play-services-ads-api = { group = "com.google.android.gms", name = "play-service
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

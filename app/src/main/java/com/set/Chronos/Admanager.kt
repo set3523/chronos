@@ -14,6 +14,8 @@ import java.util.Date
 import java.util.Locale
 import com.google.android.gms.ads.MobileAds
 import com.set.Chronos.BuildConfig
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 
 class AdManager(private val activity: Activity) {
 
@@ -49,8 +51,8 @@ class AdManager(private val activity: Activity) {
         if (today != lastDate) {
             val currentTickets = getTickets()
             // 3개 미만일 때만 3개로 채워줌! (밤새워 9개 모은 유저 건 안 뺏음)
-            if (currentTickets < 3) {
-                setTickets(3)
+            if (currentTickets < 5) {
+                setTickets(5)
             }
             prefs.edit().putString("last_reset_date", today).apply()
         }
@@ -72,7 +74,16 @@ class AdManager(private val activity: Activity) {
     }
 
     // ==========================================
-    // 3. UI에서 번개(⚡) 버튼을 눌렀을 때 실행!
+    // 3. 앱이 포그라운드로 돌아올 때 광고 재장전
+    // ==========================================
+    fun reloadIfNeeded() {
+        if (rewardedAd == null) {
+            loadRewardedAd()
+        }
+    }
+
+    // ==========================================
+    // 4. UI에서 번개(⚡) 버튼을 눌렀을 때 실행!
     // ==========================================
     fun showAdToChargeTickets(onChargeSuccess: () -> Unit) {
         if (rewardedAd != null) {
@@ -85,6 +96,8 @@ class AdManager(private val activity: Activity) {
                 override fun onAdFailedToShowFullScreenContent(e: AdError) {
                     rewardedAd = null
                     loadRewardedAd()
+                    setTickets(getTickets() + 3)
+                    onChargeSuccess()
                     Toast.makeText(activity, activity.getString(R.string.toast_ad_fail), Toast.LENGTH_SHORT).show()
                 }
             }
@@ -97,9 +110,17 @@ class AdManager(private val activity: Activity) {
                 onChargeSuccess() // Compose UI 새로고침을 위한 콜백
             }
         } else {
-            setTickets(getTickets() + 3)
-            Toast.makeText(activity, activity.getString(R.string.toast_free_charge_no_ad), Toast.LENGTH_LONG).show()
-            onChargeSuccess() // 번개 개수 UI 새로고침
+            if (isNetworkAvailable(activity)) {
+                // ✅ 인터넷이 잘 되는데 광고가 없는 경우 -> 구글 잘못이므로 꽁짜 번개 지급!
+                setTickets(getTickets() + 3)
+                onChargeSuccess()
+                Toast.makeText(activity, activity.getString(R.string.toast_free_charge_no_ad), Toast.LENGTH_SHORT).show()
+            } else {
+                // ❌ 인터넷이 끊겨 있는 경우 -> 꼼수 차단! 번개 안 줌!
+                Toast.makeText(activity, "Network disconnected", Toast.LENGTH_SHORT).show()
+                // (필요하다면 여기서 다시 loadRewardedAd()를 호출해둬도 좋습니다)
+                loadRewardedAd()
+            }
         }
     }
 
@@ -125,5 +146,16 @@ class AdManager(private val activity: Activity) {
 
     private fun setTickets(count: Int) {
         prefs.edit().putInt("ticket_count", count).apply()
+    }
+
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
     }
 }

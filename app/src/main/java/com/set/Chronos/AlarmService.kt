@@ -58,8 +58,23 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            tts?.language = Locale.KOREAN
             val prefs = getSecurePrefs(this)
+            val langCode = prefs.getString("language", "en") ?: "en"
+
+            // 2. 언어 코드에 맞춰 Locale 설정
+            val ttsLocale = when (langCode) {
+                "ko" -> Locale.KOREA
+                "ja" -> Locale.JAPAN
+                "zh" -> Locale.CHINESE
+                else -> Locale.US // 기본은 영어
+            }
+
+            // 3. TTS 엔진에 언어 적용
+            tts?.language = ttsLocale
+
+            val speechRate = prefs.getFloat("tts_speech_rate", 1.0f)
+            tts?.setSpeechRate(speechRate)
+
             val isEarphoneMode = prefs.getBoolean("isEarphoneModeEnabled", false)
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(if (isEarphoneMode) AudioAttributes.USAGE_MEDIA else AudioAttributes.USAGE_ALARM)
@@ -89,7 +104,8 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
     override fun onBind(intent: Intent?): IBinder? { return null }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val action = intent?.action
+        if (intent == null) { stopSelf(); return START_NOT_STICKY }
+        val action = intent.action
 
         // ✨ 사용자가 "끄기"를 눌러서 강제로 멈추는 경우!
         if (action == "STOP_ALARM") {
@@ -119,7 +135,6 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
         currentAlarmId = intent?.getStringExtra("ALARM_ID")
         showNotification(notifTitle, notifText)
-        updateHistoryOnStart(intent)
 
         if (isTts) {
             startTtsAlarm(ttsText, volume, isCrescendo, totalCount, repeatUntilOff)
@@ -149,6 +164,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                 setAudioAttributes(AudioAttributes.Builder().setUsage(usage).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
 
                 isLooping = true
+                prepare()
                 if (volume > 1.0f) {
                     setVolume(1.0f, 1.0f)
                     val gain = ((volume - 1.0f) * 2000).toInt()
@@ -160,8 +176,6 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                     val initialVol = if (isCrescendo) 0.05f else volume
                     setVolume(initialVol, initialVol)
                 }
-                prepare()
-
                 start()
             }
             // ✨ 만들어진 소리를 리스트에 안전하게 보관!
@@ -225,7 +239,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
 // ✨ [수정] SINGLE_TOP과 CLEAR_TOP을 섞어서 완벽한 화면 재사용을 지시합니다!
         val fullScreenIntent = Intent(this, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         val fullScreenPendingIntent = PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -262,7 +276,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             val volumeStep = volume / 15f
             val crescendoRunnable = object : Runnable {
                 override fun run() {
-                    if (keepLoopingTts && currentTtsVolume < volume) {
+                    if ((keepLoopingTts || remainingTtsCount > 0) && currentTtsVolume < volume) {
                         currentTtsVolume += volumeStep
                         if (currentTtsVolume > volume) currentTtsVolume = volume
                         handler.postDelayed(this, 1000)
@@ -434,49 +448,5 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
             com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
         }
-    }
-    private fun updateHistoryOnStart(intent: Intent?) {
-        val prefs = getSecurePrefs(this)
-        val alarmId = intent?.getStringExtra("ALARM_ID") ?: return
-        val sessionId = prefs.getLong("current_session_id", System.currentTimeMillis())
-
-        // 알람 설정 리스트 불러오기
-        val jsonSettings = prefs.getString("alarmSettings", "[]") ?: "[]"
-        val safeJson = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
-        val alarmList = try { safeJson.decodeFromString<List<com.set.Chronos.AlarmSetting>>(jsonSettings) } catch (e: Exception) { emptyList() }
-
-        // 현재 알람이 리스트의 마지막인지 확인 (시간 계산 X, 리스트 기반 O)
-        val isLastAlarmInList = alarmList.lastOrNull()?.id == alarmId
-        val repeatCountLeft = intent?.getIntExtra("REPEAT_COUNT", 0) ?: 0
-        val repeatUntilOff = intent?.getBooleanExtra("REPEAT_UNTIL_OFF", false) ?: false
-
-        // 진짜 마지막 알람인지 판정
-        val isRoutineFinished = isLastAlarmInList && (repeatCountLeft == 0) && !repeatUntilOff
-
-        // 히스토리 업데이트 (completedAlarms++)
-        val existingJson = prefs.getString("historyRecords", "[]") ?: "[]"
-        val currentList = try { safeJson.decodeFromString<List<com.set.Chronos.HistoryRecord>>(existingJson) } catch (e: Exception) { emptyList() }.toMutableList()
-
-        val recordIndex = currentList.indexOfLast { it.timestamp == sessionId }
-        val dateFormat = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH)
-        val timeStr = dateFormat.format(java.util.Date())
-
-        if (recordIndex != -1) {
-            val existing = currentList[recordIndex]
-            currentList[recordIndex] = existing.copy(
-                completedAlarms = existing.completedAlarms + 1, // 👈 겹쳐서 울려도 여기 올 때마다 +1
-                logs = existing.logs + com.set.Chronos.AlarmLog(timeStr, getString(R.string.log_alarm_started))
-            )
-        } else {
-            // 새 기록 생성 (생략 - 기존 onDestroy 로직과 동일)
-        }
-
-        // 저장 및 루틴 종료 처리
-        val editor = prefs.edit().putString("historyRecords", safeJson.encodeToString(currentList))
-        if (isRoutineFinished) {
-            editor.putBoolean("isAlarmActive", false)
-            com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
-        }
-        editor.apply()
     }
 }

@@ -15,6 +15,7 @@
     <!-- 기기가 재부팅되어도 알람을 다시 설정하기 위한 권한 (선택 사항) -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".MyApplication"
@@ -34,7 +35,11 @@
             android:value="ca-app-pub-3940256099942544~3347511713"/>
         <!-- ▲▲▲▲▲ 여기까지 ▲▲▲▲▲ -->
 
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTask" android:exported="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,18 +58,6 @@
             android:exported="false" />
         <service android:name=".AlarmService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
         <!-- <service android:name=".WidgetAnimationService" android:foregroundServiceType="dataSync" /> -->
-        <service
-            android:name=".ChronosWallpaperService"
-            android:label="@string/app_name"
-            android:permission="android.permission.BIND_WALLPAPER"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.service.wallpaper.WallpaperService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.service.wallpaper"
-                android:resource="@xml/wallpaper" />
-        </service>
         <!-- <receiver android:name=".ChronosWidgetProvider" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

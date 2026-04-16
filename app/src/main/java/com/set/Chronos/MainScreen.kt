@@ -68,28 +68,29 @@ import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.res.stringResource
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> Unit,onStopAlarm: () -> Unit,onSignInClick: () -> Unit) {
+fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> Unit,onStopAlarm: () -> Unit,onSignInClick: () -> Unit,viewModel: MainViewModel,) {
     val context = LocalContext.current
     val activity = context as? Activity
     val prefs = remember { getSecurePrefs(context) }
 
-    val adManager = remember { AdManager(activity!!) }
-    var ticketCount by remember { mutableIntStateOf(adManager.getTickets()) }
+    //val adManager = remember { AdManager(activity!!) }
 
     val isFirstLaunch = remember { prefs.getBoolean("isFirstLaunch", true) }
     var showTutorial by remember { mutableStateOf(isFirstLaunch) }
 
     val haptic = LocalHapticFeedback.current
-    val presetAppliedFormat = stringResource(R.string.toast_preset_applied)
     val presetLoadFailMsg = stringResource(R.string.toast_preset_load_fail)
     val alarmRestartedMsg = stringResource(R.string.toast_alarm_restarted)
     val alarmSavedMsg = stringResource(R.string.toast_alarm_saved)
+
+    var showAdConfirmDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (isFirstLaunch) {
@@ -110,27 +111,14 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
         }
     }
 
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val iconSize = screenWidth / 15
     var dialogTransparency by remember { mutableStateOf(prefs.getFloat("dialogTransparency", 0.95f)) }
+    var ttsSpeechRate by remember { mutableFloatStateOf(prefs.getFloat("tts_speech_rate", 1.0f)) }
 
     var isAdRemoved by remember { mutableStateOf(prefs.getBoolean("isAdRemoved", false)) }
     var isOverdriveEnabled by remember { mutableStateOf(prefs.getBoolean("isOverdriveEnabled", false)) }
 
     var ringtoneUri by remember { mutableStateOf(prefs.getString("ringtoneUri", null)?.let { Uri.parse(it) }) }
-    var isSilent by remember { mutableStateOf(false) }
 
-    val allSavedAlarms = remember {
-        val json = prefs.getString("alarmSettings", null)
-        if (json != null) {
-            try { Json.decodeFromString<List<AlarmSetting>>(json) } catch (e: Exception) { emptyList() }
-        } else { emptyList() }
-    }
-    var alarmSettings by remember {
-        mutableStateOf(if (allSavedAlarms.isNotEmpty()) allSavedAlarms else listOf(AlarmSetting(id = "MAIN_ALARM")))
-    }
-    var isAlarmActive by remember { mutableStateOf(prefs.getBoolean("isAlarmActive", allSavedAlarms.isNotEmpty())) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showAnalogClockSettingsDialog by remember { mutableStateOf(false) }
     var showHistoryScreen by remember { mutableStateOf(false) }
@@ -140,10 +128,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     var currentPresetName by remember { mutableStateOf(prefs.getString("currentPresetName", "") ?: "") }
     var currentPresetIcon by remember { mutableStateOf(prefs.getString("currentPresetIcon", "Clock") ?: "Clock") }
     var currentPresetColor by remember { mutableStateOf(prefs.getString("currentPresetColor", "#E5C07B") ?: "#E5C07B") }
-    var isEarphoneModeEnabled by remember { mutableStateOf(prefs.getBoolean("isEarphoneModeEnabled", false)) }
 
-    val systemLang = java.util.Locale.getDefault().language
-    val supportedLanguages = listOf("ko", "en", "ja", "zh")
     var currentLanguage by remember {
         val supportedLanguages = listOf("ko", "en", "ja", "zh")
         val systemLang = java.util.Locale.getDefault().language
@@ -152,100 +137,21 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
         mutableStateOf(prefs.getString("language", defaultLang) ?: defaultLang)
     }
 
-    var syncConflictData by remember { mutableStateOf<Pair<Long, Long>?>(null) }
 
     LaunchedEffect(Unit) {
-        com.set.Chronos.CloudSyncManager.autoCheckSync(context) { localTime, cloudTime ->
-            syncConflictData = Pair(localTime, cloudTime)
-        }
+        com.set.Chronos.CloudSyncManager.autoSyncSilently(context)
     }
 
-    if (syncConflictData != null) {
-        val localTime = syncConflictData!!.first
-        val cloudTime = syncConflictData!!.second
-        val dateFormat = java.text.SimpleDateFormat("yyyy년 MM월 dd일  a hh:mm", java.util.Locale.KOREA)
-        val isLocalNewer = localTime > cloudTime
 
-        androidx.compose.material3.AlertDialog(
-            onDismissRequest = { syncConflictData = null },
-            properties = androidx.compose.ui.window.DialogProperties(
-                dismissOnBackPress = false,
-                dismissOnClickOutside = false
-            ),
-            title = { Text(stringResource(R.string.main_sync_conflict_title), color = Color.White, fontWeight = FontWeight.Bold) },
-            text = {
-                Column {
-                    Text(stringResource(R.string.main_sync_conflict_desc), color = Color.LightGray, fontSize = 14.sp)
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(stringResource(R.string.main_sync_local_data), color = Color(0xFFE5C07B), fontWeight = FontWeight.Bold, modifier = Modifier.width(100.dp))
-                        if (isLocalNewer) {
-                            Text(stringResource(R.string.main_sync_latest_badge), color = Color.Red, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    Text(if (localTime > 0) dateFormat.format(java.util.Date(localTime)) else stringResource(R.string.main_sync_no_record), color = Color.White, fontSize = 13.sp)
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(stringResource(R.string.main_sync_cloud_data), color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold, modifier = Modifier.width(100.dp))
-                        if (!isLocalNewer && cloudTime > 0) {
-                            Text(stringResource(R.string.main_sync_latest_badge), color = Color.Red, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    Text(if (cloudTime > 0) dateFormat.format(java.util.Date(cloudTime)) else stringResource(R.string.main_sync_no_record), color = Color.White, fontSize = 13.sp)
-                }
-            },
-            confirmButton = {
-                androidx.compose.material3.TextButton(onClick = {
-                    com.set.Chronos.CloudSyncManager.restoreDataFromCloud(context) {
-                        syncConflictData = null
-                    }
-                }) {
-                    Text(if (!isLocalNewer) stringResource(R.string.main_sync_overwrite_cloud_rec) else stringResource(R.string.main_sync_load_cloud), color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
-                }
-            },
-            dismissButton = {
-                androidx.compose.material3.TextButton(onClick = {
-                    // ✨ 로컬 시간을 지금으로 갱신해서 클라우드와 완벽히 동기화되게 만듦
-                    prefs.edit().putLong("last_modified", System.currentTimeMillis()).apply()
-
-                    com.set.Chronos.CloudSyncManager.backupDataToCloud(context)
-                    syncConflictData = null
-                }) {
-                    Text(if (isLocalNewer) stringResource(R.string.main_sync_keep_local_rec) else stringResource(R.string.main_sync_keep_local), color = Color(0xFFE5C07B))
-                }
-            },
-            containerColor = Color(0xFF1E1E1E)
-        )
-    }
-
-    DisposableEffect(Unit) {
-        val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == "alarmSettings") {
-                val json = sharedPreferences.getString("alarmSettings", null)
-                if (json != null) {
-                    try {
-                        alarmSettings = Json.decodeFromString<List<AlarmSetting>>(json)
-                    } catch (e: Exception) {}
-                }
-            } else if (key == "isAlarmActive") {
-                isAlarmActive = sharedPreferences.getBoolean("isAlarmActive", false)
-            }
-        }
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-        onDispose { prefs.unregisterOnSharedPreferenceChangeListener(listener) }
-    }
-
-    LaunchedEffect(isAdRemoved, ringtoneUri, dialogTransparency, alarmSettings, isEarphoneModeEnabled, isOverdriveEnabled, isAlarmActive) {
+    LaunchedEffect(isAdRemoved, ringtoneUri, dialogTransparency, viewModel.alarmSettings, viewModel.isEarphoneModeEnabled, isOverdriveEnabled, viewModel.isAlarmActive, ttsSpeechRate) {
         with(prefs.edit()) {
             putBoolean("isAdRemoved", isAdRemoved)
             putString("ringtoneUri", ringtoneUri?.toString())
             putFloat("dialogTransparency", dialogTransparency)
             putBoolean("isOverdriveEnabled", isOverdriveEnabled)
-            putBoolean("isAlarmActive", isAlarmActive)
-            putBoolean("isEarphoneModeEnabled", isEarphoneModeEnabled)
+            //putBoolean("isAlarmActive", viewModel.isAlarmActive)
+            putBoolean("isEarphoneModeEnabled", viewModel.isEarphoneModeEnabled)
+            putFloat("tts_speech_rate", ttsSpeechRate)
             apply()
         }
     }
@@ -261,7 +167,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 if (presetJson != null) {
                     try {
                         val loadedAlarms = Json.decodeFromString<List<AlarmSetting>>(presetJson)
-                        alarmSettings = loadedAlarms
+                        viewModel.alarmSettings = loadedAlarms
 
                         currentPresetName = presetName
                         currentPresetIcon = iconName
@@ -300,18 +206,14 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 .background(Color(0xFF333333), androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
                                 .clickable {
                                     // 클릭 시: 광고를 띄우고, 다 보면 ticketCount 갱신!
-                                    adManager.showAdToChargeTickets(
-                                        onChargeSuccess = {
-                                            ticketCount = adManager.getTickets()
-                                        }
-                                    )
+                                    showAdConfirmDialog = true
                                 }
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
                             Text("⚡", fontSize = 16.sp)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "$ticketCount",
+                                text = "${viewModel.ticketCount}",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
@@ -329,10 +231,11 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
                 )
             }
+
         ) { _ ->
             Box(modifier = Modifier.fillMaxSize()) {
                 AnalogClock(
-                    alarms = if (isAlarmActive) alarmSettings else emptyList(),
+                    preCalculatedAlarms = if (viewModel.isAlarmActive) viewModel.preCalculatedAlarms else emptyList(),
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
@@ -343,7 +246,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                         onStopAlarm()
                                     } else {
                                         onCancelAll()
-                                        isAlarmActive = false
+                                        viewModel.isAlarmActive = false
 
                                         // ✨ [핵심] 대기 시간에 루틴을 끊었음!
                                         // 진행 중이던 History를 확정 짓고 디스크에 쾅 적은 뒤 클라우드 백업!
@@ -358,15 +261,14 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 onLongPress = {
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
-                                    // 번개가 있는지 체크!
-                                    adManager.checkAdAndSave(
-                                        onSave = {
-                                            ticketCount = adManager.getTickets() // 번개 깎인 거 화면(UI)에 즉시 반영
-                                            isAlarmActive = true
-                                            onSave(alarmSettings, alarmRestartedMsg)
+                                    // ViewModel에게 번개 체크와 상태 업데이트를 맡깁니다.
+                                    viewModel.trySaveWithTicket(
+                                        onSaveSuccess = {
+                                            // 기존 코드 그대로! (alarmSettings는 viewModel에서 꺼내 씀)
+                                            onSave(viewModel.alarmSettings, alarmRestartedMsg)
                                         },
                                         onNeedCharge = {
-                                            // 번개가 0개일 때 띄울 토스트 메시지!
+                                            // 기존 코드 그대로! XML 리소스를 완벽하게 유지합니다.
                                             Toast.makeText(context, context.getString(R.string.toast_need_charge), Toast.LENGTH_LONG).show()
                                         }
                                     )
@@ -378,6 +280,8 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                     ComplexSettingsDialog(
                         transparency = dialogTransparency,
                         onTransparencyChange = { dialogTransparency = it },
+                        ttsSpeechRate = ttsSpeechRate,
+                        onSpeechRateChange = { ttsSpeechRate = it },
                         onShowTutorial = {
                             showSettingsDialog = false
                             showTutorial = true
@@ -409,7 +313,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 if (showAnalogClockSettingsDialog) {
                     AlarmSettingsDialog(
                         transparency = dialogTransparency,
-                        alarmSettings = alarmSettings,
+                        alarmSettings = viewModel.alarmSettings,
                         currentPresetName = currentPresetName,
                         currentPresetIcon = currentPresetIcon,
                         currentPresetColor = currentPresetColor,
@@ -425,7 +329,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 .apply()
                         },
                         onAlarmSettingsChange = { updatedAlarms ->
-                            alarmSettings = updatedAlarms
+                            viewModel.alarmSettings = updatedAlarms
                             currentPresetName = ""
                             currentPresetIcon = "Clock"
                             prefs.edit()
@@ -436,26 +340,22 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                         isOverdriveEnabled = isOverdriveEnabled,
                         onSave = {
                             // 번개가 있는지 체크!
-                            adManager.checkAdAndSave(
-                                onSave = {
-                                    ticketCount = adManager.getTickets() // 번개 깎인 거 반영
-                                    isAlarmActive = true
-
+                            viewModel.trySaveWithTicket(
+                                onSaveSuccess = {
                                     val analytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(context)
-                                    val totalSubAlarms = alarmSettings.sumOf { it.repeatCount }
-                                    val alarmTimes = alarmSettings.joinToString(", ") { it.alarmTime }
+                                    val totalSubAlarms = viewModel.alarmSettings.sumOf { it.repeatCount }
+                                    val alarmTimes = viewModel.alarmSettings.joinToString(", ") { it.alarmTime }
 
                                     val params = android.os.Bundle().apply {
-                                        putInt("main_alarm_count", alarmSettings.size)
+                                        putInt("main_alarm_count", viewModel.alarmSettings.size)
                                         putInt("additional_alarm_count", totalSubAlarms)
                                         putString("alarm_times", alarmTimes)
                                     }
                                     analytics.logEvent("alarm_save_action", params)
 
-                                    onSave(alarmSettings, alarmSavedMsg)
+                                    onSave(viewModel.alarmSettings, alarmSavedMsg)
                                 },
                                 onNeedCharge = {
-                                    // 번개가 0개일 때 띄울 토스트 메시지!
                                     Toast.makeText(context, context.getString(R.string.toast_need_charge), Toast.LENGTH_LONG).show()
                                 }
                             )
@@ -489,8 +389,8 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                     }
                                 }
                                 Switch(
-                                    checked = isEarphoneModeEnabled,
-                                    onCheckedChange = { isEarphoneModeEnabled = it },
+                                    checked = viewModel.isEarphoneModeEnabled,
+                                    onCheckedChange = { viewModel.isEarphoneModeEnabled = it },
                                     colors = SwitchDefaults.colors(
                                         checkedThumbColor = Color(0xFFE5C07B),
                                         checkedTrackColor = Color(0xFFE5C07B).copy(alpha = 0.5f),
@@ -548,6 +448,44 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 if (showTutorial) {
                     TutorialPagerOverlay(onDismiss = { showTutorial = false })
                 }
+
+                if (showAdConfirmDialog) {
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = { showAdConfirmDialog = false },
+                        containerColor = Color(0xFF1E1E1E),
+                        title = {
+                            Text(
+                                text = stringResource(R.string.ad_confirm_title),
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = stringResource(R.string.ad_confirm_desc),
+                                color = Color.LightGray
+                            )
+                        },
+                        confirmButton = {
+                            androidx.compose.material3.Button(
+                                onClick = {
+                                    showAdConfirmDialog = false
+                                    viewModel.chargeTickets() // 실제 광고 실행
+                                },
+                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFFE5C07B))
+                            ) {
+                                Text(stringResource(R.string.common_confirm), color = Color.Black, fontWeight = FontWeight.Bold)
+                            }
+                        },
+                        dismissButton = {
+                            androidx.compose.material3.TextButton(onClick = { showAdConfirmDialog = false }) {
+                                Text(stringResource(R.string.common_cancel), color = Color.Gray)
+                            }
+                        }
+                    )
+                }
+
+                AppPopupManager()
             }
         }
     }
@@ -556,7 +494,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
 @Composable
 fun AnalogClock(
     modifier: Modifier = Modifier,
-    alarms: List<AlarmSetting> = emptyList(),
+    preCalculatedAlarms: List<PreCalculatedAlarm> = emptyList(),
     clockColor: Color = Color.White,
     hourHandColor: Color = Color.White,
     minuteHandColor: Color = Color.White,
@@ -588,83 +526,23 @@ fun AnalogClock(
         val radius = size.minDimension / 2.5f
         val now = System.currentTimeMillis()
 
-        // ✨ [추가] 알람이 시작된 기준 시간 가져오기
-        val sessionStartTime = prefs.getLong("current_session_id", now)
+        // ✨ 1. ViewModel이 미리 다 계산해서 넘겨준 점(알람)들 찍기
+        // (과거에 있던 복잡한 Calendar.getInstance()나 split(":")은 여기서 싹 사라졌습니다!)
+        preCalculatedAlarms.forEach { parsedAlarm ->
 
-        // 🚨 여기서부터 alarms.forEach 전체를 덮어씌우세요!
-        alarms.forEach { alarm ->
-            val targetTimeInMillis: Long
-
-            if (alarm.isRelative) {
-                // [상대 시간 모드]
-                val timeParts = alarm.relativeTime.split(":")
-                val h = timeParts.getOrNull(0)?.toLongOrNull() ?: 0L
-                val m = timeParts.getOrNull(1)?.toLongOrNull() ?: 0L
-                val s = timeParts.getOrNull(2)?.toLongOrNull() ?: 0L
-
-                targetTimeInMillis = sessionStartTime + (h * 3600 + m * 60 + s) * 1000L
-            } else {
-                // [절대 시간 모드]
-                val tempCal = Calendar.getInstance().apply { timeInMillis = sessionStartTime }
-                val timeParts = alarm.alarmTime.split(":")
-                tempCal.set(Calendar.HOUR_OF_DAY, timeParts.getOrNull(0)?.toIntOrNull() ?: 0)
-                tempCal.set(Calendar.MINUTE, timeParts.getOrNull(1)?.toIntOrNull() ?: 0)
-                tempCal.set(Calendar.SECOND, timeParts.getOrNull(2)?.toIntOrNull() ?: 0)
-                tempCal.set(Calendar.MILLISECOND, 0)
-
-                // 설정 시간이 기준 시간보다 과거라면 '내일'로 인식!
-                if (tempCal.timeInMillis <= sessionStartTime) {
-                    tempCal.add(Calendar.DATE, 1)
-                }
-                targetTimeInMillis = tempCal.timeInMillis
-            }
-
-            // ✨ [핵심 해결] 아래쪽 기존 코드들이 에러나지 않도록,
-            // 완벽하게 계산된 targetTimeInMillis를 가진 '새로운 targetCalendar'를 여기서 선언합니다!
-            val targetCalendar = Calendar.getInstance().apply { timeInMillis = targetTimeInMillis }
-
-            val isMainPassed = targetCalendar.timeInMillis <= now
+            val isMainPassed = parsedAlarm.targetTimeInMillis <= now
             val mainDotColor = if (isMainPassed) successColor else alarmPointColor
 
-            val alarmAngle = (targetCalendar.get(Calendar.HOUR_OF_DAY) % 12 + targetCalendar.get(Calendar.MINUTE) / 60f) * 30f
-
-            rotate(degrees = alarmAngle, pivot = center) {
-                drawCircle(
-                    color = mainDotColor,
-                    radius = 4.dp.toPx(),
-                    center = Offset(center.x, center.y - radius * 0.90f)
-                )
+            rotate(degrees = parsedAlarm.mainAngle, pivot = center) {
+                drawCircle(color = mainDotColor, radius = 4.dp.toPx(), center = Offset(center.x, center.y - radius * 0.90f))
             }
 
-            // 반복 알람(꼬리 점들) 그리기 로직 (그대로 유지)
-            if (alarm.isRepeatEnabled) {
-                val parts = alarm.repeatInterval.split(":")
-                val rh = parts.getOrNull(0)?.toIntOrNull() ?: 0
-                val rm = parts.getOrNull(1)?.toIntOrNull() ?: 5
-                val rs = parts.getOrNull(2)?.toIntOrNull() ?: 0
-                val intervalInMillis = (rh * 3600 + rm * 60 + rs) * 1000L
+            parsedAlarm.repeats.forEach { repeat ->
+                val isPassed = repeat.timeInMillis <= now
+                val repeatDotColor = if (isPassed) successColor else alarmPointColor.copy(alpha = repeat.alpha)
 
-                if (intervalInMillis > 0) {
-                    val drawCount = if (alarm.repeatUntilOff) 8 else alarm.repeatCount
-                    for (i in 1..drawCount) {
-                        val nextTime = targetCalendar.timeInMillis + (intervalInMillis * i)
-                        val isPassed = nextTime <= now
-
-                        val repeatDotColor = if (isPassed) successColor else alarmPointColor.copy(alpha = 1f - (i * 0.1f).coerceIn(0f, 0.9f))
-
-                        val tempCal = Calendar.getInstance().apply { timeInMillis = nextTime }
-                        val h = tempCal.get(Calendar.HOUR_OF_DAY)
-                        val m = tempCal.get(Calendar.MINUTE)
-                        val angle = (h % 12 + m / 60f) * 30f
-
-                        rotate(degrees = angle, pivot = center) {
-                            drawCircle(
-                                color = repeatDotColor,
-                                radius = 2.5.dp.toPx(),
-                                center = Offset(center.x, center.y - radius * 0.90f)
-                            )
-                        }
-                    }
+                rotate(degrees = repeat.angle, pivot = center) {
+                    drawCircle(color = repeatDotColor, radius = 2.5.dp.toPx(), center = Offset(center.x, center.y - radius * 0.90f))
                 }
             }
         }

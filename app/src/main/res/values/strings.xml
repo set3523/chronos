@@ -60,6 +60,9 @@
     <string name="toast_restore_empty">백업된 데이터가 없습니다.</string>
     <string name="toast_restore_fail">복구 실패: %1$s</string>
 
+    <string name="profile_update_success">닉네임이 성공적으로 변경되었습니다.</string>
+    <string name="profile_update_fail">닉네임 변경에 실패했습니다.</string>
+
     ``historymenu``
     <string name="history_refresh_desc">초기화</string>
     <string name="history_long_press_guide">항목을 길게 누르면 상세 메뉴가 나타납니다.</string>
@@ -111,6 +114,9 @@
     <string name="main_menu_settings">앱 설정 (투명도, 계정)</string>
     <string name="toast_preset_applied">\'%1$s\' 프리셋을 적용했습니다.</string>
 
+    <string name="ad_confirm_title">번개 충전</string>
+    <string name="ad_confirm_desc">보상 광고를 시청하고 번개 3개를 충전하시겠습니까?\n(번개는 매일 3개까지 자동 충전됩니다.)</string>
+
     ``preset``
     <string name="preset_screen_title">프리셋</string>
     <string name="preset_empty_message">저장된 프리셋이 없습니다.</string>
@@ -135,6 +141,24 @@
     <string name="settings_overdrive_title">오버드라이브 모드</string>
     <string name="settings_overdrive_desc">시스템 한계를 넘어 200%% 볼륨 증폭 (주의!)</string>
     <string name="settings_language">언어 설정 (Language)</string>
+
+    <string name="profile_no_nickname">닉네임 없음</string>
+    <string name="profile_new_nickname">새 닉네임</string>
+    <string name="profile_verify">확인</string>
+    <string name="profile_msg_empty">닉네임을 입력해주세요.</string>
+    <string name="profile_msg_current">현재 사용 중인 닉네임입니다.</string>
+    <string name="profile_msg_available">✅ 사용 가능한 닉네임입니다!</string>
+    <string name="profile_msg_taken">❌ 이미 누군가 사용 중입니다.</string>
+    <string name="profile_msg_prompt_verify">중복 확인을 눌러주세요.</string>
+    <string name="profile_cancel">취소</string>
+    <string name="profile_save">저장</string>
+
+    <string name="toast_nickname_changed">닉네임이 성공적으로 변경되었습니다.</string>
+    <string name="toast_nickname_failed">닉네임 변경에 실패했습니다.</string>
+    <string name="profile_check_duplicate">중복 확인</string>
+
+    <string name="profile_image_save_fail">이미지 저장 실패</string>
+    <string name="profile_save_success_toast">프로필이 저장되었습니다.</string>
 
     ``tutorial``
     <string name="tutorial_title_0">베타 테스터 특별 이벤트</string>
@@ -181,4 +205,11 @@
     <string name="tutorial_title_energy">무료 에너지 시스템</string>
     <string name="tutorial_desc_energy">알람 실행에는 에너지가 필요합니다.\n하지만 걱정 마세요! 매일 3번\n자동으로 에너지를 충전해 드립니다.</string>
 
+    ``PopupManager``
+    <string name="dialog_notice_title">알림</string>
+    <string name="update_title">업데이트 안내</string>
+    <string name="update_msg_force">원활한 서비스 이용을 위해 최신 버전으로 업데이트가 필수입니다.</string>
+    <string name="update_msg_optional">새로운 기능이 추가된 최신 버전이 있습니다. 업데이트 하시겠습니까?</string>
+    <string name="update_btn_now">업데이트</string>
+    <string name="update_btn_later">나중에</string>
 </resources>

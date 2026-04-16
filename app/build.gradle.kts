@@ -16,10 +16,10 @@ android {
 
     defaultConfig {
         applicationId = "com.set.Chronos"
-        minSdk = 25
+        minSdk = 27
         targetSdk = 36
-        versionCode = 23
-        versionName = "2.1.2"
+        versionCode = 31
+        versionName = "2.1.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -85,6 +85,7 @@ dependencies {
     implementation("com.google.firebase:firebase-appcheck-playintegrity")
 
     implementation("com.google.firebase:firebase-firestore")
+    //implementation(libs.androidx.compose.foundation)
 
 
 

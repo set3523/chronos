@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 import com.set.Chronos.utils.toMinAlarm
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -52,12 +51,12 @@ import androidx.compose.ui.draw.clip
 import android.graphics.Bitmap
 import androidx.core.content.ContextCompat
 import android.content.Intent
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.nativeCanvas
@@ -69,6 +68,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.material.icons.filled.Person
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,6 +80,9 @@ fun PresetScreen(
     val prefs = remember { com.set.Chronos.getSecurePrefs(context) }
     val presetsState = remember { mutableStateOf(prefs.getStringSet("preset_names", emptySet())?.toList()?.sorted() ?: emptyList()) }
     var presetToShare by remember { mutableStateOf<String?>(null) }
+    val currentUsername = prefs.getString("username", "Unknown User") ?: "Unknown User"
+
+    val profileImagePath = prefs.getString("profile_image_path", null)
 
     Scaffold(
         containerColor = Color(0xFF121212),
@@ -196,7 +199,8 @@ fun PresetScreen(
                 RoutineReceiptDialog(
                     presetName = shareName,
                     alarms = alarms,
-                    creatorName = "Beta Tester", // 추후 닉네임 연동
+                    creatorName = currentUsername, // 추후 닉네임 연동
+                    creatorProfilePath = profileImagePath,
                     onDismiss = { presetToShare = null }
                 )
             } else {
@@ -208,7 +212,7 @@ fun PresetScreen(
 }
 
 @Composable
-fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creatorName: String, onDismiss: () -> Unit) {
+fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creatorName: String, creatorProfilePath: String?, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var isSharing by remember { mutableStateOf(false) }
@@ -217,8 +221,8 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
         cn = creatorName, pn = presetName, a = alarms.map { it.toMinAlarm() }
     )
     val encryptedData = remember { com.set.Chronos.utils.ChronosShareUtils.encryptAndCompressPayload(payload) }
-    val deepLinkUrl = "chronos://preset?data=$encryptedData"
-    val qrBitmap = remember { com.set.Chronos.utils.ChronosShareUtils.generateQRBitmap(deepLinkUrl) }
+    val smartLinkUrl = "https://link.chronosroutine.com/?data=$encryptedData"
+    val qrBitmap = remember { com.set.Chronos.utils.ChronosShareUtils.generateQRBitmap(smartLinkUrl) }
 
     val appIconBitmap = remember {
         val drawable = ContextCompat.getDrawable(context, R.mipmap.ic_launcher)
@@ -282,22 +286,101 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
             ) {
-                if (appIconBitmap != null) {
-                    androidx.compose.foundation.Image(bitmap = appIconBitmap, contentDescription = "App Icon", modifier = Modifier.size(48.dp).clip(CircleShape).border(1.dp, brandGold, CircleShape))
+                // ── 브랜드 행 ──
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (appIconBitmap != null) {
+                            androidx.compose.foundation.Image(
+                                bitmap = appIconBitmap,
+                                contentDescription = "App Icon",
+                                modifier = Modifier.size(26.dp).clip(RoundedCornerShape(6.dp))
+                            )
+                            Spacer(modifier = Modifier.width(7.dp))
+                        }
+                        Text("CHRONOS", fontWeight = FontWeight.ExtraBold, fontSize = 13.sp, color = brandGold, letterSpacing = 3.sp)
+                    }
+                    // 모드 배지 pill
+                    Text(
+                        text = if (isGlobalRelative) "● RELATIVE" else "● ABSOLUTE",
+                        fontSize = 10.sp,
+                        color = circuitColor,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                        modifier = Modifier
+                            .background(circuitColor.copy(alpha = 0.08f), RoundedCornerShape(4.dp))
+                            .border(0.5.dp, circuitColor.copy(alpha = 0.25f), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    )
                 }
+
+                HorizontalDivider(color = brandGold.copy(alpha = 0.15f), thickness = 0.5.dp)
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // ── 프리셋 이름 (최우선 계층, 최대 2줄) ──
+                com.set.Chronos.ui.components.AutoSizeText(
+                    text = presetName,
+                    targetTextSize = 30.sp,
+                    color = Color.White,
+                    maxLines = 2,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("CHRONOS", fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = brandGold, letterSpacing = 4.sp)
-                Text("SYSTEM MANIFEST", fontSize = 9.sp, color = Color.Gray, letterSpacing = 2.sp)
 
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider(color = brandGold.copy(alpha = 0.3f))
-                Spacer(modifier = Modifier.height(12.dp))
+                // ── 크리에이터 (중앙) ──
+                val totalAlarmCount = alarms.size
+                val totalDurSec = run {
+                    val lastAlarm = circuitLayout.allAlarms.maxByOrNull { it.end }
+                    lastAlarm?.end ?: 0L
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (creatorProfilePath != null && java.io.File(creatorProfilePath).exists()) {
+                        val profileBmp = android.graphics.BitmapFactory.decodeFile(creatorProfilePath)
+                        if (profileBmp != null) {
+                            androidx.compose.foundation.Image(
+                                bitmap = profileBmp.asImageBitmap(),
+                                contentDescription = "Profile",
+                                modifier = Modifier.size(18.dp).clip(CircleShape),
+                                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                        }
+                    } else {
+                        Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFF666666), modifier = Modifier.size(15.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
+                    Text("by ", fontSize = 12.sp, color = Color(0xFF777777))
+                    com.set.Chronos.ui.components.AutoSizeText(
+                        text = creatorName,
+                        targetTextSize = 12.sp,
+                        color = Color(0xFFCCCCCC),
+                        maxLines = 2,
+                        modifier = Modifier.widthIn(max = 160.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Start
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
 
-                Text("[$globalModeText]", fontSize = 12.sp, color = circuitColor, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-                Text(presetName, fontSize = 26.sp, color = Color.White, fontWeight = FontWeight.Bold)
-                Text("Designed by $creatorName", fontSize = 14.sp, color = Color.Gray)
+                // ── 통계 요약 (별도 줄, 중앙) ──
+                Text(
+                    text = "${totalAlarmCount} alarms · ${formatDuration(totalDurSec)}",
+                    fontSize = 11.sp,
+                    color = Color(0xFF555555),
+                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp)
+                )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                HorizontalDivider(color = Color(0xFF1E1E1E), thickness = 0.5.dp)
+                Spacer(modifier = Modifier.height(14.dp))
 
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)) {
                     // [왼쪽 텍스트 영역] (75%)
@@ -306,14 +389,14 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                             Box(modifier = Modifier.height(row.heightDp.dp).fillMaxWidth()) {
                                 if (row.type == RowType.GAP) {
                                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                                        Text("--- ${formatDuration(row.duration)} SILENCE ---", color = Color.DarkGray, fontSize = 14.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
+                                        Text("${formatDuration(row.duration)} silence", color = Color(0xFF4A4A4A), fontSize = 11.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
                                     }
                                 } else if (row.type == RowType.ALARM && row.alarmData != null) {
                                     val alarm = row.alarmData.alarm
 
                                     Column(modifier = Modifier.fillMaxSize().padding(bottom = 8.dp), verticalArrangement = Arrangement.Center) {
                                         Row(verticalAlignment = Alignment.Bottom) {
-                                            Text(text = if (isGlobalRelative) "+${alarm.relativeTime}" else alarm.alarmTime, color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 34.sp)
+                                            Text(text = if (isGlobalRelative) "+${alarm.relativeTime}" else alarm.alarmTime, color = Color(0xFF00E5FF).takeIf { isGlobalRelative } ?: Color(0xFFFF9800), fontWeight = FontWeight.Bold, fontSize = 22.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))
 
@@ -395,19 +478,39 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
 
                             val spacing = minOf(14.dp.toPx(), if (maxActive > 1) (canvasWidth * 0.8f) / (maxActive - 1) else 14.dp.toPx())
 
-                            drawLine(Color.DarkGray.copy(alpha=0.3f), Offset(centerX, 0f), Offset(centerX, size.height), 2.dp.toPx())
+                            drawLine(Color(0xFF4A4A4A).copy(alpha=0.6f), Offset(centerX, 0f), Offset(centerX, size.height), 1.5.dp.toPx())
 
-                            val textPaint = android.graphics.Paint().apply {
-                                color = circuitColor.copy(alpha = 0.7f).toArgb()
-                                textSize = 26f
-                                isAntiAlias = true
-                                textAlign = android.graphics.Paint.Align.LEFT
+                            // gap 구간: 알람 끝(endY)과 다음 알람 시작(startY) 사이를 흰색 점선으로
+                            val sortedAlarms = circuitLayout.allAlarms.sortedBy { it.start }
+                            for (i in 0 until sortedAlarms.size - 1) {
+                                val gapStartY = endYMap[sortedAlarms[i]] ?: continue
+                                val gapEndY = startYMap[sortedAlarms[i + 1]] ?: continue
+                                if (gapEndY > gapStartY + 4.dp.toPx()) {
+                                    val dotRadius = 1.8.dp.toPx()
+                                    val dotSpacing = 7.dp.toPx()
+                                    var dotY = gapStartY + dotSpacing
+                                    while (dotY < gapEndY - dotSpacing) {
+                                        drawCircle(
+                                            color = Color.White.copy(alpha = 0.25f),
+                                            radius = dotRadius,
+                                            center = Offset(centerX, dotY)
+                                        )
+                                        dotY += dotSpacing
+                                    }
+                                }
                             }
 
-                            timeToStartY.forEach { (time, y) ->
-                                val timeStr = if (isGlobalRelative) "T+${formatDuration(time)}" else formatAbsTime(time)
-                                drawContext.canvas.nativeCanvas.drawText(timeStr, 2f, y + 12f, textPaint)
-                            }
+//                            val textPaint = android.graphics.Paint().apply {
+//                                color = circuitColor.copy(alpha = 0.7f).toArgb()
+//                                textSize = 26f
+//                                isAntiAlias = true
+//                                textAlign = android.graphics.Paint.Align.LEFT
+//                            }
+//
+//                            timeToStartY.forEach { (time, y) ->
+//                                val timeStr = if (isGlobalRelative) "T+${formatDuration(time)}" else formatAbsTime(time)
+//                                drawContext.canvas.nativeCanvas.drawText(timeStr, 2f, y + 12f, textPaint)
+//                            }
 
                             circuitLayout.allAlarms.forEach { a ->
                                 val path = androidx.compose.ui.graphics.Path()
@@ -483,6 +586,33 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                                     }
                                 }
                             }
+                            val strokePaint = android.graphics.Paint().apply {
+                                color = android.graphics.Color.parseColor("#0F0F0F") // 배경색과 동일하게
+                                textSize = 24f // 기존 26f에서 살짝 줄여서 더 깔끔하게
+                                isAntiAlias = true
+                                textAlign = android.graphics.Paint.Align.LEFT
+                                style = android.graphics.Paint.Style.STROKE
+                                strokeWidth = 8f // 외곽선 두께 (원하는 만큼 조절 가능)
+                                strokeJoin = android.graphics.Paint.Join.ROUND
+                            }
+
+                            // 2. 원래 텍스트 색상 페인트 (투명도를 빼서 더 선명하게)
+                            val fillPaint = android.graphics.Paint().apply {
+                                color = circuitColor.toArgb()
+                                textSize = 24f
+                                isAntiAlias = true
+                                textAlign = android.graphics.Paint.Align.LEFT
+                                style = android.graphics.Paint.Style.FILL
+                            }
+
+                            // 3. 시간 텍스트 그리기 (외곽선 먼저 -> 그 위에 텍스트)
+                            timeToStartY.forEach { (time, y) ->
+                                val timeStr = if (isGlobalRelative) "T+${formatDuration(time)}" else formatAbsTime(time)
+
+                                // x 좌표를 2f에서 4f로 살짝 띄워서 여백을 줍니다.
+                                drawContext.canvas.nativeCanvas.drawText(timeStr, 4f, y + 12f, strokePaint) // 테두리 먼저
+                                drawContext.canvas.nativeCanvas.drawText(timeStr, 4f, y + 12f, fillPaint)   // 알맹이 나중
+                            }
                         }
                     }
                 }
@@ -502,7 +632,7 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                 Spacer(modifier = Modifier.height(24.dp))
 
                 val shareIntentTitle = stringResource(R.string.preset_share_intent_title)
-                val shareMessageStr = stringResource(R.string.preset_share_message, presetName, deepLinkUrl)
+                val shareMessageStr = stringResource(R.string.preset_share_message, presetName, smartLinkUrl)
 
                 // ✨ [핵심] 이미지 캡처 및 공유 버튼!
                 Button(
@@ -516,9 +646,10 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                                 context = context,
                                 presetName = presetName,
                                 creatorName = creatorName,
+                                creatorProfilePath = creatorProfilePath,
                                 alarms = alarms,
                                 circuitLayout = circuitLayout,
-                                deepLinkUrl = deepLinkUrl
+                                smartLinkUrl = smartLinkUrl
                             )
 
                             // 2. 갤러리에 저장하고 인텐트 띄우기
@@ -547,7 +678,25 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
 data class CircuitAlarmData(val alarm: AlarmSetting, val start: Long, val end: Long)
 enum class RowType { GAP, ALARM }
 data class CircuitRow(val type: RowType, val time: Long, val duration: Long, val alarmData: CircuitAlarmData? = null) {
-    val heightDp = if (type == RowType.GAP) 60 else (if (alarmData?.alarm?.isRepeatEnabled == true) 130 else 110)
+    val heightDp = if (type == RowType.GAP) {
+        60 // 쉬는 시간(Silence) 간격
+    } else {
+        var baseHeight = 110 // 기본 알람 층고 (시간 + 소리 + 길이/볼륨)
+
+        if (alarmData?.alarm != null) {
+            val alarm = alarmData.alarm
+
+            // 1. 반복 문구가 들어가면 높이 추가
+            if (alarm.isRepeatEnabled) baseHeight += 30
+
+            // 2. 크레센도 문구가 들어가면 높이 추가
+            if (alarm.isCrescendo) baseHeight += 25
+
+            // 3. TTS 문구가 길어서 2줄로 래핑될 경우를 대비해 여유 공간 추가
+            if (alarm.isTtsMode && alarm.ttsText.length > 15) baseHeight += 20
+        }
+        baseHeight
+    }
 }
 class CircuitLayout(val rows: List<CircuitRow>, val allAlarms: List<CircuitAlarmData>)
 
@@ -576,15 +725,16 @@ fun generateReceiptBitmap(
     context: Context,
     presetName: String,
     creatorName: String,
+    creatorProfilePath: String?,
     alarms: List<AlarmSetting>,
     circuitLayout: CircuitLayout,
-    deepLinkUrl: String
+    smartLinkUrl: String
 ): Bitmap {
     val width = 1080
     val dp = 3f // 고해상도 출력을 위한 배율 (1dp = 3px)
     val leftMargin = 80f
     val rightMargin = width - 80f
-    val circuitLeft = width * 0.7f
+    val circuitLeft = width * 0.58f
 
     // 1. 전체 이미지 길이 동적 계산
     val headerHeight = 570f
@@ -606,45 +756,172 @@ fun generateReceiptBitmap(
     var currentY = 150f
 
     // --- 헤더 그리기 ---
+
+    ///////////////////////////
+    currentY = 120f // 기존 150f에서 120f로 수정
+
+    // =========================================================
+    // ✨ [수정됨] 화면 UI와 동일한 영수증 헤더 스타일 적용
+    // =========================================================
+
+    // 1. 최상단: [앱 아이콘] CHRONOS (좌측) / 모드 뱃지 (우측)
+    val topBarY = currentY
+    var titleStartX = leftMargin
+
+    // 앱 아이콘 그리기
+    val drawable = ContextCompat.getDrawable(context, R.mipmap.ic_launcher)
+    if (drawable != null) {
+        val iconSize = 48 // 아이콘 크기
+        val appIconBmp = android.graphics.Bitmap.createBitmap(iconSize, iconSize, android.graphics.Bitmap.Config.ARGB_8888)
+        val iconCanvas = android.graphics.Canvas(appIconBmp)
+        drawable.setBounds(0, 0, iconSize, iconSize)
+        drawable.draw(iconCanvas)
+
+        // 둥근 사각형으로 자르기
+        val roundedBmp = android.graphics.Bitmap.createBitmap(iconSize, iconSize, android.graphics.Bitmap.Config.ARGB_8888)
+        val rCanvas = android.graphics.Canvas(roundedBmp)
+        val rPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+        val rectF = android.graphics.RectF(0f, 0f, iconSize.toFloat(), iconSize.toFloat())
+        rCanvas.drawRoundRect(rectF, 12f, 12f, rPaint)
+        rPaint.xfermode = android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_IN)
+        rCanvas.drawBitmap(appIconBmp, 0f, 0f, rPaint)
+
+        canvas.drawBitmap(roundedBmp, leftMargin, topBarY - 38f, null)
+        titleStartX += iconSize + 15f
+
+        // 메모리 정리
+        appIconBmp.recycle()
+        roundedBmp.recycle()
+    }
+
+    // CHRONOS 텍스트
     paint.color = brandGold
-    paint.textSize = 65f
+    paint.textSize = 38f
     paint.typeface = android.graphics.Typeface.DEFAULT_BOLD
-    paint.textAlign = android.graphics.Paint.Align.CENTER
-    canvas.drawText("CHRONOS", width / 2f, currentY, paint)
+    paint.textAlign = android.graphics.Paint.Align.LEFT
+    paint.letterSpacing = 0.1f
+    canvas.drawText("CHRONOS", titleStartX, topBarY, paint)
 
-    currentY += 50f
-    paint.color = android.graphics.Color.GRAY
-    paint.textSize = 24f
-    paint.letterSpacing = 0.2f
-    canvas.drawText("SYSTEM MANIFEST", width / 2f, currentY, paint)
+    // 모드 배지 (우측)
+    val modeLabel = if (isGlobalRelative) "● RELATIVE" else "● ABSOLUTE"
+    paint.color = circuitColor
+    paint.textSize = 28f
+    paint.letterSpacing = 0f
+    paint.textAlign = android.graphics.Paint.Align.RIGHT
+    canvas.drawText(modeLabel, rightMargin, topBarY, paint)
 
-    currentY += 80f
+    currentY += 40f
+
+    // 상단 얇은 구분선
     paint.color = brandGold
-    paint.alpha = 76 // 30% 투명도
-    paint.strokeWidth = 3f
+    paint.alpha = 38 // 15% 투명도
+    paint.strokeWidth = 2f
     canvas.drawLine(leftMargin, currentY, rightMargin, currentY, paint)
     paint.alpha = 255
 
     currentY += 80f
-    paint.textAlign = android.graphics.Paint.Align.LEFT
-    paint.color = circuitColor
-    paint.textSize = 30f
-    val globalModeText = if (isGlobalRelative) "RELATIVE TIMER MODE" else "ABSOLUTE ALARM MODE"
-    canvas.drawText("[$globalModeText]", leftMargin, currentY, paint)
 
-    currentY += 80f
+    // 2. 프리셋 이름 (중앙 정렬)
     paint.color = android.graphics.Color.WHITE
-    paint.textSize = 80f
-    canvas.drawText(presetName, leftMargin, currentY, paint)
+    paint.textSize = 85f
+    paint.textAlign = android.graphics.Paint.Align.CENTER
+    paint.typeface = android.graphics.Typeface.DEFAULT_BOLD
+
+    val maxTitleWidth = rightMargin - leftMargin
+    while (paint.measureText(presetName) > maxTitleWidth && paint.textSize > 40f) {
+        paint.textSize -= 2f
+    }
+    canvas.drawText(presetName, width / 2f, currentY, paint)
+
+    currentY += 60f
+
+    // 3. 중앙 크리에이터 & 프로필
+    paint.textSize = 34f
+    paint.typeface = android.graphics.Typeface.DEFAULT
+    val creatorPrefix = "by "
+    val prefixWidth = paint.measureText(creatorPrefix)
+    val nameWidth = paint.measureText(creatorName)
+    val profileSize = 46f
+    val profileSpacing = 15f
+
+    // 전체 길이 계산하여 중앙 X좌표 잡기
+    var totalCreatorWidth = prefixWidth + nameWidth
+    var hasProfile = false
+    if (creatorProfilePath != null && java.io.File(creatorProfilePath).exists()) {
+        totalCreatorWidth += profileSize + profileSpacing
+        hasProfile = true
+    }
+
+    // (기본 사람 아이콘 처리 여부에 따라 폭 추가)
+    if (!hasProfile) {
+        totalCreatorWidth += profileSize + profileSpacing
+    }
+
+    var startX = (width - totalCreatorWidth) / 2f
+
+    // 프사 그리기 (있으면 프사, 없으면 빈 공간 냅두거나 기본 아이콘)
+    if (hasProfile) {
+        try {
+            val profileBitmap = android.graphics.BitmapFactory.decodeFile(creatorProfilePath)
+            if (profileBitmap != null) {
+                val scaledProfile = android.graphics.Bitmap.createScaledBitmap(profileBitmap, profileSize.toInt(), profileSize.toInt(), true)
+                val circularBitmap = android.graphics.Bitmap.createBitmap(profileSize.toInt(), profileSize.toInt(), android.graphics.Bitmap.Config.ARGB_8888)
+                val pCanvas = android.graphics.Canvas(circularBitmap)
+                val pPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+
+                pCanvas.drawRoundRect(android.graphics.RectF(0f, 0f, profileSize, profileSize), profileSize / 2f, profileSize / 2f, pPaint)
+                pPaint.xfermode = android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_IN)
+                pCanvas.drawBitmap(scaledProfile, 0f, 0f, pPaint)
+
+                canvas.drawBitmap(circularBitmap, startX, currentY - 35f, null)
+
+                profileBitmap.recycle()
+                scaledProfile.recycle()
+                circularBitmap.recycle()
+            }
+        } catch (e: Exception) { e.printStackTrace() }
+    } else {
+        // 프사가 없을 경우 기본 회색 동그라미 그려주기 (UI의 기본 아이콘 느낌)
+        paint.color = android.graphics.Color.parseColor("#444444")
+        paint.style = android.graphics.Paint.Style.FILL
+        canvas.drawCircle(startX + (profileSize/2f), currentY - 12f, profileSize/2.5f, paint)
+    }
+
+    startX += profileSize + profileSpacing
+
+    // by 닉네임 텍스트
+    paint.color = android.graphics.Color.parseColor("#777777")
+    paint.textAlign = android.graphics.Paint.Align.LEFT
+    canvas.drawText(creatorPrefix, startX, currentY, paint)
+    startX += prefixWidth
+
+    paint.color = android.graphics.Color.parseColor("#CCCCCC")
+    canvas.drawText(creatorName, startX, currentY, paint)
+
+    currentY += 60f
+
+    // 4. 통계 요약 (알람 개수 & 시간) - UI 화면에만 있던 디테일 추가!
+    val totalAlarmCount = alarms.size
+    val totalDurSec = circuitLayout.allAlarms.maxByOrNull { it.end }?.end ?: 0L
+
+    paint.color = android.graphics.Color.parseColor("#555555")
+    paint.textSize = 30f
+    paint.typeface = android.graphics.Typeface.MONOSPACE
+    paint.textAlign = android.graphics.Paint.Align.CENTER
+    canvas.drawText("${totalAlarmCount} alarms · ${formatDuration(totalDurSec)}", width / 2f, currentY, paint)
 
     currentY += 50f
-    paint.color = android.graphics.Color.GRAY
-    paint.textSize = 36f
-    paint.typeface = android.graphics.Typeface.DEFAULT
-    canvas.drawText("Designed by $creatorName", leftMargin, currentY, paint)
 
-    currentY += 80f
+    // 메인 구분선
+    paint.color = android.graphics.Color.parseColor("#1E1E1E")
+    paint.strokeWidth = 2f
+    canvas.drawLine(leftMargin, currentY, rightMargin, currentY, paint)
 
+    currentY += 80f // 여기서부터 알람 바디(회로도) 시작
+    ///////////////////////////
+
+    paint.textAlign = android.graphics.Paint.Align.LEFT  // ← 추가
+    paint.letterSpacing = 0f
     // --- 바디 (알람 목록 & 회로도) 그리기 ---
     val bodyStartY = currentY
     val circuitCenterX = circuitLeft + (rightMargin - circuitLeft) / 2f
@@ -673,9 +950,9 @@ fun generateReceiptBitmap(
             val alarm = row.alarmData.alarm
             var textY = currentY + 80f
 
-            paint.typeface = android.graphics.Typeface.DEFAULT_BOLD
-            paint.color = android.graphics.Color.WHITE
-            paint.textSize = 90f
+            paint.typeface = android.graphics.Typeface.MONOSPACE
+            paint.color = circuitColor
+            paint.textSize = 70f
             val timeText = if (isGlobalRelative) "+${alarm.relativeTime}" else alarm.alarmTime
             canvas.drawText(timeText, leftMargin, textY, paint)
 
@@ -684,10 +961,28 @@ fun generateReceiptBitmap(
             paint.textSize = 38f
             if (alarm.isTtsMode) {
                 paint.color = brandGold
-                canvas.drawText("🗣️ \"${alarm.ttsText}\"", leftMargin, textY, paint)
+                paint.textSize = 38f
+                paint.typeface = android.graphics.Typeface.DEFAULT
+
+                val ttsContent = "🗣️ ${alarm.ttsText}"
+                val maxTtsWidth = circuitLeft - leftMargin - 40f
+
+                var ttsLines = breakTextIntoLines(ttsContent, paint, maxTtsWidth)
+                while (ttsLines.size > 2 && paint.textSize > 24f) {
+                    paint.textSize -= 2f
+                    ttsLines = breakTextIntoLines(ttsContent, paint, maxTtsWidth)
+                }
+
+                ttsLines.take(2).forEachIndexed { index, line ->
+                    canvas.drawText(line, leftMargin, textY + (index * (paint.textSize + 10f)), paint)
+                }
+
+                textY += if (ttsLines.size > 1) (paint.textSize * 2) + 15f else paint.textSize + 15f
             } else {
                 paint.color = android.graphics.Color.LTGRAY
+                paint.textSize = 38f
                 canvas.drawText("🎵 Default Sound", leftMargin, textY, paint)
+                textY += 50f
             }
 
             textY += 50f
@@ -710,6 +1005,7 @@ fun generateReceiptBitmap(
     }
 
     // 오른쪽 회로도 Y좌표 계산
+    // endYMap 계산 (다이얼로그와 동일한 로직)
     circuitLayout.allAlarms.forEach { a ->
         var ey = startYMap[a] ?: 0f
         var tempY = bodyStartY
@@ -722,15 +1018,106 @@ fun generateReceiptBitmap(
             }
             tempY += rh
         }
-        if (ey <= startYMap[a]!! + 60f * dp) ey = startYMap[a]!! + 180f * dp
+        if (ey <= (startYMap[a] ?: 0f) + 60f * dp) ey = (startYMap[a] ?: 0f) + 180f * dp
         endYMap[a] = ey
+    }
+    val activeTaskLines = circuitLayout.rows
+        .mapNotNull { it.alarmData?.alarm?.taskLine }
+        .filter { it > 0 }
+        .distinct()
+        .sorted()
+
+    // 2. 9번 라인까지 커버하는 예쁜 다크/네온 테마 색상표 (유저가 더 늘리면 이 배열만 늘리면 됩니다)
+    val lineColors = listOf(
+        android.graphics.Color.TRANSPARENT, // 0번 (사용 안함)
+        android.graphics.Color.parseColor("#00E5FF"), // 1번 - Cyan
+        android.graphics.Color.parseColor("#FF9800"), // 2번 - Orange
+        android.graphics.Color.parseColor("#E5C07B"), // 3번 - Gold
+        android.graphics.Color.parseColor("#E06C75"), // 4번 - Pink/Red
+        android.graphics.Color.parseColor("#98C379"), // 5번 - Green
+        android.graphics.Color.parseColor("#C678DD"), // 6번 - Purple
+        android.graphics.Color.parseColor("#56B6C2"), // 7번 - Teal
+        android.graphics.Color.parseColor("#D19A66"), // 8번 - Peach
+        android.graphics.Color.parseColor("#ABB2BF")  // 9번 - Grey
+    )
+
+    // 3. 시간 문자열("HH:mm:ss")을 초 단위(Long)로 변환해 주는 헬퍼 함수
+    val timeToSeconds = { timeStr: String ->
+        val parts = timeStr.split(":")
+        if (parts.size == 3) {
+            (parts[0].toLong() * 3600) + (parts[1].toLong() * 60) + parts[2].toLong()
+        } else 0L
+    }
+
+    // 4. 활성화된 각 라인 번호별로 병렬 선 긋기
+    activeTaskLines.forEach { lineNumber ->
+        // 현재 라인 번호에 해당하는 알람들만 시간순으로 가져오기
+        val groupAlarms = circuitLayout.rows
+            .mapNotNull { it.alarmData?.alarm }
+            .filter { it.taskLine == lineNumber }
+
+        // 같은 라인에 알람이 2개 이상(시작과 끝) 있을 때만 선을 연결합니다.
+        if (groupAlarms.size >= 2) {
+            val firstAlarm = groupAlarms.first()
+            val lastAlarm = groupAlarms.last()
+
+            // 상대 시간 모드인지, 절대 시간 모드인지에 따라 올바른 시간 기준을 가져옵니다.
+            // (isRelativeMode 변수명은 개발자님의 실제 변수명에 맞게 수정하세요)
+            val firstTimeStr = if (firstAlarm.isRelative) firstAlarm.relativeTime else firstAlarm.alarmTime
+            val lastTimeStr = if (lastAlarm.isRelative) lastAlarm.relativeTime else lastAlarm.alarmTime
+
+            val firstTimeSec = timeToSeconds(firstTimeStr)
+            val lastTimeSec = timeToSeconds(lastTimeStr)
+
+            // timeToStartY 맵에서 해당 초(초 단위 시간)의 실제 캔버스 Y좌표를 가져옵니다.
+            val startY = timeToStartY[firstTimeSec] ?: 0f
+            val endY = timeToStartY[lastTimeSec] ?: 0f
+
+            // Y좌표가 정상적으로 찾아졌을 때만 그리기
+            if (startY > 0f && endY > 0f) {
+                // 각 라인별로 선이 겹치지 않도록 X좌표를 우측으로 조금씩 띄워줍니다. (간격 25f)
+                val lineX = circuitCenterX + (lineNumber * 25f)
+
+                // 색상 안전하게 가져오기 (만약 색상 배열을 초과하면 마지막 색상 사용)
+                val colorIndex = lineNumber.coerceIn(1, lineColors.lastIndex)
+                paint.color = lineColors[colorIndex]
+                paint.strokeWidth = 8f // 예쁘게 빠진 선 두께
+                paint.style = android.graphics.Paint.Style.STROKE
+
+                // 시작점(startY)부터 끝점(endY)까지 쭈우욱 수직선 긋기!
+                canvas.drawLine(lineX, startY, lineX, endY, paint)
+
+                // 선 위아래에 세련된 마커(동그라미) 찍기
+                paint.style = android.graphics.Paint.Style.FILL
+                canvas.drawCircle(lineX, startY, 10f, paint)
+                canvas.drawCircle(lineX, endY, 10f, paint)
+            }
+        }
     }
 
     // 오른쪽 회로도 기둥 그리기
-    paint.color = android.graphics.Color.DKGRAY
-    paint.alpha = 76
-    paint.strokeWidth = 6f
+    paint.color = android.graphics.Color.parseColor("#4A4A4A")
+    paint.alpha = 153
+    paint.strokeWidth = 4f
     canvas.drawLine(circuitCenterX, bodyStartY, circuitCenterX, currentY, paint)
+    paint.alpha = 255
+
+    // gap 구간: 흰색 점선 dot
+    paint.style = android.graphics.Paint.Style.FILL
+    paint.color = android.graphics.Color.WHITE
+    paint.alpha = 64  // 25%
+    val sortedBitmapAlarms = circuitLayout.allAlarms.sortedBy { it.start }
+    for (i in 0 until sortedBitmapAlarms.size - 1) {
+        val gapStartY = endYMap[sortedBitmapAlarms[i]] ?: continue
+        val gapEndY = startYMap[sortedBitmapAlarms[i + 1]] ?: continue
+        val dotSpacing = 21f  // dp * 3 배율
+        val dotRadius = 5.4f
+        var dotY = gapStartY + dotSpacing
+        while (dotY < gapEndY - dotSpacing) {
+            canvas.drawCircle(circuitCenterX, dotY, dotRadius, paint)
+            dotY += dotSpacing
+        }
+    }
     paint.alpha = 255
 
     val yKeyframes = (startYMap.values + endYMap.values).distinct().sorted()
@@ -830,7 +1217,7 @@ fun generateReceiptBitmap(
     paint.alpha = 255
 
     currentY += 100f
-    val qrBitmap = com.set.Chronos.utils.ChronosShareUtils.generateQRBitmap(deepLinkUrl, 450)
+    val qrBitmap = com.set.Chronos.utils.ChronosShareUtils.generateQRBitmap(smartLinkUrl, 450)
     if (qrBitmap != null) {
         paint.color = android.graphics.Color.WHITE
         val qrRect = android.graphics.RectF(width / 2f - 245f, currentY, width / 2f + 245f, currentY + 490f)
@@ -914,4 +1301,19 @@ fun shareImageAndText(context: Context, bitmap: Bitmap, shareText: String, title
         }
         context.startActivity(Intent.createChooser(intent, title))
     }
+}
+fun breakTextIntoLines(text: String, paint: android.graphics.Paint, maxWidth: Float): List<String> {
+    val lines = mutableListOf<String>()
+    var currentText = text
+
+    while (currentText.isNotEmpty()) {
+        val charCount = paint.breakText(currentText, true, maxWidth, null)
+        if (charCount <= 0) break
+
+        lines.add(currentText.substring(0, charCount))
+        currentText = currentText.substring(charCount).trim()
+
+        if (lines.size >= 3) break
+    }
+    return lines
 }

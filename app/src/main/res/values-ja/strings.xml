@@ -60,6 +60,9 @@
     <string name="toast_restore_empty">バックアップデータが見つかりません。</string>
     <string name="toast_restore_fail">復元失敗: %1$s</string>
 
+    <string name="profile_update_success">ニックネームが正常に変更されました。</string>
+    <string name="profile_update_fail">ニックネームの変更に失敗しました。</string>
+
     ``historymenu``
     <string name="history_refresh_desc">リセット</string>
     <string name="history_long_press_guide">項目を長押しすると詳細メニューが表示されます。</string>
@@ -113,6 +116,9 @@
     <string name="main_menu_settings">アプリ設定 (透明度、アカウント)</string>
     <string name="toast_preset_applied">\'%1$s\' プリセットを適用しました。</string>
 
+    <string name="ad_confirm_title">エネルギー充電</string>
+    <string name="ad_confirm_desc">動画広告を視聴して、エネルギー(⚡)を3個充電しますか？\n(エネルギーは毎日3個まで自動的に補充されます。)</string>
+
     ``preset``
     <string name="preset_screen_title">プリセット</string>
     <string name="preset_empty_message">保存されたプリセットがありません。</string>
@@ -137,6 +143,25 @@
     <string name="settings_overdrive_title">オーバードライブモード</string>
     <string name="settings_overdrive_desc">システムの限界を超えて音量を200%%増幅させます (注意！)</string>
     <string name="settings_language">言語設定 (Language)</string>
+
+    <string name="profile_no_nickname">ニックネームなし</string>
+    <string name="profile_new_nickname">新しいニックネーム</string>
+    <string name="profile_verify">確認</string>
+    <string name="profile_msg_empty">ニックネームを入力してください。</string>
+    <string name="profile_msg_current">現在使用中のニックネームです。</string>
+    <string name="profile_msg_available">✅ 使用可能なニックネームです！</string>
+    <string name="profile_msg_taken">❌ 既に使用されています。</string>
+    <string name="profile_msg_prompt_verify">重複確認を押してください。</string>
+    <string name="profile_cancel">キャンセル</string>
+    <string name="profile_save">保存</string>
+
+    <string name="toast_nickname_changed">ニックネームが変更されました。</string>
+    <string name="toast_nickname_failed">ニックネームの変更に失敗しました。</string>
+
+    <string name="profile_check_duplicate">重複確認</string>
+
+    <string name="profile_image_save_fail">画像の保存に失敗しました</string>
+    <string name="profile_save_success_toast">プロフィールが保存されました。</string>
 
     ``tutorial``
     <string name="tutorial_title_0">ベータテスター特別イベント</string>
@@ -182,4 +207,12 @@
 
     <string name="tutorial_title_energy">無料エネルギーシステム</string>
     <string name="tutorial_desc_energy">アラームの実行にはエネルギーが必要です。\nご安心ください！毎日3回、\n自動でエネルギーが補充されます。</string>
+
+    ``PopupManager``
+    <string name="dialog_notice_title">お知らせ</string>
+    <string name="update_title">アップデート案内</string>
+    <string name="update_msg_force">スムーズな利用のため最新バージョンへの更新が必須です。</string>
+    <string name="update_msg_optional">最新バージョンがあります。アップデートしますか？</string>
+    <string name="update_btn_now">更新</string>
+    <string name="update_btn_later">後で</string>
 </resources>

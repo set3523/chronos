@@ -10,7 +10,7 @@
 
     <string name="toast_ad_fail">Failed to load ad</string>
     <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">No ads available. Charged for free! ⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">No ads available.\nCharged for free! ⚡ * 3</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">Alarm is ringing!</string>
@@ -59,6 +59,9 @@
     <string name="toast_restore_success">Cloud restore complete!</string>
     <string name="toast_restore_empty">No backed up data found.</string>
     <string name="toast_restore_fail">Restore failed: %1$s</string>
+
+    <string name="profile_update_success">Nickname changed successfully.</string>
+    <string name="profile_update_fail">Failed to change nickname.</string>
 
     ``historymenu``
     <string name="history_refresh_desc">Reset</string>
@@ -112,6 +115,9 @@
     <string name="main_menu_settings">App Settings\n(Transparency, Account)</string>
     <string name="toast_preset_applied">Applied \'%1$s\' preset.</string>
 
+    <string name="ad_confirm_title">Charge Energy</string>
+    <string name="ad_confirm_desc">Would you like to watch a rewarded ad and charge 3 Energy(⚡)?\n(Up to 3 Energy are recharged automatically every day.)</string>
+
     ``preset``
     <string name="preset_screen_title">Presets</string>
     <string name="preset_empty_message">No saved presets.</string>
@@ -136,6 +142,25 @@
     <string name="settings_overdrive_title">Overdrive Mode</string>
     <string name="settings_overdrive_desc">Boost volume to 200%% beyond system limits (Warning!)</string>
     <string name="settings_language">Language</string>
+
+    <string name="profile_no_nickname">No Nickname</string>
+    <string name="profile_new_nickname">New Nickname</string>
+    <string name="profile_verify">Verify</string>
+    <string name="profile_msg_empty">Please enter a nickname.</string>
+    <string name="profile_msg_current">This is your current nickname.</string>
+    <string name="profile_msg_available">✅ Nickname is available!</string>
+    <string name="profile_msg_taken">❌ This nickname is already taken.</string>
+    <string name="profile_msg_prompt_verify">Please tap verify to check.</string>
+    <string name="profile_cancel">Cancel</string>
+    <string name="profile_save">Save</string>
+
+    <string name="toast_nickname_changed">Nickname successfully changed.</string>
+    <string name="toast_nickname_failed">Failed to change nickname.</string>
+
+    <string name="profile_check_duplicate">Check</string>
+
+    <string name="profile_image_save_fail">Failed to save image</string>
+    <string name="profile_save_success_toast">Profile saved successfully.</string>
 
     ``tutorial``
     <string name="tutorial_title_0">Beta Tester Special Event</string>
@@ -181,4 +206,12 @@
 
     <string name="tutorial_title_energy">Free Energy System</string>
     <string name="tutorial_desc_energy">Energy is required to run the alarm.\nDon\'t worry! It recharges automatically\n3 times every day.</string>
+
+    ``PopupManager``
+    <string name="dialog_notice_title">Notice</string>
+    <string name="update_title">Update Notice</string>
+    <string name="update_msg_force">Update is required to continue using the service.</string>
+    <string name="update_msg_optional">A new version is available. Would you like to update?</string>
+    <string name="update_btn_now">Update</string>
+    <string name="update_btn_later">Later</string>
 </resources>
