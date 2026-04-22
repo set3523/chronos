@@ -68,6 +68,11 @@ class MainActivity : ComponentActivity() {
         checkPermissions()
         adManager.reloadIfNeeded()
     }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)           // intent 교체 (선택이지만 있는 게 안전)
+        handleDeepLink(intent)
+    }
     override fun onPause() {
         super.onPause()
         isForeground = false // ✨ 홈 화면으로 나가거나 화면 끄면 꺼짐!
@@ -75,6 +80,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        com.set.Chronos.injectMarketingPresets(this)
 
         adManager = AdManager(this)
         val viewModelFactory = MainViewModelFactory(application, adManager)
@@ -135,7 +141,10 @@ class MainActivity : ComponentActivity() {
         val data = intent?.data
 
         // [Gate 1] 도메인 검증: 지정된 스키마와 호스트가 아니면 즉시 차단
-        if (data != null && data.scheme == "chronos" && data.host == "preset") {
+        if (data != null && (
+                    (data.scheme == "chronos" && data.host == "preset") ||
+                            (data.scheme == "https" && data.host == "link.chronosroutine.com")
+                    )) {
 
             // [Gate 2] 안전한 파싱: 알 수 없는 예외로 인한 앱 크래시 방지
             try {
@@ -167,12 +176,22 @@ class MainActivity : ComponentActivity() {
 
                     // SharedPreferences에 자동 저장
                     val prefs = getSecurePrefs(this)
-                    val newPresetName = "${safeCreatorName}s ${safePresetName}"
                     val existingNames = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
+
+                    var newPresetName = safePresetName
+                    var copyIndex = 1
+
+// 내 기기에 이미 같은 이름의 프리셋이 있다면 (1), (2) 등을 붙여 중복 방지
+                    while (existingNames.contains(newPresetName)) {
+                        newPresetName = "$safePresetName ($copyIndex)"
+                        copyIndex++
+                    }
 
                     with(prefs.edit()) {
                         putStringSet("preset_names", existingNames.toMutableSet().apply { add(newPresetName) })
                         putString("preset_${newPresetName}_alarmSettings", kotlinx.serialization.json.Json.encodeToString(alarms))
+                        putString("preset_${newPresetName}_color", sharedPreset.c)
+                        putString("preset_${newPresetName}_icon", sharedPreset.i)
                         apply()
                     }
 

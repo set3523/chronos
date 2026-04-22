@@ -69,7 +69,9 @@ import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.filled.Add
+private val NICKNAME_REGEX = Regex("^[\\p{L}\\p{N}_]{3,20}$")
 
+private fun isValidNickname(name: String): Boolean = NICKNAME_REGEX.matches(name)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ComplexSettingsDialog(
@@ -85,6 +87,7 @@ fun ComplexSettingsDialog(
     currentLanguage: String,
     onLanguageChange: (String) -> Unit
 ) {
+
     val context = androidx.compose.ui.platform.LocalContext.current
     val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
 
@@ -309,9 +312,13 @@ fun ComplexSettingsDialog(
                                     // ✨ 1. 글자를 입력할 수 있는 실질적인 입력창 추가!
                                     OutlinedTextField(
                                         value = inputName,
-                                        onValueChange = {
-                                            inputName = it
-                                            isAvailable = null // 글자를 바꾸면 다시 중복체크 하도록 초기화
+                                        onValueChange = { newValue ->
+                                            // 공백 자동 trim + 20자 제한
+                                            val sanitized = newValue.take(20)
+                                            if (sanitized != inputName) {
+                                                inputName = sanitized
+                                                isAvailable = null
+                                            }
                                         },
                                         label = { Text("New Nickname", color = Color.Gray) },
                                         singleLine = true,
@@ -329,6 +336,10 @@ fun ComplexSettingsDialog(
                                     // ✨ 2. 중복 체크 버튼 (백엔드 대신 Firestore로 직접 확인)
                                     Button(
                                         onClick = {
+                                            if (!isValidNickname(inputName)) {
+                                                isAvailable = false
+                                                return@Button
+                                            }
                                             if (inputName.isNotBlank() && inputName != currentUsername) {
                                                 isChecking = true
                                                 val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
@@ -354,9 +365,11 @@ fun ComplexSettingsDialog(
                                     // 상태 메시지 표시
                                     val statusMsg = when {
                                         inputName.isBlank() -> stringResource(R.string.profile_msg_empty)
+                                        !isValidNickname(inputName) -> stringResource(R.string.profile_msg_invalid_format)
                                         inputName == currentUsername -> stringResource(R.string.profile_msg_current)
                                         isAvailable == true -> stringResource(R.string.profile_msg_available)
                                         isAvailable == false -> stringResource(R.string.profile_msg_taken)
+
                                         else -> stringResource(R.string.profile_msg_prompt_verify)
                                     }
                                     Text(

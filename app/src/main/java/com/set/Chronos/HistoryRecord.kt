@@ -31,20 +31,33 @@ data class HistoryRecord(
         get() = if (totalAlarms > 0) (completedAlarms * 100 / totalAlarms) else if (completedAlarms > 0) 100 else 0
 }
 
-fun saveHistoryToLocal(context: Context, record: HistoryRecord) {
-    val prefs = getSecurePrefs(context)
-    val existingJson = prefs.getString("historyRecords", "[]") ?: "[]"
-    val currentList = try {
-        Json { ignoreUnknownKeys = true }.decodeFromString<List<HistoryRecord>>(existingJson)
-    } catch (e: Exception) {
-        emptyList()
-    }
-    val newList = currentList + record
+//fun saveHistoryToLocal(context: Context, record: HistoryRecord) {
+//    val prefs = getSecurePrefs(context)
+//    val existingJson = prefs.getString("historyRecords", "[]") ?: "[]"
+//    val currentList = try {
+//        Json { ignoreUnknownKeys = true }.decodeFromString<List<HistoryRecord>>(existingJson)
+//    } catch (e: Exception) {
+//        emptyList()
+//    }
+//    val newList = currentList + record
+//
+//    // ✨ 에러가 나지 않도록 prefs.edit() 안에서 한 번에 저장합니다!
+//    with(prefs.edit()) {
+//        putString("historyRecords", Json.encodeToString(newList))
+//        putLong("last_modified", System.currentTimeMillis())
+//        apply()
+//    }
+//}
 
-    // ✨ 에러가 나지 않도록 prefs.edit() 안에서 한 번에 저장합니다!
-    with(prefs.edit()) {
-        putString("historyRecords", Json.encodeToString(newList))
-        putLong("last_modified", System.currentTimeMillis())
-        apply()
-    }
+suspend fun saveHistoryToLocal(context: Context, record: HistoryRecord) {
+    val dao = com.set.Chronos.data.ChronosDb.get(context).historyDao()
+    dao.upsert(
+        com.set.Chronos.data.HistoryEntity(
+            timestamp = record.timestamp,
+            data = Json.encodeToString(record)
+        )
+    )
+    getSecurePrefs(context).edit()
+        .putLong("last_modified", System.currentTimeMillis())
+        .apply()
 }

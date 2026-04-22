@@ -19,20 +19,23 @@ import javax.crypto.spec.SecretKeySpec
 @Serializable
 data class MinAlarm(
     val t: String, val r: Boolean, val rt: String, val v: Float,
-    val c: Boolean, val tm: Boolean, val tx: String
+    val c: Boolean, val tm: Boolean, val tx: String,
+    val tl: Int
 )
 
 // 2. 초경량 프리셋 묶음 클래스
 @Serializable
 data class MinPreset(
-    val cn: String, val pn: String, val a: List<MinAlarm>
+    val cn: String, val pn: String, val a: List<MinAlarm>, val c: String,
+    val i: String
 )
 
 // 3. 확장 함수: 무거운 클래스 <-> 가벼운 클래스 변환
-fun AlarmSetting.toMinAlarm() = MinAlarm(alarmTime, isRelative, relativeTime, volume, isCrescendo, isTtsMode, ttsText)
+fun AlarmSetting.toMinAlarm() = MinAlarm(alarmTime, isRelative, relativeTime, volume, isCrescendo, isTtsMode, ttsText,taskLine)
 fun MinAlarm.toAlarmSetting() = AlarmSetting(
     alarmTime = t, isRelative = r, relativeTime = rt, volume = v,
-    isCrescendo = c, isTtsMode = tm, ttsText = tx, soundUri = null // 기본음으로 초기화
+    isCrescendo = c, isTtsMode = tm, ttsText = tx, soundUri = null, // 기본음으로 초기화
+    taskLine = tl
 )
 
 object ChronosShareUtils {

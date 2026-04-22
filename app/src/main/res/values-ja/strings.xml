@@ -163,6 +163,8 @@
     <string name="profile_image_save_fail">画像の保存に失敗しました</string>
     <string name="profile_save_success_toast">プロフィールが保存されました。</string>
 
+    <string name="profile_msg_invalid_format">3〜20文字、文字・数字・_のみ使用可能</string>
+
     ``tutorial``
     <string name="tutorial_title_0">ベータテスター特別イベント</string>
     <string name="tutorial_desc_0">使用量上位1,000名様に、正式リリース後、有料機能を無料で開放します！\n\nイベント参加のためのGoogleログインは、右上の「設定（⚙️）」メニューから行ってください。</string>

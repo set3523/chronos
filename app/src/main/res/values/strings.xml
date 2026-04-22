@@ -160,6 +160,8 @@
     <string name="profile_image_save_fail">이미지 저장 실패</string>
     <string name="profile_save_success_toast">프로필이 저장되었습니다.</string>
 
+    <string name="profile_msg_invalid_format">3~20자, 문자/숫자/_만 가능합니다</string>
+
     ``tutorial``
     <string name="tutorial_title_0">베타 테스터 특별 이벤트</string>
     <string name="tutorial_desc_0">상위 사용량 1,000분께 정식 출시 후\n유료 기능을 무료로 개방합니다!\n\n이벤트 참여를 위한 구글 로그인은\n우측 상단의 \'설정(⚙️)\' 메뉴에서 진행해 주세요.</string>

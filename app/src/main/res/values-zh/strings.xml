@@ -162,6 +162,8 @@
     <string name="profile_image_save_fail">图片保存失败</string>
     <string name="profile_save_success_toast">个人资料已保存。</string>
 
+    <string name="profile_msg_invalid_format">3-20个字符，仅限字母/数字/_</string>
+
     ``tutorial``
     <string name="tutorial_title_0">测试用户特别活动</string>
     <string name="tutorial_desc_0">正式发布后，使用量前 1,000 名的用户将免费获得高级功能！\n\n请在右上角的 \'设置 (⚙️)\' 菜单中登录 Google 以参与活动。</string>

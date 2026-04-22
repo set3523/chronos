@@ -6,6 +6,8 @@ plugins {
 
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
+
 }
 
 android {
@@ -18,8 +20,8 @@ android {
         applicationId = "com.set.Chronos"
         minSdk = 27
         targetSdk = 36
-        versionCode = 31
-        versionName = "2.1.10"
+        versionCode = 38
+        versionName = "2.1.17"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -76,6 +78,10 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.4")
 
 
     implementation("com.google.zxing:core:3.5.4")

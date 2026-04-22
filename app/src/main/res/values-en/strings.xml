@@ -162,6 +162,8 @@
     <string name="profile_image_save_fail">Failed to save image</string>
     <string name="profile_save_success_toast">Profile saved successfully.</string>
 
+    <string name="profile_msg_invalid_format">3–20 characters, letters/numbers/_ only</string>
+
     ``tutorial``
     <string name="tutorial_title_0">Beta Tester Special Event</string>
     <string name="tutorial_desc_0">Top 1,000 active users will get premium features for free upon official release!\n\nPlease sign in with Google in the \'Settings (⚙️)\' menu at the top right to participate.</string>
