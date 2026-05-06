@@ -90,6 +90,12 @@
     <string name="toast_battery_opt_needed">안정적인 알람을 위해 \'배터리 최적화 제외\'가 필요합니다!</string>
     <string name="toast_logout_success">로그아웃 되었습니다.</string>
 
+    <string name="toast_session_expired_logout">다른 기기에서 로그인되어 로그아웃됩니다.</string>
+    <string name="dialog_other_device_title">다른 기기에서 로그인됨</string>
+    <string name="dialog_other_device_msg">%1$s부터 다른 기기가 이 계정에 로그인되어 있습니다.\n해당 기기를 로그아웃시키고 이 기기에서 로그인할까요?</string>
+    <string name="dialog_force_login">강제 로그인</string>
+    <string name="toast_session_claim_fail">세션 확보 실패</string>
+
     ``mainscreen``
     <string name="main_sync_conflict_title">☁️ 데이터 동기화 충돌</string>
     <string name="main_sync_conflict_desc">다른 기기에서 저장한 기록과 현재 폰의 기록이 다릅니다. 유지할 데이터를 선택해 주세요.</string>
@@ -134,7 +140,7 @@
     ``settingsdialog``
     <string name="settings_tutorial_btn">💡 앱 사용 튜토리얼 다시 보기</string>
     <string name="settings_account_link">🔗 계정 연동</string>
-    <string name="settings_tos_agree">[필수] 특별 혜택 제공을 위한 이용약관 및 개인정보 수집·이용에 동의합니다.</string>
+    <string name="settings_tos_agree">로그인 시 이용약관 및 개인정보처리방침에 동의하게 됩니다.</string>
     <string name="settings_google_login">G Google 계정으로 로그인</string>
     <string name="settings_linked_account">연동된 계정: %1$s</string>
     <string name="settings_logout">로그아웃</string>
@@ -214,4 +220,49 @@
     <string name="update_msg_optional">새로운 기능이 추가된 최신 버전이 있습니다. 업데이트 하시겠습니까?</string>
     <string name="update_btn_now">업데이트</string>
     <string name="update_btn_later">나중에</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">초(S)에 10을 입력하세요</string>
+    <string name="tg_add_alarm">클릭해서 새로운 알람 추가</string>
+    <string name="tg_input_hours">시(H)에 10을 입력하세요</string>
+    <string name="tg_save_button">✓ 버튼을 눌러 저장하세요</string>
+    <string name="tg_preset_save_btn">💾 프리셋 저장 버튼을 눌러주세요</string>
+    <string name="tg_save_confirm">저장 버튼을 눌러주세요</string>
+    <string name="tg_tap_share">공유 버튼을 눌러보세요</string>
+    <string name="tg_tap_name_load">이름을 눌러 불러오세요</string>
+    <string name="tg_preset_loaded_exit">프리셋이 불러와졌습니다!\nX 버튼을 눌러 나가주세요</string>
+    <string name="tg_drag_down">드래그해서 내려보세요</string>
+    <string name="tg_qr_share">QR코드로 프리셋을 공유할 수 있습니다</string>
+    <string name="tg_link_share">링크로도 공유할 수 있습니다</string>
+    <string name="tg_close_button">닫기 버튼을 눌러주세요</string>
+    <string name="tg_tap_presets">Presets를 눌러주세요</string>
+    <string name="tg_try_alarm_title">직접 알람을 설정해보세요!</string>
+    <string name="tg_try_alarm_desc">화면을 탭하면 알람 설정 화면이 열립니다.\n시간을 설정하고 저장해보세요!</string>
+    <string name="tg_try_it">직접 해보기</string>
+    <string name="tg_skip">건너뛰기</string>
+    <string name="tg_check_preset_title">저장한 프리셋을 확인해볼까요?</string>
+    <string name="tg_check_preset_desc">방금 저장한 프리셋을\n불러오기 화면에서 확인할 수 있어요.</string>
+    <string name="tg_check_it">확인하기</string>
+    <string name="tg_done">완료</string>
+    <string name="tg_step1_title">시계를 탭하세요!</string>
+    <string name="tg_step1_desc">화면 중앙의 시계를 탭하면\n알람 설정 화면이 열립니다.</string>
+    <string name="tg_step2_title">알람을 설정하세요!</string>
+    <string name="tg_step2_desc">알람 시간을 확인하고\n저장 버튼을 눌러주세요.</string>
+    <string name="tg_step3_title">알람이 울릴 때까지 기다려주세요</string>
+    <string name="tg_step3_desc">노란색 점이 알람 위치입니다.\n잠시 후 알람이 울립니다!</string>
+    <string name="tg_step4_title">화면을 두 번 탭하세요!</string>
+    <string name="tg_step4_desc">알람이 울리고 있습니다.\n화면을 더블 탭하면 알람이 꺼집니다.</string>
+    <string name="tg_step5_title">시계를 꾹 눌러보세요!</string>
+    <string name="tg_step5_desc">시계를 길게 누르면\n알람을 바로 실행할 수 있습니다.</string>
+    <string name="tg_step6_title">다시 두 번 탭하세요!</string>
+    <string name="tg_step6_desc">길게 눌러 실행한 알람도\n더블 탭으로 끌 수 있습니다.</string>
+    <string name="tg_step7_title">시계를 다시 탭하세요!</string>
+    <string name="tg_step7_desc">알람 설정을 프리셋으로\n저장해보세요!</string>
+    <string name="tg_step9_title">메뉴를 눌러주세요</string>
+    <string name="tg_step9_desc">메뉴 버튼을 탭하면\n기록을 확인할 수 있습니다.</string>
+    <string name="tutorial_try_alarm_title">직접 알람을 설정해보세요!</string>
+    <string name="tutorial_try_alarm_desc">화면을 탭하면 알람 설정 화면이 열립니다.\n시간을 설정하고 저장해보세요!</string>
+    <string name="tutorial_try_alarm_btn">직접 해보기</string>
+    <string name="tutorial_try_preset_title">저장한 프리셋을 확인해볼까요?</string>
+    <string name="tutorial_try_preset_desc">방금 저장한 프리셋을\n불러오기 화면에서 확인할 수 있어요.</string>
 </resources>

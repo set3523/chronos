@@ -104,9 +104,26 @@ fun ComplexSettingsDialog(
             auth.removeAuthStateListener(listener) // 다이얼로그 닫히면 CCTV 철수
         }
     }
-    var isConsentChecked by remember { mutableStateOf(false) }
+    // isConsentChecked 제거됨 - 로그인 시 자동 동의 방식으로 변경
     var expanded by remember { mutableStateOf(false) } // 메뉴 열림 상태
-    val languages = listOf("ko" to "🇰🇷 한국어", "en" to "🇺🇸 English", "ja" to "🇯🇵 日本語", "zh" to "🇨🇳 中文")
+    val languages = listOf(
+        "ko" to "🇰🇷 한국어",
+        "en" to "🇺🇸 English",
+        "ja" to "🇯🇵 日本語",
+        "zh" to "🇨🇳 中文",
+        "es" to "🇪🇸 Español",
+        "fr" to "🇫🇷 Français",
+        "de" to "🇩🇪 Deutsch",
+        "pt" to "🇧🇷 Português",
+        "ru" to "🇷🇺 Русский",
+        "it" to "🇮🇹 Italiano",
+        "tr" to "🇹🇷 Türkçe",
+        "ar" to "🇸🇦 العربية",
+        "hi" to "🇮🇳 हिन्दी",
+        "th" to "🇹🇭 ไทย",
+        "vi" to "🇻🇳 Tiếng Việt",
+        "id" to "🇮🇩 Bahasa Indonesia"
+    )
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(
@@ -153,28 +170,46 @@ fun ComplexSettingsDialog(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     if (currentUser == null) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(
-                                checked = isConsentChecked,
-                                onCheckedChange = { isConsentChecked = it },
-                                colors = CheckboxDefaults.colors(checkedColor = Color(0xFFE5C07B))
-                            )
-                            Text(
-                                text = stringResource(R.string.settings_tos_agree),
-                                color = Color.LightGray,
-                                fontSize = 12.sp,
-                                modifier = Modifier.clickable { isConsentChecked = !isConsentChecked }
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
                         Button(
                             onClick = onSignInClick,
-                            enabled = isConsentChecked,
                             modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                            shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text(stringResource(R.string.settings_google_login), color = Color.Black, fontWeight = FontWeight.Bold)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                // Google "G" 아이콘
+                                androidx.compose.foundation.Canvas(modifier = Modifier.size(20.dp)) {
+                                    val w = size.width; val h = size.height
+                                    // Blue arc (right)
+                                    drawArc(color = Color(0xFF4285F4), startAngle = -45f, sweepAngle = 90f, useCenter = true, size = size)
+                                    // Green arc (bottom)
+                                    drawArc(color = Color(0xFF34A853), startAngle = 45f, sweepAngle = 90f, useCenter = true, size = size)
+                                    // Yellow arc (left-bottom)
+                                    drawArc(color = Color(0xFFFBBC05), startAngle = 135f, sweepAngle = 90f, useCenter = true, size = size)
+                                    // Red arc (top-left)
+                                    drawArc(color = Color(0xFFEA4335), startAngle = 225f, sweepAngle = 90f, useCenter = true, size = size)
+                                    // White center
+                                    drawCircle(color = Color.White, radius = w * 0.32f)
+                                    // Blue bar (right side notch)
+                                    drawRect(color = Color(0xFF4285F4), topLeft = androidx.compose.ui.geometry.Offset(w * 0.48f, h * 0.38f), size = androidx.compose.ui.geometry.Size(w * 0.52f, h * 0.24f))
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(stringResource(R.string.settings_google_login), color = Color.Black, fontWeight = FontWeight.Bold)
+                            }
                         }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = stringResource(R.string.settings_tos_agree),
+                            color = Color.Gray,
+                            fontSize = 10.sp,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://sites.google.com/view/chronos-app"))
+                                    context.startActivity(intent)
+                                }
+                        )
                     } else {
                         // =========================================================
                         // ✨ 로그인 완료 후 프로필 화면 (연필 아이콘 클릭 시 수정 모드)
@@ -210,7 +245,7 @@ fun ComplexSettingsDialog(
                                                 prefs.edit().putString("profile_image_path", savedPath).apply()
                                                 isImageChanged = true
                                             } else {
-                                                Toast.makeText(context, "이미지 저장 실패", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(context, "Image save failed", Toast.LENGTH_SHORT).show()
                                             }
                                             isCompressing = false
                                         }

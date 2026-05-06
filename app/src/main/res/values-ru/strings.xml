@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">Удалить рекламу (Платно)</string>
+    <string name="settings_transparency">Прозрачность окна настроек</string>
+    <string name="language">Язык</string>
+    <string name="apply">Применить</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">Будет сохранено после просмотра рекламы (Тест)</string>
+    <string name="toast_ad_fail">Ошибка рекламы</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">Нет рекламы! Заряжено бесплатно! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">Будильник звонит!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">Будильник звонит.</string>
+    <string name="default_notif_text">Пора вставать!</string>
+    <string name="channel_name_high">Звуковое уведомление будильника</string>
+    <string name="channel_name_low">Тихое уведомление будильника</string>
+    <string name="common_stop">Остановить</string>
+    <string name="log_alarm_started">Будильник запущен</string>
+    <string name="log_routine_stopped">Рутина остановлена пользователем 💨</string>
+    <string name="log_single_alarm_completed">Один будильник завершен 🔥</string>
+    <string name="default_preset_name">Безымянная рутина</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">Требуется разрешение на точные будильники.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">Безымянная рутина</string>
+    <string name="setting_mode_relative">Режим: Относительное время (Таймер)</string>
+    <string name="setting_mode_absolute">Режим: Абсолютное время (Будильник)</string>
+    <string name="preset_save_title">Сохранить пресет</string>
+    <string name="preset_name_hint">Имя пресета (напр. Утро)</string>
+    <string name="preset_color_label">Цвет орбиты</string>
+    <string name="preset_icon_label">Значок по центру</string>
+    <string name="toast_preset_saved">Пресет сохранен!</string>
+    <string name="common_save">Сохранить</string>
+    <string name="common_cancel">Отмена</string>
+    <string name="common_confirm">Подтвердить</string>
+    <string name="setting_unknown_ringtone">Неизвестная мелодия</string>
+    <string name="setting_default_ringtone">Звук по умолчанию</string>
+    <string name="setting_tts_hint">Текст для озвучки</string>
+    <string name="setting_ringtone_picker_title">Выберите звук будильника</string>
+    <string name="setting_repeat_times_format">%1$d раз</string>
+    <string name="setting_duration_format">%1$ds</string>
+    <string name="setting_repeat_h">Повтор(Ч)</string>
+    <string name="setting_repeat_m">Повтор(М)</string>
+    <string name="setting_repeat_s">Повтор(С)</string>
+    <string name="setting_repeat_count_format">Повторить %1$d раз</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">Требуется авторизация.</string>
+    <string name="toast_backup_success">Резервное копирование в облако завершено!</string>
+    <string name="toast_backup_fail">Ошибка копирования: %1$s</string>
+    <string name="toast_restore_success">Восстановление из облака завершено!</string>
+    <string name="toast_restore_empty">Нет данных для восстановления.</string>
+    <string name="toast_restore_fail">Ошибка восстановления: %1$s</string>
+
+    <string name="profile_update_success">Никнейм успешно изменен.</string>
+    <string name="profile_update_fail">Не удалось изменить никнейм.</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">Сброс</string>
+    <string name="history_long_press_guide">Удерживайте элемент для открытия меню.</string>
+    <string name="history_detail_timeline">Детали (Таймлайн)</string>
+    <string name="history_hide_from_calendar">Скрыть все из календаря</string>
+    <string name="history_completed_format">%1$d / %2$d Завершено (%3$d%%)</string>
+    <string name="history_default_sound">🎵 Звук по умолчанию</string>
+    <string name="history_infinite_repeat">Бесконечный повтор</string>
+    <string name="history_repeat_count_format">Повторить %1$d раз</string>
+    <string name="history_no_repeat">Без повтора</string>
+    <string name="history_crescendo_active">🔥 Крещендо активно</string>
+    <string name="history_close">Закрыть</string>
+    <string name="history_unknown_time">Неизвестно</string>
+    <string name="history_aborted">Прервано</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">Пресет \'%1$s\' добавлен!</string>
+    <string name="toast_invalid_qr">Неверный QR-код.</string>
+    <string name="toast_login_fail">Ошибка входа: %1$s</string>
+    <string name="toast_login_success">Успешный вход!</string>
+    <string name="toast_auth_fail">Ошибка аутентификации</string>
+    <string name="toast_alarm_permission_request">Разрешите точные будильники.</string>
+    <string name="toast_alarm_set_fail">Не удалось установить будильник.</string>
+    <string name="toast_exact_alarm_needed">Для надежной работы требуется \'Разрешить точные будильники\'!</string>
+    <string name="toast_battery_opt_needed">Для надежной работы требуется \'Исключить из оптимизации батареи\'!</string>
+    <string name="toast_logout_success">Вы вышли из системы.</string>
+
+    <string name="toast_session_expired_logout">Выполнен выход (вход с другого устройства).</string>
+    <string name="dialog_other_device_title">Вход с другого устройства</string>
+    <string name="dialog_other_device_msg">С %1$s выполнен вход в этот аккаунт с другого устройства.\nВыйти на том устройстве и войти на этом?</string>
+    <string name="dialog_force_login">Принудительный вход</string>
+    <string name="toast_session_claim_fail">Не удалось занять сессию</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ Конфликт синхронизации</string>
+    <string name="main_sync_conflict_desc">Данные отличаются от вашего телефона. Выберите данные для сохранения.</string>
+    <string name="main_sync_local_data">📱 Данные телефона</string>
+    <string name="main_sync_cloud_data">☁️ Данные из облака</string>
+    <string name="main_sync_latest_badge"> [Новейшие ✨]</string>
+    <string name="main_sync_no_record">Нет записей</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ Перезаписать данными из облака (Рекомендуется)</string>
+    <string name="main_sync_load_cloud">☁️ Загрузить данные из облака</string>
+    <string name="main_sync_keep_local_rec">📱 Оставить данные телефона (Рекомендуется)</string>
+    <string name="main_sync_keep_local">📱 Оставить данные телефона</string>
+    <string name="toast_need_charge">⚡ Бесплатные разы закончились. Нажмите на молнию вверху справа для зарядки!</string>
+
+    <string name="toast_preset_load_fail">Не удалось загрузить пресет.</string>
+    <string name="toast_alarm_restarted">Будильник перезапущен.</string>
+    <string name="toast_alarm_saved">Будильник сохранен.</string>
+
+    <string name="main_menu_earphone_title">Режим читального зала (только наушники)</string>
+    <string name="main_menu_earphone_desc">Будильник будет воспроизводиться на громкости медиа.</string>
+    <string name="main_menu_preset">Загрузить / Поделиться пресетом</string>
+    <string name="main_menu_history">История использования</string>
+    <string name="main_menu_settings">Настройки (Прозрачность, Аккаунт)</string>
+    <string name="toast_preset_applied">Пресет \'%1$s\' применен.</string>
+
+    <string name="ad_confirm_title">Зарядка энергии</string>
+    <string name="ad_confirm_desc">Посмотреть рекламу, чтобы зарядить 3 молнии?\n(Каждый день автоматически заряжается до 5 молний.)</string>
+
+    ``preset``
+    <string name="preset_screen_title">Пресеты</string>
+    <string name="preset_empty_message">Нет сохраненных пресетов.</string>
+    <string name="toast_preset_deleted">Пресет \'%1$s\' удален.</string>
+    <string name="toast_preset_corrupted">Поврежденный или старый пресет. Пожалуйста, сохраните снова.</string>
+    <string name="preset_receipt_infinite_repeat">Бесконечный повтор</string>
+    <string name="preset_receipt_repeat_count">Повторить %1$d раз</string>
+    <string name="preset_receipt_repeat_interval">🔁 Интервал %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 Вы получили рутину \'%1$s\' из приложения Chronos!\n\nНажмите на ссылку ниже, чтобы применить её на своем телефоне:\n%2$s</string>
+    <string name="preset_share_intent_title">Поделиться рутиной</string>
+    <string name="preset_btn_share_link">Поделиться ссылкой через мессенджер</string>
+    <string name="toast_link_copied">Ссылка скопирована! Вставьте её в чат после отправки картинки.</string>
+    <string name="toast_image_save_fail">Не удалось сохранить картинку. Делимся текстом.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 Посмотреть обучение снова</string>
+    <string name="settings_account_link">🔗 Привязать аккаунт</string>
+    <string name="settings_tos_agree">Выполняя вход, вы соглашаетесь с Условиями и Политикой конфиденциальности.</string>
+    <string name="settings_google_login">Войти через Google</string>
+    <string name="settings_linked_account">Привязанный аккаунт: %1$s</string>
+    <string name="settings_logout">Выйти</string>
+    <string name="settings_overdrive_title">Режим Overdrive</string>
+    <string name="settings_overdrive_desc">Увеличение громкости до 200%% сверх лимита системы (Осторожно!)</string>
+    <string name="settings_language">Настройки языка (Language)</string>
+
+    <string name="profile_no_nickname">Нет никнейма</string>
+    <string name="profile_new_nickname">Новый никнейм</string>
+    <string name="profile_verify">Проверить</string>
+    <string name="profile_msg_empty">Пожалуйста, введите никнейм.</string>
+    <string name="profile_msg_current">Это ваш текущий никнейм.</string>
+    <string name="profile_msg_available">✅ Никнейм свободен!</string>
+    <string name="profile_msg_taken">❌ Этот никнейм уже занят.</string>
+    <string name="profile_msg_prompt_verify">Нажмите \'Проверить\'.</string>
+    <string name="profile_cancel">Отмена</string>
+    <string name="profile_save">Сохранить</string>
+
+    <string name="toast_nickname_changed">Никнейм успешно изменен.</string>
+    <string name="toast_nickname_failed">Не удалось изменить никнейм.</string>
+    <string name="profile_check_duplicate">Проверить ник</string>
+
+    <string name="profile_image_save_fail">Не удалось сохранить картинку</string>
+    <string name="profile_save_success_toast">Профиль успешно сохранен.</string>
+
+    <string name="profile_msg_invalid_format">3~20 символов, только буквы/цифры/_</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">Особое событие для бета-тестеров</string>
+    <string name="tutorial_desc_0">1000 самых активных пользователей получат бесплатный премиум после релиза!\n\nВойдите через Google в \'Настройках (⚙️)\', чтобы участвовать.</string>
+
+    <string name="tutorial_title_1">Главный экран</string>
+    <string name="tutorial_desc_1">Коснитесь часов по центру, чтобы добавить будильник, и проверяйте историю и настройки в правом верхнем углу.</string>
+
+    <string name="tutorial_title_2">Управление часами</string>
+    <string name="tutorial_desc_2">• Касание : Открыть настройки\n• Двойное касание : Отменить все будильники\n• Двойное касание : Остановить звонящий будильник\n• Удержание : Перезапустить последние будильники с вибрацией</string>
+
+    <string name="tutorial_title_3">Значки настроек</string>
+    <string name="tutorial_desc_3">⏳ : Режим таймера (относительное время)\n📈 : Постепенное увеличение громкости (Крещендо)\n♾️ : Повторять бесконечно\n🗣️ : Читать текст вслух (TTS)</string>
+
+    <string name="tutorial_title_4">Детальные настройки будильника</string>
+    <string name="tutorial_desc_4">Настройте относительное время, громкость, длительность и крещендо по своему вкусу.</string>
+
+    <string name="tutorial_title_5">Сохранение и обмен рутинами</string>
+    <string name="tutorial_desc_5">Сохраняйте настройки как пресеты и делитесь ими с друзьями через крутые чеки и QR-коды!</string>
+
+    <string name="tutorial_title_6">Настройки приложения</string>
+    <string name="tutorial_desc_6">Настройте прозрачность фона или посмотрите это обучение снова в любое время.</string>
+
+    <string name="tutorial_skip">Пропустить</string>
+    <string name="tutorial_next">Далее</string>
+    <string name="tutorial_start">Начать</string>
+
+    <string name="tutorial_mock_title">⏰ Детали будильника</string>
+
+    <string name="tutorial_mock_crescendo_title">Крещендо</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ Звук постепенно становится громче!</string>
+
+    <string name="tutorial_mock_infinite_title">Бесконечный повтор</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ Звонит, пока вы не отключите!</string>
+
+    <string name="tutorial_mock_tts_title">Режим TTS</string>
+    <string name="tutorial_mock_tts_desc">⬅️ Читает введенный вами текст вслух!</string>
+
+    <string name="tutorial_mock_repeat_title">Интервальный повтор</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ Функция Snooze (звонит снова через n минут)!</string>
+
+    <string name="tutorial_mock_footer">💡 Включите переключатели рядом со значками,\nчтобы создать свою идеальную рутину!</string>
+
+    <string name="tutorial_title_energy">Бесплатная система энергии</string>
+    <string name="tutorial_desc_energy">Для работы будильника нужна энергия.\nНе волнуйтесь! Она автоматически пополняется 5 раз в день.</string>
+
+    <string name="tutorial_try_alarm_title">Попробуйте установить будильник!</string>
+    <string name="tutorial_try_alarm_desc">Коснитесь экрана, чтобы открыть настройки.\nУстановите время и сохраните!</string>
+    <string name="tutorial_try_alarm_btn">Попробовать</string>
+    <string name="tutorial_try_preset_title">Посмотреть сохраненный пресет?</string>
+    <string name="tutorial_try_preset_desc">Вы найдете сохраненный пресет\nна экране загрузки.</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">Введите 10 в секунды (S)</string>
+    <string name="tg_add_alarm">Нажмите, чтобы добавить будильник</string>
+    <string name="tg_input_hours">Введите 10 в часы (H)</string>
+    <string name="tg_save_button">Нажмите ✓ для сохранения</string>
+    <string name="tg_preset_save_btn">💾 Нажмите кнопку сохранения пресета</string>
+    <string name="tg_save_confirm">Нажмите кнопку сохранения</string>
+    <string name="tg_tap_share">Нажмите кнопку поделиться</string>
+    <string name="tg_tap_name_load">Нажмите на имя для загрузки</string>
+    <string name="tg_preset_loaded_exit">Пресет загружен!\nНажмите X для выхода</string>
+    <string name="tg_drag_down">Потяните вниз для прокрутки</string>
+    <string name="tg_qr_share">Делитесь пресетами через QR-код</string>
+    <string name="tg_link_share">Также можно поделиться ссылкой</string>
+    <string name="tg_close_button">Нажмите кнопку закрыть</string>
+    <string name="tg_tap_presets">Нажмите Пресеты</string>
+    <string name="tg_try_alarm_title">Попробуйте настроить будильник!</string>
+    <string name="tg_try_alarm_desc">Нажмите на экран для настройки.\nУстановите время и сохраните!</string>
+    <string name="tg_try_it">Попробовать</string>
+    <string name="tg_skip">Пропустить</string>
+    <string name="tg_check_preset_title">Проверить сохранённый пресет?</string>
+    <string name="tg_check_preset_desc">Сохранённый пресет можно найти\nна экране загрузки.</string>
+    <string name="tg_check_it">Проверить</string>
+    <string name="tg_done">Готово</string>
+    <string name="tg_step1_title">Нажмите на часы!</string>
+    <string name="tg_step1_desc">Нажмите на часы в центре\nчтобы открыть настройки.</string>
+    <string name="tg_step2_title">Настройте будильник!</string>
+    <string name="tg_step2_desc">Проверьте время\nи нажмите сохранить.</string>
+    <string name="tg_step3_title">Подождите, пока зазвонит</string>
+    <string name="tg_step3_desc">Жёлтая точка — позиция будильника.\nСкоро зазвонит!</string>
+    <string name="tg_step4_title">Двойное нажатие на экран!</string>
+    <string name="tg_step4_desc">Будильник звонит.\nДвойное нажатие для остановки.</string>
+    <string name="tg_step5_title">Долгое нажатие на часы!</string>
+    <string name="tg_step5_desc">Долгое нажатие на часы\nмгновенно запустит будильник.</string>
+    <string name="tg_step6_title">Снова двойное нажатие!</string>
+    <string name="tg_step6_desc">Будильник от долгого нажатия\nтоже останавливается двойным.</string>
+    <string name="tg_step7_title">Снова нажмите на часы!</string>
+    <string name="tg_step7_desc">Сохраните настройки\nкак пресет!</string>
+    <string name="tg_step9_title">Нажмите на меню</string>
+    <string name="tg_step9_desc">Нажмите кнопку меню\nчтобы посмотреть историю.</string>
+    <string name="dialog_notice_title">Уведомление</string>
+    <string name="update_title">Обновление</string>
+    <string name="update_msg_force">Для продолжения работы необходимо обновление.</string>
+    <string name="update_msg_optional">Доступна новая версия. Хотите обновить?</string>
+    <string name="update_btn_now">Обновить</string>
+    <string name="update_btn_later">Позже</string>
+</resources>

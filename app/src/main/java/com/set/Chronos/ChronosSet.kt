@@ -51,6 +51,14 @@ import kotlin.math.abs
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.flow.first
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 
 val MysticPurple = Color(0xFF9D4EDD)
 val ChampagneGold = Color(0xFFE5C07B)
@@ -121,9 +129,31 @@ fun AlarmSettingsDialog(
     onPresetSaved: (String, String, String) -> Unit,
     onSave: () -> Unit,
     onDismiss: () -> Unit,
-    isOverdriveEnabled: Boolean
+    isOverdriveEnabled: Boolean,
+    isTutorialMode: Boolean = false,
+    tutorialPresetMode: Boolean = false
 ) {
     val context = LocalContext.current
+
+    // 튜토리얼 다이얼로그 단계 (-1이면 비활성)
+    // isTutorialMode: 알람 설정 가이드 (step 0~3)
+    // tutorialPresetMode: 프리셋 저장 가이드 (step 10: 저장 아이콘, step 11: 프리셋 다이얼로그 확인)
+    var tutorialDialogStep by remember { mutableIntStateOf(
+        if (isTutorialMode) 0
+        else if (tutorialPresetMode) 10
+        else -1
+    ) }
+    var rootCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
+    var highlightBounds by remember { mutableStateOf<Rect?>(null) }
+
+    // 튜토리얼 모드: 임시로 알람 1개 + 시간 전부 0으로 초기화
+    LaunchedEffect(isTutorialMode) {
+        if (isTutorialMode) {
+            onAlarmSettingsChange(listOf(
+                AlarmSetting(isRelative = true, relativeTime = "00:00:00")
+            ))
+        }
+    }
 
     var showPresetDialog by remember { mutableStateOf(false) }
     var presetNameInput by remember { mutableStateOf("") }
@@ -140,6 +170,42 @@ fun AlarmSettingsDialog(
     val pagerState = rememberPagerState(pageCount = { alarmSettings.size })
     val coroutineScope = rememberCoroutineScope()
 
+    // 튜토리얼 단계 전환 감지
+    if (isTutorialMode) {
+        // Step 0→1: 첫 알람 초(S)가 10이 되면
+        LaunchedEffect(alarmSettings.toList(), tutorialDialogStep) {
+            if (tutorialDialogStep == 0 && alarmSettings.isNotEmpty()) {
+                val s = alarmSettings[0].relativeTime.split(":").getOrNull(2)?.toIntOrNull() ?: 0
+                if (s == 10) {
+                    delay(500)
+                    highlightBounds = null
+                    tutorialDialogStep = 1
+                }
+            }
+        }
+        // Step 1→2: 알람이 2개가 되면 → 자동 스와이프 후 H 필드
+        LaunchedEffect(alarmSettings.size, tutorialDialogStep) {
+            if (tutorialDialogStep == 1 && alarmSettings.size >= 2) {
+                delay(300)
+                pagerState.animateScrollToPage(1)
+                delay(500)
+                highlightBounds = null
+                tutorialDialogStep = 2
+            }
+        }
+        // Step 2→3: 두번째 알람 시(H)가 10이 되면
+        LaunchedEffect(alarmSettings.toList(), tutorialDialogStep) {
+            if (tutorialDialogStep == 2 && alarmSettings.size >= 2) {
+                val h = alarmSettings[1].relativeTime.split(":").getOrNull(0)?.toIntOrNull() ?: 0
+                if (h == 10) {
+                    delay(500)
+                    highlightBounds = null
+                    tutorialDialogStep = 3
+                }
+            }
+        }
+    }
+
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(
             modifier = Modifier
@@ -150,6 +216,11 @@ fun AlarmSettingsDialog(
             color = Color.Black.copy(alpha = transparency),
             contentColor = ThemeTextPrimary
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onGloballyPositioned { rootCoords = it }
+            ) {
             Column(modifier = Modifier.padding(16.dp)) {
 
                 // [헤더 영역]
@@ -162,26 +233,60 @@ fun AlarmSettingsDialog(
                         Icon(Icons.Default.Close, contentDescription = "Close", tint = ThemeIconMuted)
                     }
                     Row {
-                        IconButton(onClick = {
-                            presetNameInput = ""
-                            selectedPresetColor = presetColorOptions[0]
-                            selectedPresetIcon = presetIconOptions[0]
-                            showPresetDialog = true
-                        }) {
+                        IconButton(
+                            onClick = {
+                                if (tutorialPresetMode) {
+                                    // 튜토리얼: "tutorial1" 자동 입력
+                                    presetNameInput = "tutorial1"
+                                } else {
+                                    presetNameInput = ""
+                                }
+                                selectedPresetColor = presetColorOptions[0]
+                                selectedPresetIcon = presetIconOptions[0]
+                                showPresetDialog = true
+                                if (tutorialDialogStep == 10) {
+                                    tutorialDialogStep = 11
+                                }
+                            },
+                            modifier = if (tutorialDialogStep == 10) {
+                                Modifier.onGloballyPositioned { coords ->
+                                    rootCoords?.let { root ->
+                                        val pos = root.localPositionOf(coords, Offset.Zero)
+                                        highlightBounds = Rect(
+                                            pos,
+                                            androidx.compose.ui.geometry.Size(
+                                                coords.size.width.toFloat(),
+                                                coords.size.height.toFloat()
+                                            )
+                                        )
+                                    }
+                                }
+                            } else Modifier
+                        ) {
                             Icon(Icons.Default.Save, contentDescription = "Save Preset", tint = ThemeTextPrimary)
                         }
-                        IconButton(onClick = {
-                            // ✨ [핵심 수정] 저장 버튼을 누르는 순간,
-                            // 뒤죽박죽된 알람 모드들을 상단의 '상대/절대 시간' 스위치 상태로 멱살 잡고 강제 통일시킵니다!
-                            val isGlobalRelative = alarmSettings.firstOrNull()?.isRelative == true
-                            val normalizedAlarms = alarmSettings.map {
-                                it.normalize().copy(isRelative = isGlobalRelative)
-                            }
+                        IconButton(
+                            onClick = {
+                                // ✨ [핵심 수정] 저장 버튼을 누르는 순간,
+                                // 뒤죽박죽된 알람 모드들을 상단의 '상대/절대 시간' 스위치 상태로 멱살 잡고 강제 통일시킵니다!
+                                val isGlobalRelative = alarmSettings.firstOrNull()?.isRelative == true
+                                val normalizedAlarms = alarmSettings.map {
+                                    it.normalize().copy(isRelative = isGlobalRelative)
+                                }
 
-                            onAlarmSettingsChange(normalizedAlarms)
-                            onSave()
-                            onDismiss()
-                        }) {
+                                onAlarmSettingsChange(normalizedAlarms)
+                                onSave()
+                                onDismiss()
+                            },
+                            modifier = if (isTutorialMode && tutorialDialogStep == 3) {
+                                Modifier.onGloballyPositioned { coords ->
+                                    rootCoords?.let { root ->
+                                        val pos = root.localPositionOf(coords, Offset.Zero)
+                                        highlightBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                    }
+                                }
+                            } else Modifier
+                        ) {
                             Icon(Icons.Default.Check, contentDescription = "Apply", tint = AccentColor)
                         }
                     }
@@ -269,7 +374,23 @@ fun AlarmSettingsDialog(
                                         if (it.id == updatedSetting.id) updatedSetting else it
                                     })
                                 },
-                                isOverdriveEnabled = isOverdriveEnabled
+                                isOverdriveEnabled = isOverdriveEnabled,
+                                tutorialHighlightField = if (isTutorialMode) {
+                                    when {
+                                        tutorialDialogStep == 0 && page == 0 -> "S"
+                                        tutorialDialogStep == 2 && page == 1 -> "H"
+                                        else -> null
+                                    }
+                                } else null,
+                                onFieldPositioned = if (isTutorialMode && (
+                                    (tutorialDialogStep == 0 && page == 0) ||
+                                    (tutorialDialogStep == 2 && page == 1)
+                                )) { coords ->
+                                    rootCoords?.let { root ->
+                                        val pos = root.localPositionOf(coords, Offset.Zero)
+                                        highlightBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                    }
+                                } else null
                             )
                         }
                     }
@@ -301,10 +422,21 @@ fun AlarmSettingsDialog(
                         val newList = alarmSettings + AlarmSetting(isRelative = currentMode)
                         onAlarmSettingsChange(newList)
                         coroutineScope.launch {
+                            snapshotFlow { pagerState.pageCount }
+                                .first { it >= newList.size }
                             pagerState.animateScrollToPage(newList.lastIndex)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().then(
+                        if (isTutorialMode && tutorialDialogStep == 1) {
+                            Modifier.onGloballyPositioned { coords ->
+                                rootCoords?.let { root ->
+                                    val pos = root.localPositionOf(coords, Offset.Zero)
+                                    highlightBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                }
+                            }
+                        } else Modifier
+                    ),
                     colors = ButtonDefaults.buttonColors(containerColor = ThemeInactive),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -316,10 +448,131 @@ fun AlarmSettingsDialog(
                     )
                 }
             }
+
+            // 튜토리얼 다이얼로그 오버레이 (알람 설정 가이드)
+            if (isTutorialMode && tutorialDialogStep in 0..3) {
+                TutorialDialogOverlay(
+                    step = tutorialDialogStep,
+                    targetBounds = highlightBounds,
+                    guideText = when (tutorialDialogStep) {
+                        0 -> stringResource(R.string.tg_input_seconds)
+                        1 -> stringResource(R.string.tg_add_alarm)
+                        2 -> stringResource(R.string.tg_input_hours)
+                        3 -> stringResource(R.string.tg_save_button)
+                        else -> ""
+                    }
+                )
+            }
+            // 튜토리얼 프리셋 저장 가이드 오버레이
+            if (tutorialPresetMode && tutorialDialogStep == 10) {
+                TutorialDialogOverlay(
+                    step = 10,
+                    targetBounds = highlightBounds,
+                    guideText = stringResource(R.string.tg_preset_save_btn)
+                )
+            }
+            } // Box 닫기
         }
     }
 
-    if (showPresetDialog) {
+    if (showPresetDialog && tutorialDialogStep == 11) {
+        // 튜토리얼: 저장 버튼만 구멍 뚫린 오버레이가 있는 커스텀 Dialog
+        Dialog(onDismissRequest = {}) {
+            var presetRootCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
+            var presetConfirmBounds by remember { mutableStateOf<Rect?>(null) }
+
+            Box(modifier = Modifier.fillMaxWidth().onGloballyPositioned { presetRootCoords = it }) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.Black.copy(alpha = 0.9f)
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text(stringResource(R.string.preset_save_title), color = ThemeTextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedTextField(
+                            value = presetNameInput,
+                            onValueChange = { presetNameInput = it },
+                            label = { Text(stringResource(R.string.preset_name_hint)) },
+                            singleLine = true,
+                            enabled = false, // 튜토리얼: "tutorial1" 고정
+                            colors = OutlinedTextFieldDefaults.colors(focusedTextColor = ThemeTextPrimary, unfocusedTextColor = ThemeTextPrimary, disabledTextColor = ThemeTextPrimary, focusedBorderColor = AccentColor, disabledBorderColor = Color.DarkGray)
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text(stringResource(R.string.preset_color_label), color = ThemeTextSecondary, fontSize = 12.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            items(presetColorOptions) { color ->
+                                Box(
+                                    modifier = Modifier.size(36.dp).clip(CircleShape).background(color)
+                                        .border(if (selectedPresetColor == color) 3.dp else 0.dp, if (selectedPresetColor == color) Color.White else Color.Transparent, CircleShape)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text(stringResource(R.string.preset_icon_label), color = ThemeTextSecondary, fontSize = 12.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            items(presetIconOptions) { iconName ->
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp).clip(CircleShape)
+                                        .background(if (selectedPresetIcon == iconName) Color.DarkGray else Color.Transparent)
+                                        .border(if (selectedPresetIcon == iconName) 1.dp else 0.dp, if (selectedPresetIcon == iconName) Color.White else Color.Transparent, CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(imageVector = getIconByName(iconName), contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                            TextButton(
+                                onClick = {
+                                    if (presetNameInput.isNotBlank()) {
+                                        val colorHex = String.format("#%06X", 0xFFFFFF and selectedPresetColor.toArgb())
+                                        val normalizedAlarms = alarmSettings.map { it.normalize() }
+                                        savePresetToPrefs(context, presetNameInput, normalizedAlarms, colorHex, selectedPresetIcon)
+                                        onPresetSaved(presetNameInput, selectedPresetIcon, colorHex)
+                                        showPresetDialog = false
+                                        presetNameInput = ""
+                                        Toast.makeText(context, toastSavedMsg, Toast.LENGTH_SHORT).show()
+                                        onDismiss()
+                                    }
+                                },
+                                modifier = Modifier.onGloballyPositioned { coords ->
+                                    presetRootCoords?.let { root ->
+                                        val pos = root.localPositionOf(coords, Offset.Zero)
+                                        presetConfirmBounds = Rect(
+                                            pos,
+                                            androidx.compose.ui.geometry.Size(
+                                                coords.size.width.toFloat(),
+                                                coords.size.height.toFloat()
+                                            )
+                                        )
+                                    }
+                                }
+                            ) {
+                                Text(stringResource(R.string.common_save), color = AccentColor, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+
+                // 저장 버튼만 구멍 뚫린 오버레이
+                TutorialDialogOverlay(
+                    step = 11,
+                    targetBounds = presetConfirmBounds,
+                    guideText = stringResource(R.string.tg_save_confirm)
+                )
+            }
+        }
+    } else if (showPresetDialog) {
         AlertDialog(
             onDismissRequest = { showPresetDialog = false },
             title = { Text(stringResource(R.string.preset_save_title), color = ThemeTextPrimary) },
@@ -375,7 +628,7 @@ fun AlarmSettingsDialog(
                         onPresetSaved(presetNameInput, selectedPresetIcon, colorHex)
                         showPresetDialog = false
                         presetNameInput = ""
-                        Toast.makeText(context, toastSavedMsg, Toast.LENGTH_SHORT).show() // 👈 4번 수정 완료
+                        Toast.makeText(context, toastSavedMsg, Toast.LENGTH_SHORT).show()
                     }
                 }) {
                     Text(stringResource(R.string.common_save), color = AccentColor, fontWeight = FontWeight.Bold)
@@ -412,7 +665,9 @@ fun AlarmSettingItem(
     isOnlyOne: Boolean,
     onDelete: () -> Unit,
     onUpdate: (AlarmSetting) -> Unit,
-    isOverdriveEnabled: Boolean
+    isOverdriveEnabled: Boolean,
+    tutorialHighlightField: String? = null,
+    onFieldPositioned: ((LayoutCoordinates) -> Unit)? = null
 ) {
     val context = LocalContext.current
     val unknownRingtone = stringResource(R.string.setting_unknown_ringtone)
@@ -467,9 +722,18 @@ fun AlarmSettingItem(
             }
 
             // [H], [M], [S] 3개의 다이얼 (비율을 1f로 줘서 균등 배분)
-            TimerInput(modifier = Modifier.weight(1f), label = "H", value = hour, onValueChange = { updateTime(it, minute, second) })
-            TimerInput(modifier = Modifier.weight(1f), label = "M", value = minute, onValueChange = { updateTime(hour, it, second) })
-            TimerInput(modifier = Modifier.weight(1f), label = "S", value = second, onValueChange = { updateTime(hour, minute, it) })
+            TimerInput(modifier = Modifier.weight(1f).then(
+                if (tutorialHighlightField == "H") Modifier.onGloballyPositioned { onFieldPositioned?.invoke(it) }
+                else Modifier
+            ), label = "H", value = hour, onValueChange = { updateTime(it, minute, second) },
+                enabled = tutorialHighlightField == null || tutorialHighlightField == "H")
+            TimerInput(modifier = Modifier.weight(1f), label = "M", value = minute, onValueChange = { updateTime(hour, it, second) },
+                enabled = tutorialHighlightField == null)
+            TimerInput(modifier = Modifier.weight(1f).then(
+                if (tutorialHighlightField == "S") Modifier.onGloballyPositioned { onFieldPositioned?.invoke(it) }
+                else Modifier
+            ), label = "S", value = second, onValueChange = { updateTime(hour, minute, it) },
+                enabled = tutorialHighlightField == null || tutorialHighlightField == "S")
 
             // ✨ [여기에 4번째 다이얼 추가!]
             // 똑같은 TimerInput을 재사용해서 '라인 번호' 입력기로 만듭니다.
@@ -481,7 +745,8 @@ fun AlarmSettingItem(
                     // 유저가 다이얼을 굴리거나 숫자를 입력하면, 안전하게 0~9 사이의 숫자로 제한합니다.
                     val lineNum = newVal.toIntOrNull() ?: 0
                     onUpdate(alarmSetting.copy(taskLine = lineNum.coerceIn(0, 9)))
-                }
+                },
+                enabled = tutorialHighlightField == null
             )
         }
         Spacer(Modifier.height(16.dp))
@@ -730,7 +995,8 @@ fun TimerInput(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    maxLength: Int = 2
+    maxLength: Int = 2,
+    enabled: Boolean = true
 ) {
     var dragAccumulator by remember { mutableStateOf(0f) }
 
@@ -747,6 +1013,7 @@ fun TimerInput(
                     onValueChange(it)
                 }
             },
+            enabled = enabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .pointerInput(Unit) {

@@ -91,6 +91,12 @@
     <string name="toast_battery_opt_needed">\'Ignore battery optimization\' is required for reliable alarms!</string>
     <string name="toast_logout_success">로그아웃 되었습니다.</string>
 
+    <string name="toast_session_expired_logout">Logged out because your account was accessed from another device.</string>
+    <string name="dialog_other_device_title">Logged in from another device</string>
+    <string name="dialog_other_device_msg">Another device has been logged into this account since %1$s.\nWould you like to log them out and log in on this device?</string>
+    <string name="dialog_force_login">Force Login</string>
+    <string name="toast_session_claim_fail">Failed to secure session</string>
+
     ``mainscreen``
     <string name="main_sync_conflict_title">☁️ Data Sync Conflict</string>
     <string name="main_sync_conflict_desc">Records on another device differ from this phone. Please choose which data to keep.</string>
@@ -135,7 +141,7 @@
     ``settingsdialog``
     <string name="settings_tutorial_btn">💡 View App Tutorial Again</string>
     <string name="settings_account_link">🔗 Link Account</string>
-    <string name="settings_tos_agree">[Required] I agree to the terms and privacy policy for special benefits.</string>
+    <string name="settings_tos_agree">By signing in, you agree to our Terms and Privacy Policy.</string>
     <string name="settings_google_login">Sign in with Google</string>
     <string name="settings_linked_account">Linked Account: %1$s</string>
     <string name="settings_logout">Logout</string>
@@ -216,4 +222,49 @@
     <string name="update_msg_optional">A new version is available. Would you like to update?</string>
     <string name="update_btn_now">Update</string>
     <string name="update_btn_later">Later</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">Enter 10 in seconds (S)</string>
+    <string name="tg_add_alarm">Tap to add a new alarm</string>
+    <string name="tg_input_hours">Enter 10 in hours (H)</string>
+    <string name="tg_save_button">Tap ✓ to save</string>
+    <string name="tg_preset_save_btn">💾 Tap the preset save button</string>
+    <string name="tg_save_confirm">Tap the save button</string>
+    <string name="tg_tap_share">Tap the share button</string>
+    <string name="tg_tap_name_load">Tap the name to load</string>
+    <string name="tg_preset_loaded_exit">Preset loaded!\nTap X to exit</string>
+    <string name="tg_drag_down">Drag down to scroll</string>
+    <string name="tg_qr_share">You can share presets via QR code</string>
+    <string name="tg_link_share">You can also share via link</string>
+    <string name="tg_close_button">Tap the close button</string>
+    <string name="tg_tap_presets">Tap Presets</string>
+    <string name="tg_try_alarm_title">Try setting an alarm!</string>
+    <string name="tg_try_alarm_desc">Tap the screen to open alarm settings.\nSet the time and save!</string>
+    <string name="tg_try_it">Try it</string>
+    <string name="tg_skip">Skip</string>
+    <string name="tg_check_preset_title">Check your saved preset?</string>
+    <string name="tg_check_preset_desc">You can find the preset you just saved\nin the load screen.</string>
+    <string name="tg_check_it">Check it</string>
+    <string name="tg_done">Done</string>
+    <string name="tg_step1_title">Tap the clock!</string>
+    <string name="tg_step1_desc">Tap the clock in the center\nto open alarm settings.</string>
+    <string name="tg_step2_title">Set the alarm!</string>
+    <string name="tg_step2_desc">Check the alarm time\nand tap save.</string>
+    <string name="tg_step3_title">Wait for the alarm to ring</string>
+    <string name="tg_step3_desc">The yellow dot marks the alarm.\nIt will ring shortly!</string>
+    <string name="tg_step4_title">Double-tap the screen!</string>
+    <string name="tg_step4_desc">The alarm is ringing.\nDouble-tap to stop it.</string>
+    <string name="tg_step5_title">Long-press the clock!</string>
+    <string name="tg_step5_desc">Long-press the clock\nto start the alarm instantly.</string>
+    <string name="tg_step6_title">Double-tap again!</string>
+    <string name="tg_step6_desc">You can also stop a long-press alarm\nwith a double-tap.</string>
+    <string name="tg_step7_title">Tap the clock again!</string>
+    <string name="tg_step7_desc">Save your alarm settings\nas a preset!</string>
+    <string name="tg_step9_title">Tap the menu</string>
+    <string name="tg_step9_desc">Tap the menu button\nto check your history.</string>
+    <string name="tutorial_try_alarm_title">Try setting an alarm!</string>
+    <string name="tutorial_try_alarm_desc">Tap the screen to open alarm settings.\nSet the time and save!</string>
+    <string name="tutorial_try_alarm_btn">Try it</string>
+    <string name="tutorial_try_preset_title">Check your saved preset?</string>
+    <string name="tutorial_try_preset_desc">You can find the preset you just saved\nin the load screen.</string>
 </resources>

@@ -165,7 +165,15 @@ class MainViewModel(
         }
     }
 
-    fun trySaveWithTicket(onSaveSuccess: () -> Unit, onNeedCharge: () -> Unit) {
+    fun trySaveWithTicket(onSaveSuccess: () -> Unit, onNeedCharge: () -> Unit, skipTicket: Boolean = false) {
+        if (skipTicket) {
+            // 튜토리얼 등: 번개 안 깎고 바로 저장
+            onSaveSuccess()
+            alarmSettings = loadInitialAlarms()
+            updatePreCalculatedAlarms()
+            isAlarmActive = true
+            return
+        }
         adManager.checkAdAndSave(
             onSave = {
                 ticketCount = adManager.getTickets()

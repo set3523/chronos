@@ -18,8 +18,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.set.Chronos.ui.theme.ChronosTheme
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.Calendar
 import java.util.Locale
@@ -30,7 +28,12 @@ import android.os.Looper
 import android.os.PowerManager
 import android.view.WindowManager
 import androidx.activity.SystemBarStyle
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.GoogleAuthProvider
 import com.set.Chronos.utils.toAlarmSetting
+import kotlinx.coroutines.launch
+import android.app.AlertDialog
+import java.util.Date
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: com.google.firebase.auth.FirebaseAuth
@@ -44,7 +47,7 @@ class MainActivity : ComponentActivity() {
 
         // ✨ [핵심] 현재 내 앱이 번역을 지원하는 언어 코드 목록!
         // (나중에 언어가 추가되면 여기에 "fr", "es" 등을 계속 적어주면 됩니다)
-        val supportedLanguages = listOf("ko", "en", "ja", "zh")
+        val supportedLanguages = listOf("ko", "en", "ja", "zh", "es", "fr", "de", "pt", "ru", "it", "tr", "ar", "hi", "th", "vi", "id")
 
         // 폰의 기본 시스템 언어를 가져옵니다.
         val systemLang = java.util.Locale.getDefault().language
@@ -54,7 +57,11 @@ class MainActivity : ComponentActivity() {
 
         // 저장된 언어가 없으면 위에서 똑똑하게 계산한 defaultLang을 사용합니다.
         val language = sharedPreferences.getString("language", defaultLang) ?: defaultLang
-        val locale = java.util.Locale.Builder().setLanguage(language).build()
+        val locale = if (language == "pt") {
+            java.util.Locale("pt", "BR")
+        } else {
+            java.util.Locale.Builder().setLanguage(language).build()
+        }
         val context = updateBaseContextLocale(newBase, locale)
         super.attachBaseContext(context)
     }
@@ -64,9 +71,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        isForeground = true // ✨ 화면을 보고 있을 때 켜짐!
+        isForeground = true
         checkPermissions()
         adManager.reloadIfNeeded()
+
+        // ★ K: 다른 기기에 뺏겼으면 강제 로그아웃
+        val user = auth.currentUser
+        if (user != null) {
+            lifecycleScope.launch {
+                val stillOurs = CloudSyncManager.verifySessionOwnership(this@MainActivity, user.uid)
+                if (!stillOurs) {
+                    auth.signOut()
+                    googleSignInClient.signOut()
+                    Toast.makeText(this@MainActivity,
+                        getString(R.string.toast_session_expired_logout), Toast.LENGTH_LONG).show()
+                    recreate()
+                }
+            }
+        }
     }
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -98,13 +120,6 @@ class MainActivity : ComponentActivity() {
         val prefs = getSecurePrefs(this)
         val savedUsername = prefs.getString("username", "")
 
-        // 로그인 상태인데, 내 폰(로컬 금고)에 닉네임이 없다면? (기존 유저)
-        if (currentUser != null && savedUsername.isNullOrEmpty()) {
-            com.set.Chronos.CloudSyncManager.checkAndCreateProfile(this, currentUser.uid) {
-                // 백그라운드에서 닉네임 조용히 생성 완료!
-                // (여기서는 앱 시작 중이므로 굳이 Toast나 recreate()를 할 필요 없이 자연스럽게 넘어가면 됩니다)
-            }
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -223,17 +238,77 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = com.google.firebase.auth.GoogleAuthProvider.getCredential(idToken, null)
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
-                    window.setWindowAnimations(android.R.style.Animation_Toast) // 깜빡임 방지용
-                    recreate()
-                } else {
+                if (!task.isSuccessful) {
                     Toast.makeText(this, getString(R.string.toast_auth_fail), Toast.LENGTH_SHORT).show()
+                    return@addOnCompleteListener
+                }
+                val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                lifecycleScope.launch {
+                    // ★ K: 세션 점유 먼저
+                    when (val result = CloudSyncManager.claimDeviceSession(this@MainActivity, uid)) {
+                        CloudSyncManager.SessionResult.Acquired, CloudSyncManager.SessionResult.AlreadyMine -> {
+                            // ★ G: 세션 확보 후 통합 초기화
+                            CloudSyncManager.initializeUserSession(this@MainActivity, uid)
+                            Toast.makeText(this@MainActivity,
+                                getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
+                            recreate()
+                        }
+                        is CloudSyncManager.SessionResult.Conflict -> {
+                            // 다른 기기 점유 중 → 다이얼로그로 "강제 로그인" 옵션 제공
+                            showOtherDeviceDialog(uid, result.otherDeviceSince)
+                            //auth.signOut()  // 일단 로컬 인증 해제
+                        }
+                        is CloudSyncManager.SessionResult.Error -> {
+                            //Toast.makeText(this@MainActivity,
+                            //    getString(R.string.toast_session_check_fail, result.msg), Toast.LENGTH_SHORT).show()
+                            auth.signOut()
+                        }
+                    }
                 }
             }
+    }
+
+    private fun showOtherDeviceDialog(uid: String, otherSince: Long) {
+        val sinceStr = java.text.DateFormat.getDateTimeInstance().format(Date(otherSince))
+
+        // %1$s 자리에 sinceStr 값이 쏙 들어갑니다!
+        val message = getString(R.string.dialog_other_device_msg, sinceStr)
+
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.dialog_other_device_title))
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.dialog_force_login)) { _, _ ->
+                lifecycleScope.launch {
+                    val result = CloudSyncManager.claimDeviceSession(this@MainActivity, uid, force = true)
+                    when (result) {
+                        CloudSyncManager.SessionResult.Acquired,
+                        CloudSyncManager.SessionResult.AlreadyMine -> {
+                            CloudSyncManager.initializeUserSession(this@MainActivity, uid)
+                            Toast.makeText(this@MainActivity, getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
+                            recreate()
+                        }
+                        else -> {
+                            auth.signOut()
+                            googleSignInClient.signOut()
+                            // "세션 확보 실패" 대신 리소스 사용
+                            Toast.makeText(this@MainActivity, getString(R.string.toast_session_claim_fail), Toast.LENGTH_SHORT).show()
+                            recreate()
+                        }
+                    }
+                }
+            }
+            // "취소" 텍스트는 기존에 쓰시던 R.string.common_cancel 을 재활용합니다!
+            .setNegativeButton(getString(R.string.common_cancel)) { _, _ ->
+                auth.signOut()
+                googleSignInClient.signOut()
+                recreate()
+            }
+            .show()
     }
 
     // (기본 기존 함수들: stopAlarmService, saveAlarmSettings, cancelAllAlarms 등은 그대로 유지...)
@@ -243,12 +318,31 @@ class MainActivity : ComponentActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
     fun signOut() {
-        auth.signOut() // 파이어베이스 로그아웃
-        googleSignInClient.signOut().addOnCompleteListener(this) {
-            Toast.makeText(this, getString(R.string.toast_logout_success), Toast.LENGTH_SHORT).show()
-            // 로그아웃 되었으니 UI 갱신을 위해 액티비티 부드럽게 재시작!
-            window.setWindowAnimations(android.R.style.Animation_Toast)
+        val user = auth.currentUser ?: run {
+            // 이미 로그아웃 상태
             recreate()
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                // ★ 마지막 백업을 '기다림'
+                CloudSyncManager.backupMainDocAwait(this@MainActivity, user.uid)
+                CloudSyncManager.backupHistoryIncremental(this@MainActivity, user.uid)
+                // ★ K 때문에: 다른 기기가 들어올 수 있게 device_id 해제 (4단계에서 구현)
+                CloudSyncManager.releaseDeviceSession(user.uid)
+            } catch (e: Exception) {
+                // 백업 실패해도 로그아웃은 진행, 단 경고
+                //Toast.makeText(this@MainActivity,
+                //    getString(R.string.toast_logout_backup_fail),
+                //    Toast.LENGTH_SHORT).show()
+            }
+            auth.signOut()
+            googleSignInClient.signOut().addOnCompleteListener(this@MainActivity) {
+                Toast.makeText(this@MainActivity, getString(R.string.toast_logout_success), Toast.LENGTH_SHORT).show()
+                window.setWindowAnimations(android.R.style.Animation_Toast)
+                recreate()
+            }
         }
     }
     // ✨ 핵심 3: AlarmService를 강제로 종료시키는 함수 추가
@@ -312,6 +406,7 @@ class MainActivity : ComponentActivity() {
                         val requestCode = oldAlarm.id.hashCode()
                         val pIntent = PendingIntent.getBroadcast(this, requestCode, intent, flags)
                         alarmManager.cancel(pIntent)
+                        pIntent.cancel()
                     }
                 } catch (e: Exception) {
                      // Ignore if old format is unreadable
@@ -434,6 +529,7 @@ class MainActivity : ComponentActivity() {
                     val requestCode = oldAlarm.id.hashCode()
                     val pIntent = PendingIntent.getBroadcast(this, requestCode, intent, flags)
                     alarmManager.cancel(pIntent) // 취소!
+                    pIntent.cancel()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

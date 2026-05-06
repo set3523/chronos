@@ -3,6 +3,7 @@ package com.set.Chronos
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -28,6 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -84,6 +88,9 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
 
     val isFirstLaunch = remember { prefs.getBoolean("isFirstLaunch", true) }
     var showTutorial by remember { mutableStateOf(isFirstLaunch) }
+    var tutorialStartPage by remember { mutableIntStateOf(0) }
+    var cameFromTutorial by remember { mutableStateOf(false) }
+    var tutorialStep by remember { mutableIntStateOf(0) }
 
     val haptic = LocalHapticFeedback.current
     val presetLoadFailMsg = stringResource(R.string.toast_preset_load_fail)
@@ -95,6 +102,42 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     LaunchedEffect(Unit) {
         if (isFirstLaunch) {
             prefs.edit().putBoolean("isFirstLaunch", false).apply()
+        }
+    }
+
+    // 튜토리얼 프리셋 자동 생성 (첫 실행 or 설정에서 재진입 시)
+    LaunchedEffect(showTutorial) {
+        if (showTutorial) {
+            val existingPresets = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
+            // tutorial1이 이미 있으면 삭제 (유저가 직접 만들도록)
+            if (existingPresets.contains("tutorial1")) {
+                val editor = prefs.edit()
+                val mutablePresets = existingPresets.toMutableSet()
+                mutablePresets.remove("tutorial1")
+                editor.putStringSet("preset_names", mutablePresets)
+                editor.remove("preset_tutorial1_timerHour")
+                editor.remove("preset_tutorial1_timerMin")
+                editor.remove("preset_tutorial1_timerSec")
+                editor.remove("preset_tutorial1_finalAlarmSound")
+                editor.remove("preset_tutorial1_alarmSettings")
+                editor.remove("preset_tutorial1_color")
+                editor.remove("preset_tutorial1_icon")
+                editor.remove("preset_tutorial1_version")
+                editor.apply()
+            }
+            if (!existingPresets.contains("tutorial2")) {
+                val tutorial2Alarms = listOf(
+                    // taskLine 0: 30분, 1시간, 1시간30분
+                    AlarmSetting(isRelative = true, relativeTime = "00:30:00", volume = 0.7f, duration = 60, taskLine = 0),
+                    AlarmSetting(isRelative = true, relativeTime = "01:00:00", volume = 0.7f, duration = 60, taskLine = 0),
+                    AlarmSetting(isRelative = true, relativeTime = "01:30:00", volume = 0.7f, duration = 60, taskLine = 0),
+                    // taskLine 1: 30분, 1시간, 1시간30분
+                    AlarmSetting(isRelative = true, relativeTime = "00:30:00", volume = 0.7f, duration = 60, taskLine = 1),
+                    AlarmSetting(isRelative = true, relativeTime = "01:00:00", volume = 0.7f, duration = 60, taskLine = 1),
+                    AlarmSetting(isRelative = true, relativeTime = "01:30:00", volume = 0.7f, duration = 60, taskLine = 1)
+                )
+                savePresetToPrefs(context, "tutorial2", tutorial2Alarms, "#61AFEF", "Clock")
+            }
         }
     }
 
@@ -111,8 +154,35 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
         }
     }
 
+    // 튜토리얼 step 3: 알람 실행 후 울릴 때까지 대기 → step 4로
+    LaunchedEffect(tutorialStep) {
+        if (cameFromTutorial && tutorialStep == 3) {
+            while (tutorialStep == 3) {
+                delay(500L)
+                if (AlarmService.isRinging) {
+                    tutorialStep = 4
+                    break
+                }
+            }
+        }
+    }
+
+    // 튜토리얼: 알람 울림 시 30초 동안 더블탭 안 하면 자동으로 알람 끄고 다음 단계
+    LaunchedEffect(tutorialStep) {
+        if (cameFromTutorial && (tutorialStep == 4 || tutorialStep == 6)) {
+            delay(30000L)
+            if (tutorialStep == 4) {
+                onStopAlarm()
+                tutorialStep = 5
+            } else if (tutorialStep == 6) {
+                onStopAlarm()
+                tutorialStep = 7
+            }
+        }
+    }
+
     var dialogTransparency by remember { mutableStateOf(prefs.getFloat("dialogTransparency", 0.95f)) }
-    var ttsSpeechRate by remember { mutableFloatStateOf(prefs.getFloat("tts_speech_rate", 1.0f)) }
+    var ttsSpeechRate by remember { mutableFloatStateOf(prefs.getFloat("tts_speech_rate", 0.7f)) }
 
     var isAdRemoved by remember { mutableStateOf(prefs.getBoolean("isAdRemoved", false)) }
     var isOverdriveEnabled by remember { mutableStateOf(prefs.getBoolean("isOverdriveEnabled", false)) }
@@ -124,6 +194,10 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     var showHistoryScreen by remember { mutableStateOf(false) }
 
     var showPresetScreen by remember { mutableStateOf(false) }
+
+    // 메뉴 버튼 좌표 (튜토리얼 step 9에서 구멍 위치용)
+    var menuButtonBounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
+
     var showBottomSheet by remember { mutableStateOf(false) }
     var currentPresetName by remember { mutableStateOf(prefs.getString("currentPresetName", "") ?: "") }
     var currentPresetIcon by remember { mutableStateOf(prefs.getString("currentPresetIcon", "Clock") ?: "Clock") }
@@ -157,8 +231,28 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     }
 
     if (showPresetScreen) {
+        BackHandler {
+            showPresetScreen = false
+            if (cameFromTutorial) {
+                cameFromTutorial = false
+                tutorialStartPage = 4
+                showTutorial = true
+            }
+        }
         PresetScreen(
-            onBack = { showPresetScreen = false },
+            onBack = {
+                showPresetScreen = false
+                // 튜토리얼 step 13: X 버튼으로 나가기 → 완료
+                if (cameFromTutorial && tutorialStep == 13) {
+                    cameFromTutorial = false
+                    tutorialStartPage = 4
+                    showTutorial = true
+                } else if (cameFromTutorial) {
+                    cameFromTutorial = false
+                    tutorialStartPage = 4
+                    showTutorial = true
+                }
+            },
             onPresetSelected = { presetName ->
                 val presetJson = prefs.getString("preset_${presetName}_alarmSettings", null)
                 val iconName = prefs.getString("preset_${presetName}_icon", "Clock") ?: "Clock"
@@ -182,8 +276,19 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                         Toast.makeText(context, presetLoadFailMsg, Toast.LENGTH_SHORT).show()
                     }
                 }
-                showPresetScreen = false
-                showHistoryScreen = false
+                // 튜토리얼 step 12: 로드만 하고 PresetScreen 유지 → step 13
+                if (cameFromTutorial && tutorialStep == 12) {
+                    tutorialStep = 13
+                    // showPresetScreen 닫지 않음!
+                } else {
+                    showPresetScreen = false
+                    showHistoryScreen = false
+                }
+            },
+            isTutorialMode = cameFromTutorial && tutorialStep in 11..13,
+            onTutorialShareDone = {
+                // 공유 다이얼로그 닫힌 후 → step 12 (이름 클릭)
+                tutorialStep = 12
             }
         )
     } else if (showHistoryScreen) {
@@ -192,6 +297,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
             onOpenPresets = { showPresetScreen = true }
         )
     } else {
+        Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Black,
@@ -224,7 +330,28 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                         Spacer(modifier = Modifier.width(12.dp))
 
                         // 🍔 2. 기존 햄버거(메뉴) 버튼
-                        IconButton(onClick = { showBottomSheet = true }) {
+                        IconButton(
+                            onClick = {
+                                showBottomSheet = true
+                                if (cameFromTutorial && tutorialStep == 9) {
+                                    tutorialStep = 10
+                                }
+                            },
+                            modifier = Modifier.then(
+                                if (cameFromTutorial && tutorialStep == 9) {
+                                    Modifier.onGloballyPositioned { coords ->
+                                        val pos = coords.positionInRoot()
+                                        menuButtonBounds = androidx.compose.ui.geometry.Rect(
+                                            pos,
+                                            androidx.compose.ui.geometry.Size(
+                                                coords.size.width.toFloat(),
+                                                coords.size.height.toFloat()
+                                            )
+                                        )
+                                    }
+                                } else Modifier
+                            )
+                        ) {
                             Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
                         }
                     },
@@ -240,10 +367,29 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                         .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(
-                                onTap = { showAnalogClockSettingsDialog = true },
+                                onTap = {
+                                    if (cameFromTutorial && tutorialStep == 1) {
+                                        tutorialStep = 2
+                                    } else if (cameFromTutorial && tutorialStep == 7) {
+                                        // step 7: 시계 탭 → 프리셋 저장 모드로 dialog 열기
+                                    }
+                                    showAnalogClockSettingsDialog = true
+                                },
                                 onDoubleTap = {
                                     if (AlarmService.isRinging) {
                                         onStopAlarm()
+                                        if (cameFromTutorial && tutorialStep == 4) {
+                                            tutorialStep = 5
+                                        } else if (cameFromTutorial && tutorialStep == 6) {
+                                            tutorialStep = 7
+                                        }
+                                    } else if (cameFromTutorial && tutorialStep == 6) {
+                                        // 튜토리얼 2번째 더블탭: 알람 안 울려도 바로 다음 단계
+                                        onCancelAll()
+                                        onStopAlarm()
+                                        viewModel.isAlarmActive = false
+                                        prefs.edit().putBoolean("isAlarmActive", false).apply()
+                                        tutorialStep = 7
                                     } else {
                                         onCancelAll()
                                         viewModel.isAlarmActive = false
@@ -270,8 +416,12 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                         onNeedCharge = {
                                             // 기존 코드 그대로! XML 리소스를 완벽하게 유지합니다.
                                             Toast.makeText(context, context.getString(R.string.toast_need_charge), Toast.LENGTH_LONG).show()
-                                        }
+                                        },
+                                        skipTicket = cameFromTutorial
                                     )
+                                    if (cameFromTutorial && tutorialStep == 5) {
+                                        tutorialStep = 6
+                                    }
                                 }
                             )
                         }
@@ -338,6 +488,8 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 .apply()
                         },
                         isOverdriveEnabled = isOverdriveEnabled,
+                        isTutorialMode = cameFromTutorial && tutorialStep == 2,
+                        tutorialPresetMode = cameFromTutorial && tutorialStep == 7,
                         onSave = {
                             // 번개가 있는지 체크!
                             viewModel.trySaveWithTicket(
@@ -357,18 +509,37 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 },
                                 onNeedCharge = {
                                     Toast.makeText(context, context.getString(R.string.toast_need_charge), Toast.LENGTH_LONG).show()
-                                }
+                                },
+                                skipTicket = cameFromTutorial
                             )
                         },
-                        onDismiss = { showAnalogClockSettingsDialog = false }
+                        onDismiss = {
+                            showAnalogClockSettingsDialog = false
+                            if (cameFromTutorial && tutorialStep == 2) {
+                                tutorialStep = 3
+                            } else if (cameFromTutorial && tutorialStep == 7) {
+                                // 프리셋 저장 완료 → 페이저로 돌아가서 기록 확인 질문
+                                tutorialStep = 8
+                                tutorialStartPage = 3
+                                showTutorial = true
+                            }
+                        }
                     )
                 }
                 if (showBottomSheet) {
                     ModalBottomSheet(
-                        onDismissRequest = { showBottomSheet = false },
+                        onDismissRequest = {
+                            if (!(cameFromTutorial && tutorialStep == 10)) {
+                                showBottomSheet = false
+                            }
+                        },
                         containerColor = Color(0xFF080808),
                         contentColor = Color.White
                     ) {
+                        var presetRowBounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
+                        var bottomSheetRootCoords by remember { mutableStateOf<androidx.compose.ui.layout.LayoutCoordinates?>(null) }
+
+                        Box(modifier = Modifier.fillMaxWidth().onGloballyPositioned { bottomSheetRootCoords = it }) {
                         Column(modifier = Modifier
                             .fillMaxWidth()
                             .navigationBarsPadding()
@@ -407,7 +578,25 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                     analytics.logEvent("open_preset_screen", null)
                                     showPresetScreen = true
                                     showBottomSheet = false
-                                }.padding(vertical = 16.dp, horizontal = 8.dp),
+                                    if (cameFromTutorial && tutorialStep == 10) {
+                                        tutorialStep = 11
+                                    }
+                                }.padding(vertical = 16.dp, horizontal = 8.dp).then(
+                                    if (cameFromTutorial && tutorialStep == 10) {
+                                        Modifier.onGloballyPositioned { coords ->
+                                            bottomSheetRootCoords?.let { root ->
+                                                val pos = root.localPositionOf(coords, androidx.compose.ui.geometry.Offset.Zero)
+                                                presetRowBounds = androidx.compose.ui.geometry.Rect(
+                                                    pos,
+                                                    androidx.compose.ui.geometry.Size(
+                                                        coords.size.width.toFloat(),
+                                                        coords.size.height.toFloat()
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    } else Modifier
+                                ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(Icons.Default.Save, contentDescription = "Presets", tint = Color(0xFFE5C07B))
@@ -417,8 +606,10 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
 
                             Row(
                                 modifier = Modifier.fillMaxWidth().clickable {
-                                    showBottomSheet = false
-                                    showHistoryScreen = true
+                                    if (!(cameFromTutorial && tutorialStep == 10)) {
+                                        showBottomSheet = false
+                                        showHistoryScreen = true
+                                    }
                                 }.padding(vertical = 16.dp, horizontal = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -429,10 +620,12 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
 
                             Row(
                                 modifier = Modifier.fillMaxWidth().clickable {
-                                    val analytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(context)
-                                    analytics.logEvent("open_settings_dialog", null)
-                                    showSettingsDialog = true
-                                    showBottomSheet = false
+                                    if (!(cameFromTutorial && tutorialStep == 10)) {
+                                        val analytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(context)
+                                        analytics.logEvent("open_settings_dialog", null)
+                                        showSettingsDialog = true
+                                        showBottomSheet = false
+                                    }
                                 }.padding(vertical = 16.dp, horizontal = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -443,12 +636,18 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
 
                             Spacer(modifier = Modifier.height(32.dp))
                         }
+
+                        // 튜토리얼 step 10: Preset만 구멍 뚫린 오버레이
+                        if (cameFromTutorial && tutorialStep == 10) {
+                            TutorialDialogOverlay(
+                                step = 10,
+                                targetBounds = presetRowBounds,
+                                guideText = stringResource(R.string.tg_tap_presets)
+                            )
+                        }
+                        } // Box 닫기
                     }
                 }
-                if (showTutorial) {
-                    TutorialPagerOverlay(onDismiss = { showTutorial = false })
-                }
-
                 if (showAdConfirmDialog) {
                     androidx.compose.material3.AlertDialog(
                         onDismissRequest = { showAdConfirmDialog = false },
@@ -488,6 +687,48 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 AppPopupManager()
             }
         }
+
+        // ── 튜토리얼 오버레이 (Scaffold 밖 = TopAppBar 위까지 덮음) ──
+        if (cameFromTutorial && tutorialStep in listOf(1,2,3,4,5,6,7,9)) {
+            TutorialInteractiveOverlay(
+                tutorialStep = tutorialStep,
+                menuButtonBounds = menuButtonBounds
+            )
+        }
+
+        if (showTutorial) {
+            TutorialPagerOverlay(
+                initialPage = tutorialStartPage,
+                onDismiss = {
+                    showTutorial = false
+                    tutorialStartPage = 0
+                    cameFromTutorial = false
+                    tutorialStep = 0
+                },
+                onTryAlarm = {
+                    showTutorial = false
+                    cameFromTutorial = true
+                    tutorialStep = 1
+                },
+                onSkipAlarm = {
+                    // 건너뛰기: tutorial1 프리셋 자동 생성
+                    val existingPresets = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
+                    if (!existingPresets.contains("tutorial1")) {
+                        val tutorial1Alarms = listOf(
+                            AlarmSetting(isRelative = true, relativeTime = "00:00:10"),
+                            AlarmSetting(isRelative = true, relativeTime = "10:00:00")
+                        )
+                        savePresetToPrefs(context, "tutorial1", tutorial1Alarms, "#E5C07B", "Clock")
+                    }
+                },
+                onTryPreset = {
+                    showTutorial = false
+                    cameFromTutorial = true
+                    tutorialStep = 9
+                }
+            )
+        }
+        } // Box 닫기 (Scaffold 감싸는 Box)
     }
 }
 

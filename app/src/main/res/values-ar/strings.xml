@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">إزالة الإعلانات (دفع)</string>
+    <string name="settings_transparency">شفافية نافذة الإعدادات</string>
+    <string name="language">اللغة</string>
+    <string name="apply">تطبيق</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">سيتم الحفظ بعد مشاهدة الإعلان (اختبار)</string>
+    <string name="toast_ad_fail">فشل الإعلان</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">لا توجد إعلانات! تم الشحن مجانًا! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">المنبه يرن!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">المنبه يرن.</string>
+    <string name="default_notif_text">حان وقت الاستيقاظ!</string>
+    <string name="channel_name_high">إشعار صوت المنبه</string>
+    <string name="channel_name_low">إشعار صامت للمنبه</string>
+    <string name="common_stop">إيقاف</string>
+    <string name="log_alarm_started">بدأ المنبه</string>
+    <string name="log_routine_stopped">تم إيقاف الروتين بواسطة المستخدم 💨</string>
+    <string name="log_single_alarm_completed">اكتمل منبه واحد 🔥</string>
+    <string name="default_preset_name">روتين بدون اسم</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">مطلوب إذن للمنبهات الدقيقة.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">روتين بدون اسم</string>
+    <string name="setting_mode_relative">الوضع: الوقت النسبي (مؤقت)</string>
+    <string name="setting_mode_absolute">الوضع: الوقت المطلق (منبه)</string>
+    <string name="preset_save_title">حفظ الإعداد المسبق</string>
+    <string name="preset_name_hint">اسم الإعداد (مثال: صباح يوم العمل)</string>
+    <string name="preset_color_label">لون المدار</string>
+    <string name="preset_icon_label">الأيقونة المركزية</string>
+    <string name="toast_preset_saved">تم حفظ الإعداد المسبق!</string>
+    <string name="common_save">حفظ</string>
+    <string name="common_cancel">إلغاء</string>
+    <string name="common_confirm">تأكيد</string>
+    <string name="setting_unknown_ringtone">نغمة رنين غير معروفة</string>
+    <string name="setting_default_ringtone">الصوت الافتراضي</string>
+    <string name="setting_tts_hint">النص المراد قراءته</string>
+    <string name="setting_ringtone_picker_title">اختر صوت المنبه</string>
+    <string name="setting_repeat_times_format">%1$d مرات</string>
+    <string name="setting_duration_format">%1$d ثانية</string>
+    <string name="setting_repeat_h">تكرار(س)</string>
+    <string name="setting_repeat_m">تكرار(د)</string>
+    <string name="setting_repeat_s">تكرار(ث)</string>
+    <string name="setting_repeat_count_format">تكرار %1$d مرات</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">تسجيل الدخول مطلوب.</string>
+    <string name="toast_backup_success">اكتمل النسخ الاحتياطي السحابي!</string>
+    <string name="toast_backup_fail">فشل النسخ الاحتياطي: %1$s</string>
+    <string name="toast_restore_success">اكتملت الاستعادة من السحابة!</string>
+    <string name="toast_restore_empty">لم يتم العثور على بيانات احتياطية.</string>
+    <string name="toast_restore_fail">فشلت الاستعادة: %1$s</string>
+
+    <string name="profile_update_success">تم تغيير الاسم المستعار بنجاح.</string>
+    <string name="profile_update_fail">فشل في تغيير الاسم المستعار.</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">إعادة تعيين</string>
+    <string name="history_long_press_guide">اضغط مطولاً على عنصر لإظهار القائمة التفصيلية.</string>
+    <string name="history_detail_timeline">التفاصيل (الجدول الزمني)</string>
+    <string name="history_hide_from_calendar">إخفاء الكل من التقويم</string>
+    <string name="history_completed_format">%1$d / %2$d اكتمل (%3$d%%)</string>
+    <string name="history_default_sound">🎵 الصوت الافتراضي</string>
+    <string name="history_infinite_repeat">تكرار لا نهائي</string>
+    <string name="history_repeat_count_format">تكرار %1$d مرات</string>
+    <string name="history_no_repeat">لا تكرار</string>
+    <string name="history_crescendo_active">🔥 تصاعد الصوت نشط</string>
+    <string name="history_close">إغلاق</string>
+    <string name="history_unknown_time">غير معروف</string>
+    <string name="history_aborted">تم الإلغاء</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">تمت إضافة الإعداد المسبق \'%1$s\'!</string>
+    <string name="toast_invalid_qr">رمز QR غير صالح.</string>
+    <string name="toast_login_fail">فشل تسجيل الدخول: %1$s</string>
+    <string name="toast_login_success">تم تسجيل الدخول بنجاح!</string>
+    <string name="toast_auth_fail">فشلت المصادقة</string>
+    <string name="toast_alarm_permission_request">يرجى السماح بإذن المنبهات الدقيقة.</string>
+    <string name="toast_alarm_set_fail">فشل في ضبط المنبه.</string>
+    <string name="toast_exact_alarm_needed">تحتاج إلى \'السماح بالمنبهات الدقيقة\' لضمان عمل المنبه بشكل موثوق!</string>
+    <string name="toast_battery_opt_needed">تحتاج إلى \'تجاهل تحسين البطارية\' لضمان عمل المنبه بشكل موثوق!</string>
+    <string name="toast_logout_success">تم تسجيل الخروج بنجاح.</string>
+
+    <string name="toast_session_expired_logout">تم تسجيل الخروج لأن حسابك فُتح من جهاز آخر.</string>
+    <string name="dialog_other_device_title">تم تسجيل الدخول من جهاز آخر</string>
+    <string name="dialog_other_device_msg">هناك جهاز آخر مسجل الدخول إلى هذا الحساب منذ %1$s.\nهل ترغب في تسجيل خروجه وتسجيل الدخول على هذا الجهاز؟</string>
+    <string name="dialog_force_login">فرض تسجيل الدخول</string>
+    <string name="toast_session_claim_fail">فشل تأمين الجلسة</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ تعارض مزامنة البيانات</string>
+    <string name="main_sync_conflict_desc">السجلات على جهاز آخر تختلف عن هذا الهاتف. يرجى اختيار البيانات التي تريد الاحتفاظ بها.</string>
+    <string name="main_sync_local_data">📱 بيانات هاتفي</string>
+    <string name="main_sync_cloud_data">☁️ بيانات السحابة</string>
+    <string name="main_sync_latest_badge"> [الأحدث ✨]</string>
+    <string name="main_sync_no_record">لا توجد سجلات</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ استبدال ببيانات السحابة (موصى به)</string>
+    <string name="main_sync_load_cloud">☁️ تحميل بيانات السحابة</string>
+    <string name="main_sync_keep_local_rec">📱 الاحتفاظ ببيانات الهاتف (موصى به)</string>
+    <string name="main_sync_keep_local">📱 الاحتفاظ ببيانات الهاتف</string>
+    <string name="toast_need_charge">⚡ نفدت الاستخدامات المجانية. اضغط على أيقونة البرق في الزاوية العلوية اليمنى للشحن!</string>
+
+    <string name="toast_preset_load_fail">فشل في تحميل الإعداد المسبق.</string>
+    <string name="toast_alarm_restarted">تم إعادة تشغيل المنبه.</string>
+    <string name="toast_alarm_saved">تم حفظ المنبه.</string>
+
+    <string name="main_menu_earphone_title">وضع غرفة الدراسة (سماعات الأذن فقط)</string>
+    <string name="main_menu_earphone_desc">سيرن المنبه باستخدام مستوى صوت الوسائط.</string>
+    <string name="main_menu_preset">تحميل / مشاركة الإعدادات المسبقة</string>
+    <string name="main_menu_history">سجل الاستخدام</string>
+    <string name="main_menu_settings">إعدادات التطبيق (الشفافية، الحساب)</string>
+    <string name="toast_preset_applied">تم تطبيق الإعداد المسبق \'%1$s\'.</string>
+
+    <string name="ad_confirm_title">شحن الطاقة</string>
+    <string name="ad_confirm_desc">هل ترغب في مشاهدة إعلان لشحن 3 طاقة (⚡)؟\n(يتم إعادة شحن 5 طاقة تلقائيًا كل يوم.)</string>
+
+    ``preset``
+    <string name="preset_screen_title">الإعدادات المسبقة</string>
+    <string name="preset_empty_message">لا توجد إعدادات مسبقة محفوظة.</string>
+    <string name="toast_preset_deleted">تم حذف الإعداد المسبق \'%1$s\'.</string>
+    <string name="toast_preset_corrupted">الإعداد المسبق تالف أو قديم. يرجى الحفظ مرة أخرى.</string>
+    <string name="preset_receipt_infinite_repeat">تكرار لا نهائي</string>
+    <string name="preset_receipt_repeat_count">تكرار %1$d مرات</string>
+    <string name="preset_receipt_repeat_interval">🔁 فاصل %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 لقد تلقيت الروتين \'%1$s\' من تطبيق Chronos!\n\nاضغط على الرابط أدناه لتطبيقه على هاتفك مباشرة:\n%2$s</string>
+    <string name="preset_share_intent_title">مشاركة الروتين</string>
+    <string name="preset_btn_share_link">مشاركة الرابط عبر الماسنجر</string>
+    <string name="toast_link_copied">تم نسخ الرابط! يرجى لصقه في الدردشة بعد إرسال الصورة.</string>
+    <string name="toast_image_save_fail">فشل في حفظ الصورة. سيتم المشاركة كنص.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 مشاهدة البرنامج التعليمي مرة أخرى</string>
+    <string name="settings_account_link">🔗 ربط الحساب</string>
+    <string name="settings_tos_agree">بتسجيل الدخول، فإنك توافق على شروط الاستخدام وسياسة الخصوصية.</string>
+    <string name="settings_google_login">تسجيل الدخول باستخدام Google</string>
+    <string name="settings_linked_account">الحساب المرتبط: %1$s</string>
+    <string name="settings_logout">تسجيل الخروج</string>
+    <string name="settings_overdrive_title">وضع Overdrive</string>
+    <string name="settings_overdrive_desc">تضخيم مستوى الصوت إلى 200%% متجاوزًا حدود النظام (تحذير!)</string>
+    <string name="settings_language">إعدادات اللغة (Language)</string>
+
+    <string name="profile_no_nickname">لا يوجد اسم مستعار</string>
+    <string name="profile_new_nickname">اسم مستعار جديد</string>
+    <string name="profile_verify">تحقق</string>
+    <string name="profile_msg_empty">يرجى إدخال اسم مستعار.</string>
+    <string name="profile_msg_current">هذا هو اسمك المستعار الحالي.</string>
+    <string name="profile_msg_available">✅ الاسم المستعار متاح!</string>
+    <string name="profile_msg_taken">❌ هذا الاسم مستخدم بالفعل.</string>
+    <string name="profile_msg_prompt_verify">يرجى الضغط على التحقق من التكرار.</string>
+    <string name="profile_cancel">إلغاء</string>
+    <string name="profile_save">حفظ</string>
+
+    <string name="toast_nickname_changed">تم تغيير الاسم المستعار بنجاح.</string>
+    <string name="toast_nickname_failed">فشل في تغيير الاسم المستعار.</string>
+    <string name="profile_check_duplicate">التحقق من التكرار</string>
+
+    <string name="profile_image_save_fail">فشل حفظ الصورة</string>
+    <string name="profile_save_success_toast">تم حفظ الملف الشخصي بنجاح.</string>
+
+    <string name="profile_msg_invalid_format">من 3 إلى 20 حرفًا، أحرف/أرقام/_ فقط</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">حدث خاص لمختبري الإصدار التجريبي</string>
+    <string name="tutorial_desc_0">أفضل 1000 مستخدم سيحصلون على ميزات بريميوم مجانًا بعد الإصدار الرسمي!\n\nيرجى تسجيل الدخول باستخدام Google في قائمة \'الإعدادات (⚙️)\' للمشاركة.</string>
+
+    <string name="tutorial_title_1">الشاشة الرئيسية</string>
+    <string name="tutorial_desc_1">المس الساعة في المنتصف لإضافة منبه، وتحقق من السجل والإعدادات في الزاوية العلوية اليمنى.</string>
+
+    <string name="tutorial_title_2">عناصر تحكم الساعة</string>
+    <string name="tutorial_desc_2">• لمسة خفيفة : فتح إعدادات المنبه\n• نقرة مزدوجة : إلغاء جميع المنبهات\n• نقرة مزدوجة : إيقاف المنبه الذي يرن\n• ضغطة مطولة : إعادة تشغيل المنبهات الأخيرة مع اهتزاز</string>
+
+    <string name="tutorial_title_3">دليل أيقونات الإعدادات</string>
+    <string name="tutorial_desc_3">⏳ : التبديل إلى وضع المؤقت (الوقت النسبي)\n📈 : زيادة الصوت تدريجيًا (تصاعد)\n♾️ : تكرار لا نهائي حتى يتم إيقافه\n🗣️ : قراءة النص بصوت عالٍ (TTS)</string>
+
+    <string name="tutorial_title_4">إعدادات المنبه التفصيلية</string>
+    <string name="tutorial_desc_4">قم بتخصيص الوقت النسبي ومستوى الصوت والمدة والتصاعد كما تريد.</string>
+
+    <string name="tutorial_title_5">حفظ ومشاركة الروتينات</string>
+    <string name="tutorial_desc_5">احفظ إعدادات المنبه الخاصة بك كإعداد مسبق، وشاركها مع أصدقائك عبر الإيصالات ورموز الاستجابة السريعة (QR)!</string>
+
+    <string name="tutorial_title_6">إعدادات التطبيق</string>
+    <string name="tutorial_desc_6">اضبط شفافية الخلفية أو قم بزيارة هذا البرنامج التعليمي مرة أخرى في أي وقت.</string>
+
+    <string name="tutorial_skip">تخطي</string>
+    <string name="tutorial_next">التالي</string>
+    <string name="tutorial_start">البدء</string>
+
+    <string name="tutorial_mock_title">⏰ تفاصيل المنبه</string>
+
+    <string name="tutorial_mock_crescendo_title">تصاعد (Crescendo)</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ الصوت يرتفع تدريجياً!</string>
+
+    <string name="tutorial_mock_infinite_title">تكرار لا نهائي</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ يرن حتى تقوم بإيقافه!</string>
+
+    <string name="tutorial_mock_tts_title">وضع TTS</string>
+    <string name="tutorial_mock_tts_desc">⬅️ يقرأ النص الذي أدخلته بصوت عالٍ!</string>
+
+    <string name="tutorial_mock_repeat_title">تكرار على فترات</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ ميزة الغفوة (يرن مرة أخرى بعد n دقيقة)!</string>
+
+    <string name="tutorial_mock_footer">💡 قم بتشغيل المفاتيح بجوار الأيقونات\nلإنشاء روتينك المثالي!</string>
+
+    <string name="tutorial_title_energy">نظام الطاقة المجاني</string>
+    <string name="tutorial_desc_energy">الطاقة مطلوبة لتشغيل المنبه.\nلا تقلق! يتم إعادة شحنها تلقائيًا 5 مرات كل يوم.</string>
+
+    <string name="tutorial_try_alarm_title">جرب إعداد منبه!</string>
+    <string name="tutorial_try_alarm_desc">اضغط على الشاشة لفتح إعدادات المنبه.\nاضبط الوقت واحفظه!</string>
+    <string name="tutorial_try_alarm_btn">جرب الآن</string>
+    <string name="tutorial_try_preset_title">هل نتحقق من إعدادك المحفوظ؟</string>
+    <string name="tutorial_try_preset_desc">ستجد الإعداد المسبق الذي حفظته للتو\nفي شاشة التحميل.</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">أدخل 10 في الثواني (S)</string>
+    <string name="tg_add_alarm">انقر لإضافة منبه جديد</string>
+    <string name="tg_input_hours">أدخل 10 في الساعات (H)</string>
+    <string name="tg_save_button">انقر ✓ للحفظ</string>
+    <string name="tg_preset_save_btn">💾 انقر على زر حفظ الإعداد المسبق</string>
+    <string name="tg_save_confirm">انقر على زر الحفظ</string>
+    <string name="tg_tap_share">انقر على زر المشاركة</string>
+    <string name="tg_tap_name_load">انقر على الاسم للتحميل</string>
+    <string name="tg_preset_loaded_exit">تم تحميل الإعداد المسبق!\nانقر X للخروج</string>
+    <string name="tg_drag_down">اسحب للأسفل</string>
+    <string name="tg_qr_share">يمكنك مشاركة الإعدادات عبر رمز QR</string>
+    <string name="tg_link_share">يمكنك أيضًا المشاركة عبر رابط</string>
+    <string name="tg_close_button">انقر على زر الإغلاق</string>
+    <string name="tg_tap_presets">انقر على الإعدادات المسبقة</string>
+    <string name="tg_try_alarm_title">جرّب ضبط منبه!</string>
+    <string name="tg_try_alarm_desc">انقر على الشاشة لفتح الإعدادات.\nاضبط الوقت واحفظ!</string>
+    <string name="tg_try_it">جرّب</string>
+    <string name="tg_skip">تخطي</string>
+    <string name="tg_check_preset_title">تحقق من الإعداد المحفوظ؟</string>
+    <string name="tg_check_preset_desc">يمكنك العثور على الإعداد المحفوظ\nفي شاشة التحميل.</string>
+    <string name="tg_check_it">تحقق</string>
+    <string name="tg_done">تم</string>
+    <string name="tg_step1_title">انقر على الساعة!</string>
+    <string name="tg_step1_desc">انقر على الساعة في الوسط\nلفتح إعدادات المنبه.</string>
+    <string name="tg_step2_title">اضبط المنبه!</string>
+    <string name="tg_step2_desc">تحقق من وقت المنبه\nوانقر على حفظ.</string>
+    <string name="tg_step3_title">انتظر حتى يرن المنبه</string>
+    <string name="tg_step3_desc">النقطة الصفراء تحدد موقع المنبه.\nسيرن قريبًا!</string>
+    <string name="tg_step4_title">انقر مرتين على الشاشة!</string>
+    <string name="tg_step4_desc">المنبه يرن.\nانقر مرتين لإيقافه.</string>
+    <string name="tg_step5_title">اضغط مطولاً على الساعة!</string>
+    <string name="tg_step5_desc">اضغط مطولاً على الساعة\nلبدء المنبه فورًا.</string>
+    <string name="tg_step6_title">انقر مرتين مجددًا!</string>
+    <string name="tg_step6_desc">المنبه بالضغط المطول\nيتوقف أيضًا بالنقر المزدوج.</string>
+    <string name="tg_step7_title">انقر على الساعة مجددًا!</string>
+    <string name="tg_step7_desc">احفظ إعداداتك\nكإعداد مسبق!</string>
+    <string name="tg_step9_title">انقر على القائمة</string>
+    <string name="tg_step9_desc">انقر على زر القائمة\nلعرض السجل.</string>
+    <string name="dialog_notice_title">إشعار</string>
+    <string name="update_title">إشعار التحديث</string>
+    <string name="update_msg_force">التحديث مطلوب لمتابعة استخدام الخدمة.</string>
+    <string name="update_msg_optional">يتوفر إصدار جديد. هل تريد التحديث؟</string>
+    <string name="update_btn_now">تحديث</string>
+    <string name="update_btn_later">لاحقًا</string>
+</resources>

@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">विज्ञापन हटाएं (सशुल्क)</string>
+    <string name="settings_transparency">सेटिंग विंडो पारदर्शिता</string>
+    <string name="language">भाषा</string>
+    <string name="apply">लागू करें</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">विज्ञापन देखने के बाद सहेजा जाएगा (परीक्षण)</string>
+    <string name="toast_ad_fail">विज्ञापन विफल</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">कोई विज्ञापन नहीं है, इसलिए मुफ्त में चार्ज किया गया! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">अलार्म बज रहा है!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">अलार्म बज रहा है।</string>
+    <string name="default_notif_text">उठने का समय हो गया है!</string>
+    <string name="channel_name_high">अलार्म ध्वनि अधिसूचना</string>
+    <string name="channel_name_low">अलार्म मौन अधिसूचना</string>
+    <string name="common_stop">रोकें</string>
+    <string name="log_alarm_started">अलार्म शुरू हुआ</string>
+    <string name="log_routine_stopped">उपयोगकर्ता द्वारा रूटीन रोका गया 💨</string>
+    <string name="log_single_alarm_completed">एकल अलार्म पूरा हुआ 🔥</string>
+    <string name="default_preset_name">अनाम रूटीन</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">सटीक अलार्म अनुमति की आवश्यकता है।</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">अनाम रूटीन</string>
+    <string name="setting_mode_relative">मोड: सापेक्ष समय (टाइमर)</string>
+    <string name="setting_mode_absolute">मोड: निरपेक्ष समय (अलार्म)</string>
+    <string name="preset_save_title">प्रीसेट सहेजें</string>
+    <string name="preset_name_hint">प्रीसेट नाम (उदा. सुबह)</string>
+    <string name="preset_color_label">कक्षा (ऑर्बिट) का रंग</string>
+    <string name="preset_icon_label">केंद्र चिह्न</string>
+    <string name="toast_preset_saved">प्रीसेट सहेजा गया!</string>
+    <string name="common_save">सहेजें</string>
+    <string name="common_cancel">रद्द करें</string>
+    <string name="common_confirm">पुष्टि करें</string>
+    <string name="setting_unknown_ringtone">अज्ञात रिंगटोन</string>
+    <string name="setting_default_ringtone">डिफ़ॉल्ट ध्वनि</string>
+    <string name="setting_tts_hint">पढ़ने के लिए पाठ</string>
+    <string name="setting_ringtone_picker_title">अलार्म ध्वनि चुनें</string>
+    <string name="setting_repeat_times_format">%1$d बार</string>
+    <string name="setting_duration_format">%1$dसे.</string>
+    <string name="setting_repeat_h">दोहराएं(H)</string>
+    <string name="setting_repeat_m">दोहराएं(M)</string>
+    <string name="setting_repeat_s">दोहराएं(S)</string>
+    <string name="setting_repeat_count_format">%1$d बार दोहराएं</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">लॉगिन आवश्यक है。</string>
+    <string name="toast_backup_success">क्लाउड बैकअप पूर्ण!</string>
+    <string name="toast_backup_fail">बैकअप विफल: %1$s</string>
+    <string name="toast_restore_success">क्लाउड पुनर्स्थापना पूर्ण!</string>
+    <string name="toast_restore_empty">कोई बैकअप डेटा नहीं मिला।</string>
+    <string name="toast_restore_fail">पुनर्स्थापना विफल: %1$s</string>
+
+    <string name="profile_update_success">उपनाम सफलतापूर्वक बदला गया।</string>
+    <string name="profile_update_fail">उपनाम बदलने में विफल।</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">रीसेट</string>
+    <string name="history_long_press_guide">विस्तृत मेनू देखने के लिए किसी आइटम को देर तक दबाएं।</string>
+    <string name="history_detail_timeline">विवरण (टाइमलाइन)</string>
+    <string name="history_hide_from_calendar">कैलेंडर से सभी छिपाएं</string>
+    <string name="history_completed_format">%1$d / %2$d पूर्ण (%3$d%%)</string>
+    <string name="history_default_sound">🎵 डिफ़ॉल्ट ध्वनि</string>
+    <string name="history_infinite_repeat">अनंत दोहराव</string>
+    <string name="history_repeat_count_format">%1$d बार दोहराएं</string>
+    <string name="history_no_repeat">कोई दोहराव नहीं</string>
+    <string name="history_crescendo_active">🔥 क्रैसेन्डो सक्रिय</string>
+    <string name="history_close">बंद करें</string>
+    <string name="history_unknown_time">अज्ञात</string>
+    <string name="history_aborted">रद्द किया गया</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">\'%1$s\' प्रीसेट जोड़ा गया!</string>
+    <string name="toast_invalid_qr">अमान्य क्यूआर (QR) कोड।</string>
+    <string name="toast_login_fail">लॉगिन विफल: %1$s</string>
+    <string name="toast_login_success">लॉगिन सफल!</string>
+    <string name="toast_auth_fail">प्रमाणीकरण विफल</string>
+    <string name="toast_alarm_permission_request">कृपया सटीक अलार्म के लिए अनुमति दें।</string>
+    <string name="toast_alarm_set_fail">अलार्म सेट करने में विफल।</string>
+    <string name="toast_exact_alarm_needed">विश्वसनीय अलार्म के लिए \'सटीक अलार्म की अनुमति दें\' आवश्यक है!</string>
+    <string name="toast_battery_opt_needed">विश्वसनीय अलार्म के लिए \'बैटरी अनुकूलन से बाहर करें\' आवश्यक है!</string>
+    <string name="toast_logout_success">लॉग आउट हो गया।</string>
+
+    <string name="toast_session_expired_logout">किसी अन्य डिवाइस से लॉगिन होने के कारण लॉग आउट किया गया।</string>
+    <string name="dialog_other_device_title">अन्य डिवाइस से लॉगिन किया गया</string>
+    <string name="dialog_other_device_msg">%1$s से किसी अन्य डिवाइस ने इस खाते में प्रवेश किया है।\nक्या आप उस डिवाइस से लॉग आउट करके इस डिवाइस में लॉग इन करना चाहते हैं?</string>
+    <string name="dialog_force_login">बलपूर्वक लॉगिन करें</string>
+    <string name="toast_session_claim_fail">सत्र सुरक्षित करने में विफल</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ डेटा सिंक विरोध</string>
+    <string name="main_sync_conflict_desc">अन्य डिवाइस पर सहेजे गए रिकॉर्ड आपके वर्तमान फ़ोन से भिन्न हैं। कृपया चुनें कि कौन सा डेटा रखना है।</string>
+    <string name="main_sync_local_data">📱 मेरे फ़ोन का डेटा</string>
+    <string name="main_sync_cloud_data">☁️ क्लाउड</string>
+    <string name="main_sync_latest_badge"> [नवीनतम ✨]</string>
+    <string name="main_sync_no_record">कोई रिकॉर्ड नहीं</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ क्लाउड डेटा के साथ अधिलेखित करें (अनुशंसित)</string>
+    <string name="main_sync_load_cloud">☁️ क्लाउड डेटा लोड करें</string>
+    <string name="main_sync_keep_local_rec">📱 मेरे फ़ोन का डेटा रखें (अनुशंसित)</string>
+    <string name="main_sync_keep_local">📱 मेरे फ़ोन का डेटा रखें</string>
+    <string name="toast_need_charge">⚡ मुफ्त उपयोग समाप्त। रिचार्ज करने के लिए ऊपर दाईं ओर बिजली चिह्न पर टैप करें!</string>
+
+    <string name="toast_preset_load_fail">प्रीसेट लोड करने में विफल।</string>
+    <string name="toast_alarm_restarted">अलार्म पुनः आरंभ किया गया।</string>
+    <string name="toast_alarm_saved">अलार्म सहेजा गया。</string>
+
+    <string name="main_menu_earphone_title">अध्ययन कक्ष मोड (केवल इयरफ़ोन)</string>
+    <string name="main_menu_earphone_desc">अलार्म मीडिया वॉल्यूम पर बजेगा।</string>
+    <string name="main_menu_preset">प्रीसेट लोड / साझा करें</string>
+    <string name="main_menu_history">उपयोग इतिहास</string>
+    <string name="main_menu_settings">ऐप सेटिंग्स (पारदर्शिता, खाता)</string>
+    <string name="toast_preset_applied">\'%1$s\' प्रीसेट लागू किया गया。</string>
+
+    <string name="ad_confirm_title">बिजली रिचार्ज</string>
+    <string name="ad_confirm_desc">क्या आप एक विज्ञापन देखकर 3 बिजली (⚡) रिचार्ज करना चाहते हैं?\n(हर दिन 5 बिजली अपने आप रिचार्ज हो जाती है।)</string>
+
+    ``preset``
+    <string name="preset_screen_title">प्रीसेट</string>
+    <string name="preset_empty_message">कोई प्रीसेट सहेजा नहीं गया है।</string>
+    <string name="toast_preset_deleted">\'%1$s\' प्रीसेट हटा दिया गया。</string>
+    <string name="toast_preset_corrupted">दूषित या पुराना प्रीसेट। कृपया फिर से सहेजें।</string>
+    <string name="preset_receipt_infinite_repeat">अनंत दोहराव</string>
+    <string name="preset_receipt_repeat_count">%1$d बार दोहराएं</string>
+    <string name="preset_receipt_repeat_interval">🔁 अंतराल %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 आपको Chronos ऐप से \'%1$s\' रूटीन प्राप्त हुआ है!\n\nइसे अपने फ़ोन पर लागू करने के लिए नीचे दिए गए लिंक पर टैप करें:\n%2$s</string>
+    <string name="preset_share_intent_title">रूटीन साझा करें</string>
+    <string name="preset_btn_share_link">मैसेंजर (Messenger) के माध्यम से लिंक साझा करें</string>
+    <string name="toast_link_copied">लिंक कॉपी किया गया! कृपया छवि भेजने के बाद चैट में पेस्ट करें।</string>
+    <string name="toast_image_save_fail">छवि सहेजने में विफल। टेक्स्ट के रूप में साझा किया जा रहा है।</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 ऐप ट्यूटोरियल फिर से देखें</string>
+    <string name="settings_account_link">🔗 खाता लिंक करें</string>
+    <string name="settings_tos_agree">साइन इन करके, आप हमारी सेवा की शर्तों और गोपनीयता नीति से सहमत होते हैं।</string>
+    <string name="settings_google_login">Google के साथ साइन इन करें</string>
+    <string name="settings_linked_account">लिंक किया गया खाता: %1$s</string>
+    <string name="settings_logout">लॉग आउट</string>
+    <string name="settings_overdrive_title">ओवरड्राइव (Overdrive) मोड</string>
+    <string name="settings_overdrive_desc">सिस्टम सीमा से 200%% अधिक वॉल्यूम बढ़ाएं (चेतावनी!)</string>
+    <string name="settings_language">भाषा सेटिंग (Language)</string>
+
+    <string name="profile_no_nickname">कोई उपनाम नहीं</string>
+    <string name="profile_new_nickname">नया उपनाम</string>
+    <string name="profile_verify">सत्यापित करें</string>
+    <string name="profile_msg_empty">कृपया एक उपनाम दर्ज करें।</string>
+    <string name="profile_msg_current">यह आपका वर्तमान उपनाम है।</string>
+    <string name="profile_msg_available">✅ उपनाम उपलब्ध है!</string>
+    <string name="profile_msg_taken">❌ यह उपनाम पहले ही लिया जा चुका है।</string>
+    <string name="profile_msg_prompt_verify">कृपया डुप्लिकेट जाँचें पर टैप करें।</string>
+    <string name="profile_cancel">रद्द करें</string>
+    <string name="profile_save">सहेजें</string>
+
+    <string name="toast_nickname_changed">उपनाम सफलतापूर्वक बदला गया。</string>
+    <string name="toast_nickname_failed">उपनाम बदलने में विफल。</string>
+    <string name="profile_check_duplicate">डुप्लिकेट जाँचें</string>
+
+    <string name="profile_image_save_fail">छवि सहेजने में विफल</string>
+    <string name="profile_save_success_toast">प्रोफ़ाइल सफलतापूर्वक सहेजी गई。</string>
+
+    <string name="profile_msg_invalid_format">3~20 अक्षर, केवल अक्षर/संख्या/_</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">बीटा टेस्टर विशेष कार्यक्रम</string>
+    <string name="tutorial_desc_0">शीर्ष 1,000 सक्रिय उपयोगकर्ताओं को आधिकारिक रिलीज़ के बाद प्रीमियम सुविधाएँ मुफ्त में मिलेंगी!\n\nभाग लेने के लिए शीर्ष दाईं ओर \'सेटिंग्स (⚙️)\' मेनू में Google के साथ साइन इन करें।</string>
+
+    <string name="tutorial_title_1">मुख्य स्क्रीन</string>
+    <string name="tutorial_desc_1">अलार्म जोड़ने के लिए केंद्र में घड़ी को स्पर्श करें, और शीर्ष दाईं ओर इतिहास और सेटिंग्स जांचें।</string>
+
+    <string name="tutorial_title_2">घड़ी नियंत्रण</string>
+    <string name="tutorial_desc_2">• टैप करें : अलार्म सेटिंग्स खोलें\n• डबल टैप : सभी अलार्म रद्द करें\n• डबल टैप : बजता हुआ अलार्म रोकें\n• देर तक दबाएं : कंपन के साथ हाल के अलार्म पुनः आरंभ करें</string>
+
+    <string name="tutorial_title_3">आइकन गाइड</string>
+    <string name="tutorial_desc_3">⏳ : टाइमर (सापेक्ष समय) मोड\n📈 : धीरे-धीरे वॉल्यूम बढ़ाएं (क्रैसेन्डो)\n♾️ : बंद होने तक अनंत दोहराव\n🗣️ : पाठ को जोर से पढ़ें (TTS)</string>
+
+    <string name="tutorial_title_4">विस्तृत अलार्म सेटिंग्स</string>
+    <string name="tutorial_desc_4">सापेक्ष समय, वॉल्यूम, अवधि और क्रैसेन्डो को अपनी पसंद के अनुसार अनुकूलित करें।</string>
+
+    <string name="tutorial_title_5">रूटीन सहेजें और साझा करें</string>
+    <string name="tutorial_desc_5">अपनी अलार्म सेटिंग्स को प्रीसेट के रूप में सहेजें, और शानदार रसीदों और क्यूआर (QR) कोड के साथ दोस्तों के साथ साझा करें!</string>
+
+    <string name="tutorial_title_6">ऐप सेटिंग्स</string>
+    <string name="tutorial_desc_6">पृष्ठभूमि पारदर्शिता समायोजित करें या इस ट्यूटोरियल को किसी भी समय फिर से देखें।</string>
+
+    <string name="tutorial_skip">छोड़ें</string>
+    <string name="tutorial_next">अगला</string>
+    <string name="tutorial_start">शुरू करें</string>
+
+    <string name="tutorial_mock_title">⏰ अलार्म विवरण</string>
+
+    <string name="tutorial_mock_crescendo_title">क्रैसेन्डो</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ ध्वनि धीरे-धीरे तेज हो जाती है!</string>
+
+    <string name="tutorial_mock_infinite_title">अनंत दोहराव</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ तब तक बजता है जब तक आप इसे बंद नहीं कर देते!</string>
+
+    <string name="tutorial_mock_tts_title">TTS मोड</string>
+    <string name="tutorial_mock_tts_desc">⬅️ आपके द्वारा दर्ज किए गए पाठ को जोर से पढ़ता है!</string>
+
+    <string name="tutorial_mock_repeat_title">अंतराल दोहराव</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ स्नूज़ (Snooze) फ़ंक्शन (n मिनट बाद फिर से बजता है)!</string>
+
+    <string name="tutorial_mock_footer">💡 अपना आदर्श रूटीन बनाने के लिए\nआइकन के बगल में स्विच चालू करें!</string>
+
+    <string name="tutorial_title_energy">मुफ़्त ऊर्जा प्रणाली</string>
+    <string name="tutorial_desc_energy">अलार्म चलाने के लिए ऊर्जा की आवश्यकता होती है।\nचिंता न करें! यह हर दिन 5 बार अपने आप रिचार्ज हो जाती है।</string>
+
+    <string name="tutorial_try_alarm_title">अलार्म सेट करने का प्रयास करें!</string>
+    <string name="tutorial_try_alarm_desc">सेटिंग्स खोलने के लिए स्क्रीन पर टैप करें।\nसमय निर्धारित करें और सहेजें!</string>
+    <string name="tutorial_try_alarm_btn">प्रयास करें</string>
+    <string name="tutorial_try_preset_title">क्या हम आपका सहेजा गया प्रीसेट देखें?</string>
+    <string name="tutorial_try_preset_desc">आप लोड स्क्रीन में\nअपना सहेजा गया प्रीसेट पा सकते हैं।</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">सेकंड (S) में 10 दर्ज करें</string>
+    <string name="tg_add_alarm">नया अलार्म जोड़ने के लिए टैप करें</string>
+    <string name="tg_input_hours">घंटे (H) में 10 दर्ज करें</string>
+    <string name="tg_save_button">सेव करने के लिए ✓ टैप करें</string>
+    <string name="tg_preset_save_btn">💾 प्रीसेट सेव बटन टैप करें</string>
+    <string name="tg_save_confirm">सेव बटन टैप करें</string>
+    <string name="tg_tap_share">शेयर बटन टैप करें</string>
+    <string name="tg_tap_name_load">लोड करने के लिए नाम टैप करें</string>
+    <string name="tg_preset_loaded_exit">प्रीसेट लोड हो गया!\nबाहर निकलने के लिए X टैप करें</string>
+    <string name="tg_drag_down">नीचे खींचें</string>
+    <string name="tg_qr_share">QR कोड से प्रीसेट शेयर करें</string>
+    <string name="tg_link_share">लिंक से भी शेयर कर सकते हैं</string>
+    <string name="tg_close_button">बंद करें बटन टैप करें</string>
+    <string name="tg_tap_presets">प्रीसेट टैप करें</string>
+    <string name="tg_try_alarm_title">अलार्म सेट करके देखें!</string>
+    <string name="tg_try_alarm_desc">सेटिंग्स खोलने के लिए स्क्रीन टैप करें।\nसमय सेट करें और सेव करें!</string>
+    <string name="tg_try_it">आज़माएं</string>
+    <string name="tg_skip">छोड़ें</string>
+    <string name="tg_check_preset_title">सेव किया प्रीसेट देखें?</string>
+    <string name="tg_check_preset_desc">सेव किया प्रीसेट\nलोड स्क्रीन में मिलेगा।</string>
+    <string name="tg_check_it">देखें</string>
+    <string name="tg_done">पूर्ण</string>
+    <string name="tg_step1_title">घड़ी टैप करें!</string>
+    <string name="tg_step1_desc">बीच की घड़ी टैप करके\nअलार्म सेटिंग्स खोलें।</string>
+    <string name="tg_step2_title">अलार्म सेट करें!</string>
+    <string name="tg_step2_desc">अलार्म का समय जांचें\nऔर सेव टैप करें।</string>
+    <string name="tg_step3_title">अलार्म बजने तक प्रतीक्षा करें</string>
+    <string name="tg_step3_desc">पीला बिंदु अलार्म की स्थिति है।\nजल्द ही बजेगा!</string>
+    <string name="tg_step4_title">स्क्रीन पर डबल टैप करें!</string>
+    <string name="tg_step4_desc">अलार्म बज रहा है।\nरोकने के लिए डबल टैप करें।</string>
+    <string name="tg_step5_title">घड़ी को लंबे समय तक दबाएं!</string>
+    <string name="tg_step5_desc">घड़ी को लंबे समय तक दबाकर\nअलार्म तुरंत शुरू करें।</string>
+    <string name="tg_step6_title">फिर से डबल टैप करें!</string>
+    <string name="tg_step6_desc">लंबे दबाव से शुरू अलार्म भी\nडबल टैप से बंद होता है।</string>
+    <string name="tg_step7_title">फिर से घड़ी टैप करें!</string>
+    <string name="tg_step7_desc">अपनी सेटिंग्स को\nप्रीसेट के रूप में सेव करें!</string>
+    <string name="tg_step9_title">मेनू टैप करें</string>
+    <string name="tg_step9_desc">इतिहास देखने के लिए\nमेनू बटन टैप करें।</string>
+    <string name="dialog_notice_title">सूचना</string>
+    <string name="update_title">अपडेट सूचना</string>
+    <string name="update_msg_force">सेवा जारी रखने के लिए अपडेट आवश्यक है।</string>
+    <string name="update_msg_optional">नया संस्करण उपलब्ध है। क्या आप अपडेट करना चाहते हैं?</string>
+    <string name="update_btn_now">अपडेट करें</string>
+    <string name="update_btn_later">बाद में</string>
+</resources>

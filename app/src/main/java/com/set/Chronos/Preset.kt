@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -69,13 +70,22 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.material.icons.filled.Person
 import com.set.Chronos.utils.toMinAlarm
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.runtime.LaunchedEffect
 
 val isMultiColorMode = false
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetScreen(
     onBack: () -> Unit,
-    onPresetSelected: (String) -> Unit
+    onPresetSelected: (String) -> Unit,
+    isTutorialMode: Boolean = false,
+    onTutorialShareDone: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val prefs = remember { com.set.Chronos.getSecurePrefs(context) }
@@ -85,6 +95,26 @@ fun PresetScreen(
 
     val profileImagePath = prefs.getString("profile_image_path", null)
 
+    // 튜토리얼 상태
+    var tutorialPresetStep by remember { mutableIntStateOf(if (isTutorialMode) 0 else -1) }
+    // 0 = Share 버튼 하이라이트, 1 = 이름 클릭 하이라이트
+    var presetScreenRootCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
+    var tutorialTargetBounds by remember { mutableStateOf<Rect?>(null) }
+    val lazyListState = rememberLazyListState()
+    var tutorialScrollDone by remember { mutableStateOf(!isTutorialMode) }
+
+    // 튜토리얼: tutorial1 위치로 자동 스크롤
+    if (isTutorialMode) {
+        LaunchedEffect(presetsState.value) {
+            val idx = presetsState.value.indexOf("tutorial1")
+            if (idx >= 0) {
+                lazyListState.scrollToItem(idx)
+                tutorialScrollDone = true
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize().onGloballyPositioned { presetScreenRootCoords = it }) {
     Scaffold(
         containerColor = Color(0xFF121212),
         topBar = {
@@ -96,7 +126,9 @@ fun PresetScreen(
                     navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = {
+                        if (!isTutorialMode) onBack()
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -108,7 +140,7 @@ fun PresetScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LazyColumn(modifier = Modifier.padding(16.dp)) {
+            LazyColumn(state = lazyListState, modifier = Modifier.padding(16.dp)) {
                 if (presetsState.value.isEmpty()) {
                     item {
                         Text(
@@ -130,7 +162,28 @@ fun PresetScreen(
                             ) {
                                 Row(modifier = Modifier
                                     .weight(1f)
-                                    .clickable { onPresetSelected(presetName) },
+                                    .clickable {
+                                        if (isTutorialMode && tutorialPresetStep != 1) {
+                                            // 튜토리얼: step 1이 아니면 클릭 무시
+                                        } else if (isTutorialMode && tutorialPresetStep == 1 && presetName == "tutorial1") {
+                                            // 튜토리얼: 로드 + step 2 (X 버튼 안내)
+                                            onPresetSelected(presetName)
+                                            tutorialTargetBounds = null
+                                            tutorialPresetStep = 2
+                                        } else {
+                                            onPresetSelected(presetName)
+                                        }
+                                    }
+                                    .then(
+                                        if (isTutorialMode && tutorialPresetStep == 1 && presetName == "tutorial1") {
+                                            Modifier.onGloballyPositioned { coords ->
+                                                presetScreenRootCoords?.let { root ->
+                                                    val pos = root.localPositionOf(coords, Offset.Zero)
+                                                    tutorialTargetBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                                }
+                                            }
+                                        } else Modifier
+                                    ),
                                     verticalAlignment = Alignment.CenterVertically) {
                                     val iconName = prefs.getString("preset_${presetName}_icon", "Clock") ?: "Clock"
                                     val colorHex = prefs.getString("preset_${presetName}_color", "#E5C07B") ?: "#E5C07B"
@@ -151,12 +204,27 @@ fun PresetScreen(
                                     )
                                 }
                                 Row {
-                                    IconButton(onClick = {
-                                        presetToShare = presetName
-                                    }) {
+                                    IconButton(
+                                        onClick = {
+                                            if (isTutorialMode && tutorialPresetStep != 0) {
+                                                // 튜토리얼: step 0이 아니면 클릭 무시
+                                            } else {
+                                                presetToShare = presetName
+                                            }
+                                        },
+                                        modifier = if (isTutorialMode && tutorialPresetStep == 0 && presetName == "tutorial1") {
+                                            Modifier.onGloballyPositioned { coords ->
+                                                presetScreenRootCoords?.let { root ->
+                                                    val pos = root.localPositionOf(coords, Offset.Zero)
+                                                    tutorialTargetBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                                }
+                                            }
+                                        } else Modifier
+                                    ) {
                                         Icon(Icons.Default.Share, contentDescription = "Share", tint = Color(0xFFE5C07B))
                                     }
                                     IconButton(onClick = {
+                                        if (isTutorialMode) return@IconButton // 튜토리얼 중 삭제 차단
                                         val editor = prefs.edit()
                                         val currentPresets = prefs.getStringSet("preset_names", null)?.toMutableSet() ?: mutableSetOf()
 
@@ -204,9 +272,18 @@ fun PresetScreen(
                     alarms = alarms,
                     creatorName = currentUsername,
                     creatorProfilePath = profileImagePath,
-                    iconName = prefs.getString("preset_${shareName}_icon", "Clock") ?: "Clock",     // 👈 추가
+                    iconName = prefs.getString("preset_${shareName}_icon", "Clock") ?: "Clock",
                     colorHex = prefs.getString("preset_${shareName}_color", "#E5C07B") ?: "#E5C07B",
-                    onDismiss = { presetToShare = null }
+                    onDismiss = {
+                        presetToShare = null
+                        // 튜토리얼: 공유 다이얼로그 닫힌 후 → step 1 (이름 클릭)
+                        if (isTutorialMode && tutorialPresetStep == 0) {
+                            tutorialTargetBounds = null
+                            tutorialPresetStep = 1
+                            onTutorialShareDone()
+                        }
+                    },
+                    isTutorialMode = isTutorialMode && tutorialPresetStep == 0
                 )
             } else {
                 Toast.makeText(context, corruptedToastMsg, Toast.LENGTH_SHORT).show()
@@ -214,13 +291,62 @@ fun PresetScreen(
             }
         }
     }
+
+    // 튜토리얼 오버레이 (Scaffold 위에 표시, 스크롤 완료 후)
+    if (isTutorialMode && tutorialPresetStep in 0..1 && tutorialScrollDone) {
+        TutorialDialogOverlay(
+            step = tutorialPresetStep,
+            targetBounds = tutorialTargetBounds,
+            guideText = when (tutorialPresetStep) {
+                0 -> stringResource(R.string.tg_tap_share)
+                1 -> stringResource(R.string.tg_tap_name_load)
+                else -> ""
+            }
+        )
+    }
+
+    // 튜토리얼 step 2: 프리셋 로드 완료 → X 버튼으로 나가기 안내
+    if (isTutorialMode && tutorialPresetStep == 2) {
+        var cancelBtnBounds by remember { mutableStateOf<Rect?>(null) }
+
+        // X 버튼 (상단 우측)
+        IconButton(
+            onClick = { onBack() },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 8.dp)
+                .onGloballyPositioned { coords ->
+                    presetScreenRootCoords?.let { root ->
+                        val pos = root.localPositionOf(coords, Offset.Zero)
+                        cancelBtnBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                    }
+                }
+        ) {
+            Icon(
+                Icons.Default.Cancel,
+                contentDescription = "Close",
+                tint = Color.White.copy(alpha = 0.9f),
+                modifier = Modifier.size(36.dp)
+            )
+        }
+
+        TutorialDialogOverlay(
+            step = 2,
+            targetBounds = cancelBtnBounds,
+            guideText = stringResource(R.string.tg_preset_loaded_exit)
+        )
+    }
+    } // Box 닫기
 }
 
 @Composable
-fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creatorName: String, creatorProfilePath: String?,iconName: String,colorHex: String, onDismiss: () -> Unit) {
+fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creatorName: String, creatorProfilePath: String?,iconName: String,colorHex: String, onDismiss: () -> Unit, isTutorialMode: Boolean = false) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var isSharing by remember { mutableStateOf(false) }
+
+    // 튜토리얼 서브 스텝: 0=스크롤안내, 1=QR강조, 2=공유버튼강조, 3=닫기버튼강조
+    var tutorialReceiptStep by remember { mutableIntStateOf(if (isTutorialMode) 0 else -1) }
 
     val payload = com.set.Chronos.utils.MinPreset(
         cn = creatorName, pn = presetName, a = alarms.map { it.toMinAlarm() },c = colorHex, // 👈 payload에 담기
@@ -280,7 +406,54 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
         CircuitLayout(rows, dataList)
     }
 
-    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+    val receiptScrollState = rememberScrollState()
+    var qrBounds by remember { mutableStateOf<Rect?>(null) }
+    var shareBtnBounds by remember { mutableStateOf<Rect?>(null) }
+    var cancelBtnBounds by remember { mutableStateOf<Rect?>(null) }
+    var dialogRootCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
+
+    // 튜토리얼: 스크롤 끝 감지 → step 0 → step 1
+    if (isTutorialMode && tutorialReceiptStep == 0) {
+        LaunchedEffect(receiptScrollState.value) {
+            val maxScroll = receiptScrollState.maxValue
+            if (maxScroll > 0 && receiptScrollState.value >= maxScroll - 10) {
+                tutorialReceiptStep = 1
+            }
+        }
+    }
+
+    androidx.compose.ui.window.Dialog(onDismissRequest = {
+        if (!isTutorialMode || tutorialReceiptStep == 3) onDismiss()
+    }) {
+        Box(modifier = Modifier.fillMaxWidth().onGloballyPositioned { dialogRootCoords = it }) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    if (!isTutorialMode || tutorialReceiptStep == 3) onDismiss()
+                },
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .then(
+                        if (isTutorialMode) {
+                            Modifier.onGloballyPositioned { coords ->
+                                dialogRootCoords?.let { root ->
+                                    val pos = root.localPositionOf(coords, Offset.Zero)
+                                    cancelBtnBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                }
+                            }
+                        } else Modifier
+                    )
+            ) {
+                Icon(
+                    Icons.Default.Cancel,
+                    contentDescription = "Close",
+                    tint = Color.White.copy(alpha = 0.7f),
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -290,7 +463,7 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+                modifier = Modifier.fillMaxWidth().verticalScroll(receiptScrollState)
             ) {
                 // ── 브랜드 행 ──
                 Row(
@@ -633,7 +806,20 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                 Spacer(modifier = Modifier.height(24.dp))
 
                 if (qrBitmap != null) {
-                    Box(modifier = Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(12.dp)) {
+                    Box(modifier = Modifier
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .padding(12.dp)
+                        .then(
+                            if (isTutorialMode) {
+                                Modifier.onGloballyPositioned { coords ->
+                                    dialogRootCoords?.let { root ->
+                                        val pos = root.localPositionOf(coords, Offset.Zero)
+                                        qrBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                    }
+                                }
+                            } else Modifier
+                        )
+                    ) {
                         androidx.compose.foundation.Image(bitmap = qrBitmap.asImageBitmap(), contentDescription = "QR Code", modifier = Modifier.size(120.dp))
                     }
                 }
@@ -647,6 +833,11 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
 
                 Button(
                     onClick = {
+                        if (isTutorialMode) {
+                            // 튜토리얼: 실제 공유 차단, step 진행만
+                            if (tutorialReceiptStep == 2) tutorialReceiptStep = 3
+                            return@Button
+                        }
                         if (isSharing) return@Button
                         isSharing = true
 
@@ -668,7 +859,19 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .then(
+                            if (isTutorialMode) {
+                                Modifier.onGloballyPositioned { coords ->
+                                    dialogRootCoords?.let { root ->
+                                        val pos = root.localPositionOf(coords, Offset.Zero)
+                                        shareBtnBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                    }
+                                }
+                            } else Modifier
+                        ),
                     colors = ButtonDefaults.buttonColors(containerColor = brandGold, contentColor = Color(0xFF0F0F0F)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -680,6 +883,51 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                 }
             }
         }
+        } // Column (Cancel 버튼 + 영수증 래퍼) 닫기
+
+        // ── 튜토리얼: step 0은 스크롤 안내 텍스트만 (오버레이 없음) ──
+        if (isTutorialMode && tutorialReceiptStep == 0) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Text(
+                    text = stringResource(R.string.tg_drag_down),
+                    color = Color(0xFFF07D22),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .background(Color.Black.copy(alpha = 0.7f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+        }
+        // ── 튜토리얼: step 1~3은 오버레이 ──
+        if (isTutorialMode && tutorialReceiptStep in 1..3) {
+            val currentTarget = when (tutorialReceiptStep) {
+                1 -> qrBounds
+                2 -> shareBtnBounds
+                3 -> cancelBtnBounds
+                else -> null
+            }
+            val guideText = when (tutorialReceiptStep) {
+                1 -> stringResource(R.string.tg_qr_share)
+                2 -> stringResource(R.string.tg_link_share)
+                3 -> stringResource(R.string.tg_close_button)
+                else -> ""
+            }
+            TutorialDialogOverlay(
+                step = tutorialReceiptStep,
+                targetBounds = currentTarget,
+                guideText = guideText,
+                onTapAnywhere = if (tutorialReceiptStep == 1) {
+                    { tutorialReceiptStep = 2 }
+                } else null
+            )
+        }
+        } // Box (dialogRootCoords) 닫기
     }
 }
 

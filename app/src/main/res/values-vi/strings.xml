@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">Xóa quảng cáo (Thanh toán)</string>
+    <string name="settings_transparency">Độ mờ cửa sổ cài đặt</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="apply">Áp dụng</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">Sẽ được lưu sau khi xem quảng cáo (Thử nghiệm)</string>
+    <string name="toast_ad_fail">Tải quảng cáo thất bại</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">Không có quảng cáo nên đã sạc miễn phí! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">Chuông báo thức đang reo!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">Chuông báo thức đang reo.</string>
+    <string name="default_notif_text">Đến giờ thức dậy rồi!</string>
+    <string name="channel_name_high">Thông báo âm thanh báo thức</string>
+    <string name="channel_name_low">Thông báo báo thức im lặng</string>
+    <string name="common_stop">Dừng</string>
+    <string name="log_alarm_started">Báo thức đã bắt đầu</string>
+    <string name="log_routine_stopped">Người dùng đã dừng thói quen 💨</string>
+    <string name="log_single_alarm_completed">Hoàn thành một báo thức 🔥</string>
+    <string name="default_preset_name">Thói quen không tên</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">Cần có quyền báo thức chính xác.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">Thói quen không tên</string>
+    <string name="setting_mode_relative">Chế độ: Thời gian tương đối (Hẹn giờ)</string>
+    <string name="setting_mode_absolute">Chế độ: Thời gian tuyệt đối (Báo thức)</string>
+    <string name="preset_save_title">Lưu cài đặt sẵn</string>
+    <string name="preset_name_hint">Tên cài đặt (VD: Sáng ngày thường)</string>
+    <string name="preset_color_label">Màu quỹ đạo</string>
+    <string name="preset_icon_label">Biểu tượng trung tâm</string>
+    <string name="toast_preset_saved">Đã lưu cài đặt sẵn!</string>
+    <string name="common_save">Lưu</string>
+    <string name="common_cancel">Hủy</string>
+    <string name="common_confirm">Xác nhận</string>
+    <string name="setting_unknown_ringtone">Nhạc chuông không xác định</string>
+    <string name="setting_default_ringtone">Âm thanh mặc định</string>
+    <string name="setting_tts_hint">Văn bản để đọc</string>
+    <string name="setting_ringtone_picker_title">Chọn âm báo thức</string>
+    <string name="setting_repeat_times_format">%1$d lần</string>
+    <string name="setting_duration_format">%1$ds</string>
+    <string name="setting_repeat_h">Lặp lại(G)</string>
+    <string name="setting_repeat_m">Lặp lại(P)</string>
+    <string name="setting_repeat_s">Lặp lại(G)</string>
+    <string name="setting_repeat_count_format">Lặp lại %1$d lần</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">Yêu cầu đăng nhập.</string>
+    <string name="toast_backup_success">Sao lưu đám mây hoàn tất!</string>
+    <string name="toast_backup_fail">Sao lưu thất bại: %1$s</string>
+    <string name="toast_restore_success">Khôi phục đám mây hoàn tất!</string>
+    <string name="toast_restore_empty">Không có dữ liệu sao lưu.</string>
+    <string name="toast_restore_fail">Khôi phục thất bại: %1$s</string>
+
+    <string name="profile_update_success">Đổi biệt danh thành công.</string>
+    <string name="profile_update_fail">Đổi biệt danh thất bại.</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">Đặt lại</string>
+    <string name="history_long_press_guide">Nhấn giữ để xem menu chi tiết.</string>
+    <string name="history_detail_timeline">Chi tiết (Dòng thời gian)</string>
+    <string name="history_hide_from_calendar">Ẩn tất cả khỏi lịch</string>
+    <string name="history_completed_format">%1$d / %2$d Hoàn thành (%3$d%%)</string>
+    <string name="history_default_sound">🎵 Âm thanh mặc định</string>
+    <string name="history_infinite_repeat">Lặp lại vô hạn</string>
+    <string name="history_repeat_count_format">Lặp lại %1$d lần</string>
+    <string name="history_no_repeat">Không lặp lại</string>
+    <string name="history_crescendo_active">🔥 Crescendo đang bật</string>
+    <string name="history_close">Đóng</string>
+    <string name="history_unknown_time">Không xác định</string>
+    <string name="history_aborted">Đã hủy</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">Đã thêm cài đặt sẵn \'%1$s\'!</string>
+    <string name="toast_invalid_qr">Mã QR không hợp lệ.</string>
+    <string name="toast_login_fail">Đăng nhập thất bại: %1$s</string>
+    <string name="toast_login_success">Đăng nhập thành công!</string>
+    <string name="toast_auth_fail">Xác thực thất bại</string>
+    <string name="toast_alarm_permission_request">Vui lòng cấp quyền báo thức chính xác.</string>
+    <string name="toast_alarm_set_fail">Cài đặt báo thức thất bại.</string>
+    <string name="toast_exact_alarm_needed">Cần có \'Cho phép báo thức chính xác\' để hoạt động ổn định!</string>
+    <string name="toast_battery_opt_needed">Cần có \'Bỏ qua tối ưu hóa pin\' để hoạt động ổn định!</string>
+    <string name="toast_logout_success">Đã đăng xuất.</string>
+
+    <string name="toast_session_expired_logout">Đã đăng xuất do có đăng nhập từ thiết bị khác.</string>
+    <string name="dialog_other_device_title">Đăng nhập từ thiết bị khác</string>
+    <string name="dialog_other_device_msg">Một thiết bị khác đã đăng nhập vào tài khoản này từ %1$s.\nBạn có muốn đăng xuất thiết bị đó và đăng nhập trên thiết bị này không?</string>
+    <string name="dialog_force_login">Bắt buộc đăng nhập</string>
+    <string name="toast_session_claim_fail">Không thể bảo mật phiên đăng nhập</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ Xung đột đồng bộ dữ liệu</string>
+    <string name="main_sync_conflict_desc">Dữ liệu trên thiết bị khác khác với điện thoại hiện tại. Vui lòng chọn dữ liệu để giữ lại.</string>
+    <string name="main_sync_local_data">📱 Dữ liệu điện thoại của tôi</string>
+    <string name="main_sync_cloud_data">☁️ Đám mây</string>
+    <string name="main_sync_latest_badge"> [Mới nhất ✨]</string>
+    <string name="main_sync_no_record">Không có bản ghi</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ Ghi đè bằng dữ liệu đám mây (Khuyên dùng)</string>
+    <string name="main_sync_load_cloud">☁️ Tải dữ liệu đám mây</string>
+    <string name="main_sync_keep_local_rec">📱 Giữ dữ liệu điện thoại (Khuyên dùng)</string>
+    <string name="main_sync_keep_local">📱 Giữ dữ liệu điện thoại</string>
+    <string name="toast_need_charge">⚡ Đã hết số lần dùng miễn phí. Chạm vào tia sét ở góc trên bên phải để nạp!</string>
+
+    <string name="toast_preset_load_fail">Tải cài đặt sẵn thất bại.</string>
+    <string name="toast_alarm_restarted">Báo thức đã được khởi động lại.</string>
+    <string name="toast_alarm_saved">Báo thức đã được lưu.</string>
+
+    <string name="main_menu_earphone_title">Chế độ phòng học (Chỉ tai nghe)</string>
+    <string name="main_menu_earphone_desc">Báo thức sẽ phát bằng âm lượng phương tiện.</string>
+    <string name="main_menu_preset">Tải / Chia sẻ cài đặt sẵn</string>
+    <string name="main_menu_history">Lịch sử sử dụng</string>
+    <string name="main_menu_settings">Cài đặt ứng dụng (Độ mờ, Tài khoản)</string>
+    <string name="toast_preset_applied">Đã áp dụng cài đặt sẵn \'%1$s\'.</string>
+
+    <string name="ad_confirm_title">Nạp năng lượng</string>
+    <string name="ad_confirm_desc">Bạn có muốn xem quảng cáo để nạp 3 tia sét không?\n(5 tia sét được nạp tự động mỗi ngày.)</string>
+
+    ``preset``
+    <string name="preset_screen_title">Cài đặt sẵn</string>
+    <string name="preset_empty_message">Không có cài đặt sẵn nào.</string>
+    <string name="toast_preset_deleted">Đã xóa cài đặt sẵn \'%1$s\'.</string>
+    <string name="toast_preset_corrupted">Cài đặt sẵn đã cũ hoặc bị lỗi. Vui lòng lưu lại.</string>
+    <string name="preset_receipt_infinite_repeat">Lặp lại vô hạn</string>
+    <string name="preset_receipt_repeat_count">Lặp lại %1$d lần</string>
+    <string name="preset_receipt_repeat_interval">🔁 Khoảng thời gian %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 Bạn đã nhận được thói quen \'%1$s\' từ ứng dụng Chronos!\n\nChạm vào liên kết bên dưới để áp dụng vào điện thoại của bạn ngay:\n%2$s</string>
+    <string name="preset_share_intent_title">Chia sẻ thói quen</string>
+    <string name="preset_btn_share_link">Chia sẻ liên kết qua Messenger</string>
+    <string name="toast_link_copied">Đã sao chép liên kết! Vui lòng dán vào đoạn chat sau khi gửi ảnh.</string>
+    <string name="toast_image_save_fail">Lưu ảnh thất bại. Sẽ chia sẻ dưới dạng văn bản.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 Xem lại hướng dẫn sử dụng ứng dụng</string>
+    <string name="settings_account_link">🔗 Liên kết tài khoản</string>
+    <string name="settings_tos_agree">Bằng cách đăng nhập, bạn đồng ý với Điều khoản và Chính sách Bảo mật.</string>
+    <string name="settings_google_login">Đăng nhập bằng Google</string>
+    <string name="settings_linked_account">Tài khoản được liên kết: %1$s</string>
+    <string name="settings_logout">Đăng xuất</string>
+    <string name="settings_overdrive_title">Chế độ Overdrive</string>
+    <string name="settings_overdrive_desc">Tăng âm lượng lên 200%% vượt quá giới hạn hệ thống (Cảnh báo!)</string>
+    <string name="settings_language">Cài đặt ngôn ngữ (Language)</string>
+
+    <string name="profile_no_nickname">Không có biệt danh</string>
+    <string name="profile_new_nickname">Biệt danh mới</string>
+    <string name="profile_verify">Kiểm tra</string>
+    <string name="profile_msg_empty">Vui lòng nhập biệt danh.</string>
+    <string name="profile_msg_current">Đây là biệt danh hiện tại của bạn.</string>
+    <string name="profile_msg_available">✅ Biệt danh có thể sử dụng!</string>
+    <string name="profile_msg_taken">❌ Biệt danh này đã có người sử dụng.</string>
+    <string name="profile_msg_prompt_verify">Vui lòng nhấn kiểm tra trùng lặp.</string>
+    <string name="profile_cancel">Hủy</string>
+    <string name="profile_save">Lưu</string>
+
+    <string name="toast_nickname_changed">Đổi biệt danh thành công.</string>
+    <string name="toast_nickname_failed">Đổi biệt danh thất bại.</string>
+    <string name="profile_check_duplicate">Kiểm tra trùng lặp</string>
+
+    <string name="profile_image_save_fail">Lưu ảnh thất bại</string>
+    <string name="profile_save_success_toast">Đã lưu hồ sơ thành công.</string>
+
+    <string name="profile_msg_invalid_format">3~20 ký tự, chỉ chữ cái/số/_</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">Sự kiện đặc biệt cho Beta Tester</string>
+    <string name="tutorial_desc_0">1.000 người dùng tích cực nhất sẽ nhận được các tính năng cao cấp miễn phí sau khi phát hành chính thức!\n\nVui lòng đăng nhập bằng Google trong menu \'Cài đặt (⚙️)\' ở trên cùng bên phải để tham gia.</string>
+
+    <string name="tutorial_title_1">Màn hình chính</string>
+    <string name="tutorial_desc_1">Chạm vào đồng hồ ở giữa để thêm báo thức, và kiểm tra lịch sử cũng như cài đặt ở góc trên bên phải.</string>
+
+    <string name="tutorial_title_2">Điều khiển đồng hồ</string>
+    <string name="tutorial_desc_2">• Chạm : Mở cài đặt báo thức\n• Chạm đúp : Hủy tất cả báo thức\n• Chạm đúp : Dừng báo thức đang reo\n• Nhấn giữ : Khởi động lại báo thức gần đây cùng với chế độ rung</string>
+
+    <string name="tutorial_title_3">Hướng dẫn biểu tượng</string>
+    <string name="tutorial_desc_3">⏳ : Chuyển sang chế độ Hẹn giờ (thời gian tương đối)\n📈 : Tăng dần âm lượng (Crescendo)\n♾️ : Lặp lại vô hạn cho đến khi tắt\n🗣️ : Đọc văn bản thành tiếng (TTS)</string>
+
+    <string name="tutorial_title_4">Cài đặt báo thức chi tiết</string>
+    <string name="tutorial_desc_4">Tùy chỉnh thời gian tương đối, âm lượng, thời lượng và crescendo theo ý thích của bạn.</string>
+
+    <string name="tutorial_title_5">Lưu và chia sẻ thói quen</string>
+    <string name="tutorial_desc_5">Lưu cài đặt báo thức của bạn thành cài đặt sẵn, và chia sẻ với bạn bè qua hóa đơn và mã QR cực ngầu!</string>
+
+    <string name="tutorial_title_6">Cài đặt ứng dụng</string>
+    <string name="tutorial_desc_6">Điều chỉnh độ mờ của nền hoặc xem lại hướng dẫn này bất cứ lúc nào.</string>
+
+    <string name="tutorial_skip">Bỏ qua</string>
+    <string name="tutorial_next">Tiếp theo</string>
+    <string name="tutorial_start">Bắt đầu</string>
+
+    <string name="tutorial_mock_title">⏰ Chi tiết báo thức</string>
+
+    <string name="tutorial_mock_crescendo_title">Crescendo</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ Âm thanh sẽ lớn dần lên!</string>
+
+    <string name="tutorial_mock_infinite_title">Lặp lại vô hạn</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ Sẽ reo cho đến khi bạn tắt nó!</string>
+
+    <string name="tutorial_mock_tts_title">Chế độ TTS</string>
+    <string name="tutorial_mock_tts_desc">⬅️ Đọc to văn bản bạn đã nhập!</string>
+
+    <string name="tutorial_mock_repeat_title">Lặp lại theo khoảng thời gian</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ Tính năng Báo lại (sẽ reo lại sau n phút)!</string>
+
+    <string name="tutorial_mock_footer">💡 Hãy bật các công tắc cạnh biểu tượng\nđể tạo ra thói quen hoàn hảo của bạn!</string>
+
+    <string name="tutorial_title_energy">Hệ thống năng lượng miễn phí</string>
+    <string name="tutorial_desc_energy">Cần có năng lượng để chạy báo thức.\nĐừng lo lắng! Năng lượng sẽ được tự động nạp 5 lần mỗi ngày.</string>
+
+    <string name="tutorial_try_alarm_title">Hãy thử cài đặt báo thức!</string>
+    <string name="tutorial_try_alarm_desc">Chạm vào màn hình để mở cài đặt báo thức.\nĐặt thời gian và lưu lại!</string>
+    <string name="tutorial_try_alarm_btn">Thử nghiệm</string>
+    <string name="tutorial_try_preset_title">Bạn có muốn xem cài đặt sẵn đã lưu không?</string>
+    <string name="tutorial_try_preset_desc">Bạn có thể tìm thấy cài đặt sẵn vừa lưu\ntrong màn hình tải.</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">Nhập 10 vào giây (S)</string>
+    <string name="tg_add_alarm">Chạm để thêm báo thức mới</string>
+    <string name="tg_input_hours">Nhập 10 vào giờ (H)</string>
+    <string name="tg_save_button">Chạm ✓ để lưu</string>
+    <string name="tg_preset_save_btn">💾 Chạm nút lưu cài đặt sẵn</string>
+    <string name="tg_save_confirm">Chạm nút lưu</string>
+    <string name="tg_tap_share">Chạm nút chia sẻ</string>
+    <string name="tg_tap_name_load">Chạm tên để tải</string>
+    <string name="tg_preset_loaded_exit">Đã tải cài đặt sẵn!\nChạm X để thoát</string>
+    <string name="tg_drag_down">Kéo xuống để cuộn</string>
+    <string name="tg_qr_share">Chia sẻ cài đặt qua mã QR</string>
+    <string name="tg_link_share">Cũng có thể chia sẻ qua liên kết</string>
+    <string name="tg_close_button">Chạm nút đóng</string>
+    <string name="tg_tap_presets">Chạm Cài đặt sẵn</string>
+    <string name="tg_try_alarm_title">Thử đặt báo thức!</string>
+    <string name="tg_try_alarm_desc">Chạm màn hình để mở cài đặt.\nĐặt thời gian và lưu!</string>
+    <string name="tg_try_it">Thử ngay</string>
+    <string name="tg_skip">Bỏ qua</string>
+    <string name="tg_check_preset_title">Kiểm tra cài đặt đã lưu?</string>
+    <string name="tg_check_preset_desc">Tìm cài đặt đã lưu\ntrong màn hình tải.</string>
+    <string name="tg_check_it">Kiểm tra</string>
+    <string name="tg_done">Hoàn tất</string>
+    <string name="tg_step1_title">Chạm đồng hồ!</string>
+    <string name="tg_step1_desc">Chạm đồng hồ ở giữa\nđể mở cài đặt báo thức.</string>
+    <string name="tg_step2_title">Đặt báo thức!</string>
+    <string name="tg_step2_desc">Kiểm tra thời gian\nvà chạm lưu.</string>
+    <string name="tg_step3_title">Chờ báo thức kêu</string>
+    <string name="tg_step3_desc">Chấm vàng đánh dấu vị trí.\nSẽ kêu ngay!</string>
+    <string name="tg_step4_title">Chạm đúp màn hình!</string>
+    <string name="tg_step4_desc">Báo thức đang kêu.\nChạm đúp để tắt.</string>
+    <string name="tg_step5_title">Nhấn giữ đồng hồ!</string>
+    <string name="tg_step5_desc">Nhấn giữ đồng hồ\nđể bật báo thức ngay.</string>
+    <string name="tg_step6_title">Chạm đúp lần nữa!</string>
+    <string name="tg_step6_desc">Báo thức từ nhấn giữ\ncũng tắt bằng chạm đúp.</string>
+    <string name="tg_step7_title">Chạm đồng hồ lần nữa!</string>
+    <string name="tg_step7_desc">Lưu cài đặt\nthành cài đặt sẵn!</string>
+    <string name="tg_step9_title">Chạm menu</string>
+    <string name="tg_step9_desc">Chạm nút menu\nđể xem lịch sử.</string>
+    <string name="dialog_notice_title">Thông báo</string>
+    <string name="update_title">Thông báo cập nhật</string>
+    <string name="update_msg_force">Cần cập nhật để tiếp tục sử dụng dịch vụ.</string>
+    <string name="update_msg_optional">Có phiên bản mới. Bạn có muốn cập nhật không?</string>
+    <string name="update_btn_now">Cập nhật</string>
+    <string name="update_btn_later">Để sau</string>
+</resources>

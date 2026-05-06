@@ -90,7 +90,13 @@
     <string name="toast_alarm_set_fail">アラームの設定に失敗しました。</string>
     <string name="toast_exact_alarm_needed">確実なアラームには「正確なアラームの使用を許可」が必要です！</string>
     <string name="toast_battery_opt_needed">確実なアラームには「バッテリー最適化を無視」が必要です！</string>
-    <string name="toast_logout_success">로그아웃 되었습니다.</string>
+    <string name="toast_logout_success">ログアウトしました。</string>
+
+    <string name="toast_session_expired_logout">他のデバイスでログインされたため、ログアウトします。</string>
+    <string name="dialog_other_device_title">他のデバイスでログイン中</string>
+    <string name="dialog_other_device_msg">%1$s から別のデバイスがこのアカウントにログインしています。\n該当デバイスをログアウトして、このデバイスでログインしますか？</string>
+    <string name="dialog_force_login">強制ログイン</string>
+    <string name="toast_session_claim_fail">セッションの確保に失敗しました</string>
 
     ``mainscreen``
     <string name="main_sync_conflict_title">☁️ データ同期の競合</string>
@@ -136,7 +142,7 @@
     ``settingsdialog``
     <string name="settings_tutorial_btn">💡 アプリのチュートリアルをもう一度見る</string>
     <string name="settings_account_link">🔗 アカウント連携</string>
-    <string name="settings_tos_agree">[必須] 特別な特典のための利用規約とプライバシーポリシーに同意します。</string>
+    <string name="settings_tos_agree">ログインすることで、利用規約およびプライバシーポリシーに同意したものとみなされます。</string>
     <string name="settings_google_login">Google でログイン</string>
     <string name="settings_linked_account">連携済みアカウント: %1$s</string>
     <string name="settings_logout">ログアウト</string>
@@ -217,4 +223,49 @@
     <string name="update_msg_optional">最新バージョンがあります。アップデートしますか？</string>
     <string name="update_btn_now">更新</string>
     <string name="update_btn_later">後で</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">秒(S)に10を入力してください</string>
+    <string name="tg_add_alarm">タップして新しいアラームを追加</string>
+    <string name="tg_input_hours">時(H)に10を入力してください</string>
+    <string name="tg_save_button">✓ボタンをタップして保存</string>
+    <string name="tg_preset_save_btn">💾 プリセット保存ボタンをタップ</string>
+    <string name="tg_save_confirm">保存ボタンをタップしてください</string>
+    <string name="tg_tap_share">共有ボタンをタップしてください</string>
+    <string name="tg_tap_name_load">名前をタップして読み込み</string>
+    <string name="tg_preset_loaded_exit">プリセットが読み込まれました！\nXボタンをタップして終了</string>
+    <string name="tg_drag_down">ドラッグしてスクロール</string>
+    <string name="tg_qr_share">QRコードでプリセットを共有できます</string>
+    <string name="tg_link_share">リンクでも共有できます</string>
+    <string name="tg_close_button">閉じるボタンをタップ</string>
+    <string name="tg_tap_presets">プリセットをタップ</string>
+    <string name="tg_try_alarm_title">アラームを設定してみましょう！</string>
+    <string name="tg_try_alarm_desc">画面をタップしてアラーム設定を開きます。\n時間を設定して保存しましょう！</string>
+    <string name="tg_try_it">やってみる</string>
+    <string name="tg_skip">スキップ</string>
+    <string name="tg_check_preset_title">保存したプリセットを確認しますか？</string>
+    <string name="tg_check_preset_desc">保存したプリセットを\n読み込み画面で確認できます。</string>
+    <string name="tg_check_it">確認する</string>
+    <string name="tg_done">完了</string>
+    <string name="tg_step1_title">時計をタップ！</string>
+    <string name="tg_step1_desc">中央の時計をタップすると\nアラーム設定が開きます。</string>
+    <string name="tg_step2_title">アラームを設定！</string>
+    <string name="tg_step2_desc">アラーム時間を確認して\n保存をタップしてください。</string>
+    <string name="tg_step3_title">アラームが鳴るまでお待ちください</string>
+    <string name="tg_step3_desc">黄色い点がアラームの位置です。\nまもなく鳴ります！</string>
+    <string name="tg_step4_title">画面をダブルタップ！</string>
+    <string name="tg_step4_desc">アラームが鳴っています。\nダブルタップで停止します。</string>
+    <string name="tg_step5_title">時計を長押し！</string>
+    <string name="tg_step5_desc">時計を長押しすると\nアラームをすぐ実行できます。</string>
+    <string name="tg_step6_title">もう一度ダブルタップ！</string>
+    <string name="tg_step6_desc">長押しで実行したアラームも\nダブルタップで止められます。</string>
+    <string name="tg_step7_title">もう一度時計をタップ！</string>
+    <string name="tg_step7_desc">アラーム設定をプリセットとして\n保存しましょう！</string>
+    <string name="tg_step9_title">メニューをタップ</string>
+    <string name="tg_step9_desc">メニューボタンをタップすると\n履歴を確認できます。</string>
+    <string name="tutorial_try_alarm_title">アラームを設定してみましょう！</string>
+    <string name="tutorial_try_alarm_desc">画面をタップしてアラーム設定を開きます。\n時間を設定して保存しましょう！</string>
+    <string name="tutorial_try_alarm_btn">やってみる</string>
+    <string name="tutorial_try_preset_title">保存したプリセットを確認しますか？</string>
+    <string name="tutorial_try_preset_desc">保存したプリセットを\n読み込み画面で確認できます。</string>
 </resources>

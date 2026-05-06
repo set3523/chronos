@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">Reklamları Kaldır (Ücretli)</string>
+    <string name="settings_transparency">Ayar penceresi şeffaflığı</string>
+    <string name="language">Dil</string>
+    <string name="apply">Uygula</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">Reklam izlendikten sonra kaydedilir (Test)</string>
+    <string name="toast_ad_fail">Reklam başarısız</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">Reklam yok! Ücretsiz şarj edildi! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">Alarm çalıyor!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">Alarm çalıyor.</string>
+    <string name="default_notif_text">Uyanma vakti!</string>
+    <string name="channel_name_high">Sesli Alarm Bildirimi</string>
+    <string name="channel_name_low">Sessiz Alarm Bildirimi</string>
+    <string name="common_stop">Durdur</string>
+    <string name="log_alarm_started">Alarm başlatıldı</string>
+    <string name="log_routine_stopped">Rutin kullanıcı tarafından durduruldu 💨</string>
+    <string name="log_single_alarm_completed">Tek alarm tamamlandı 🔥</string>
+    <string name="default_preset_name">İsimsiz rutin</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">Kesin alarm izni gereklidir.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">İsimsiz rutin</string>
+    <string name="setting_mode_relative">Mod: Göreceli Zaman (Zamanlayıcı)</string>
+    <string name="setting_mode_absolute">Mod: Mutlak Zaman (Alarm)</string>
+    <string name="preset_save_title">Ön Ayarı Kaydet</string>
+    <string name="preset_name_hint">Ön Ayar Adı (örn. Hafta içi sabah)</string>
+    <string name="preset_color_label">Yörünge Rengi</string>
+    <string name="preset_icon_label">Merkez Simgesi</string>
+    <string name="toast_preset_saved">Ön ayar kaydedildi!</string>
+    <string name="common_save">Kaydet</string>
+    <string name="common_cancel">İptal</string>
+    <string name="common_confirm">Onayla</string>
+    <string name="setting_unknown_ringtone">Bilinmeyen Zil Sesi</string>
+    <string name="setting_default_ringtone">Varsayılan ses</string>
+    <string name="setting_tts_hint">Okunacak metin</string>
+    <string name="setting_ringtone_picker_title">Alarm Sesi Seç</string>
+    <string name="setting_repeat_times_format">%1$d kez</string>
+    <string name="setting_duration_format">%1$d sn</string>
+    <string name="setting_repeat_h">Tekrar(S)</string>
+    <string name="setting_repeat_m">Tekrar(D)</string>
+    <string name="setting_repeat_s">Tekrar(Sn)</string>
+    <string name="setting_repeat_count_format">%1$d kez tekrarla</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">Giriş yapmanız gerekiyor.</string>
+    <string name="toast_backup_success">Bulut yedekleme tamamlandı!</string>
+    <string name="toast_backup_fail">Yedekleme başarısız: %1$s</string>
+    <string name="toast_restore_success">Bulut geri yükleme tamamlandı!</string>
+    <string name="toast_restore_empty">Yedeklenmiş veri yok.</string>
+    <string name="toast_restore_fail">Geri yükleme başarısız: %1$s</string>
+
+    <string name="profile_update_success">Kullanıcı adı başarıyla değiştirildi.</string>
+    <string name="profile_update_fail">Kullanıcı adı değiştirilemedi.</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">Sıfırla</string>
+    <string name="history_long_press_guide">Ayrıntılı menüyü görmek için öğeye basılı tutun.</string>
+    <string name="history_detail_timeline">Detaylar (Zaman Çizelgesi)</string>
+    <string name="history_hide_from_calendar">Takvimden tümünü gizle</string>
+    <string name="history_completed_format">%1$d / %2$d Tamamlandı (%%3$d)</string>
+    <string name="history_default_sound">🎵 Varsayılan Ses</string>
+    <string name="history_infinite_repeat">Sonsuz Tekrar</string>
+    <string name="history_repeat_count_format">%1$d kez tekrarla</string>
+    <string name="history_no_repeat">Tekrar Yok</string>
+    <string name="history_crescendo_active">🔥 Crescendo Aktif</string>
+    <string name="history_close">Kapat</string>
+    <string name="history_unknown_time">Bilinmeyen</string>
+    <string name="history_aborted">İptal edildi</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">\'%1$s\' ön ayarı eklendi!</string>
+    <string name="toast_invalid_qr">Geçersiz QR kodu.</string>
+    <string name="toast_login_fail">Giriş başarısız: %1$s</string>
+    <string name="toast_login_success">Giriş başarılı!</string>
+    <string name="toast_auth_fail">Kimlik doğrulama başarısız</string>
+    <string name="toast_alarm_permission_request">Lütfen kesin alarm için izin verin.</string>
+    <string name="toast_alarm_set_fail">Alarm ayarlanamadı.</string>
+    <string name="toast_exact_alarm_needed">Güvenilir bir alarm için \'Kesin Alarmlara İzin Ver\' gereklidir!</string>
+    <string name="toast_battery_opt_needed">Güvenilir bir alarm için \'Pil Optimizasyonunu Yoksay\' gereklidir!</string>
+    <string name="toast_logout_success">Çıkış yapıldı.</string>
+
+    <string name="toast_session_expired_logout">Başka bir cihazdan giriş yapıldığı için çıkış yapıldı.</string>
+    <string name="dialog_other_device_title">Başka Cihazdan Giriş Yapıldı</string>
+    <string name="dialog_other_device_msg">%1$s tarihinden itibaren başka bir cihaz bu hesaba giriş yaptı.\nO cihazdan çıkış yapıp bu cihazda oturum açmak ister misiniz?</string>
+    <string name="dialog_force_login">Zorla Giriş Yap</string>
+    <string name="toast_session_claim_fail">Oturum güvenceye alınamadı</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ Veri Senkronizasyonu Çakışması</string>
+    <string name="main_sync_conflict_desc">Diğer cihazdaki kayıtlar bu telefondakilerden farklı. Lütfen hangi verilerin tutulacağını seçin.</string>
+    <string name="main_sync_local_data">📱 Telefon Verilerim</string>
+    <string name="main_sync_cloud_data">☁️ Bulut</string>
+    <string name="main_sync_latest_badge"> [En Yeni ✨]</string>
+    <string name="main_sync_no_record">Kayıt yok</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ Bulut Verileriyle Üzerine Yaz (Önerilen)</string>
+    <string name="main_sync_load_cloud">☁️ Bulut Verilerini Yükle</string>
+    <string name="main_sync_keep_local_rec">📱 Telefon Verilerimi Tut (Önerilen)</string>
+    <string name="main_sync_keep_local">📱 Telefon Verilerimi Tut</string>
+    <string name="toast_need_charge">⚡ Ücretsiz kullanım haklarınız bitti. Şarj etmek için sağ üstteki şimşek simgesine dokunun!</string>
+
+    <string name="toast_preset_load_fail">Ön ayar yüklenemedi.</string>
+    <string name="toast_alarm_restarted">Alarm yeniden başlatıldı.</string>
+    <string name="toast_alarm_saved">Alarm kaydedildi.</string>
+
+    <string name="main_menu_earphone_title">Çalışma Odası Modu (Sadece Kulaklık)</string>
+    <string name="main_menu_earphone_desc">Alarm medya ses seviyesinde çalar.</string>
+    <string name="main_menu_preset">Ön Ayarları Yükle / Paylaş</string>
+    <string name="main_menu_history">Kullanım Geçmişi</string>
+    <string name="main_menu_settings">Uygulama Ayarları (Şeffaflık, Hesap)</string>
+    <string name="toast_preset_applied">\'%1$s\' ön ayarı uygulandı.</string>
+
+    <string name="ad_confirm_title">Enerji Şarjı</string>
+    <string name="ad_confirm_desc">Ödüllü bir reklam izleyip 3 şimşek şarj etmek ister misiniz?\n(Her gün otomatik olarak 5 şimşek şarj edilir.)</string>
+
+    ``preset``
+    <string name="preset_screen_title">Ön Ayarlar</string>
+    <string name="preset_empty_message">Kaydedilmiş ön ayar yok.</string>
+    <string name="toast_preset_deleted">\'%1$s\' ön ayarı silindi.</string>
+    <string name="toast_preset_corrupted">Bozuk veya eski ön ayar. Lütfen tekrar kaydedin.</string>
+    <string name="preset_receipt_infinite_repeat">Sonsuz Tekrar</string>
+    <string name="preset_receipt_repeat_count">%1$d kez tekrarla</string>
+    <string name="preset_receipt_repeat_interval">🔁 %1$s aralık / %2$s</string>
+    <string name="preset_share_message">🔥 Chronos uygulamasından \'%1$s\' rutinini aldınız!\n\nTelefonunuza uygulamak için aşağıdaki bağlantıya dokunun:\n%2$s</string>
+    <string name="preset_share_intent_title">Rutini Paylaş</string>
+    <string name="preset_btn_share_link">Bağlantıyı Messenger ile Paylaş</string>
+    <string name="toast_link_copied">Bağlantı kopyalandı! Lütfen resmi gönderdikten sonra sohbete yapıştırın.</string>
+    <string name="toast_image_save_fail">Görüntü kaydedilemedi. Metin olarak paylaşılıyor.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 Uygulama Eğitimini Tekrar İzle</string>
+    <string name="settings_account_link">🔗 Hesap Bağla</string>
+    <string name="settings_tos_agree">Giriş yaparak Kullanım Koşullarını ve Gizlilik Politikasını kabul etmiş olursunuz.</string>
+    <string name="settings_google_login">Google ile Giriş Yap</string>
+    <string name="settings_linked_account">Bağlı Hesap: %1$s</string>
+    <string name="settings_logout">Çıkış Yap</string>
+    <string name="settings_overdrive_title">Overdrive Modu</string>
+    <string name="settings_overdrive_desc">Sesi sistem sınırlarının %%200 ötesine yükselt (Uyarı!)</string>
+    <string name="settings_language">Dil Ayarları (Language)</string>
+
+    <string name="profile_no_nickname">Kullanıcı adı yok</string>
+    <string name="profile_new_nickname">Yeni Kullanıcı Adı</string>
+    <string name="profile_verify">Doğrula</string>
+    <string name="profile_msg_empty">Lütfen bir kullanıcı adı girin.</string>
+    <string name="profile_msg_current">Bu mevcut kullanıcı adınızdır.</string>
+    <string name="profile_msg_available">✅ Kullanıcı adı kullanılabilir!</string>
+    <string name="profile_msg_taken">❌ Bu kullanıcı adı zaten alınmış.</string>
+    <string name="profile_msg_prompt_verify">Lütfen doğrula düğmesine basın.</string>
+    <string name="profile_cancel">İptal</string>
+    <string name="profile_save">Kaydet</string>
+
+    <string name="toast_nickname_changed">Kullanıcı adı başarıyla değiştirildi.</string>
+    <string name="toast_nickname_failed">Kullanıcı adı değiştirilemedi.</string>
+    <string name="profile_check_duplicate">Kopyayı Kontrol Et</string>
+
+    <string name="profile_image_save_fail">Resim kaydedilemedi</string>
+    <string name="profile_save_success_toast">Profil başarıyla kaydedildi.</string>
+
+    <string name="profile_msg_invalid_format">3~20 karakter, sadece harf/rakam/_</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">Beta Test Kullanıcılarına Özel Etkinlik</string>
+    <string name="tutorial_desc_0">Resmi lansmandan sonra en çok kullanan 1.000 kişiye premium özellikler ücretsiz verilecek!\n\nKatılmak için sağ üstteki \'Ayarlar (⚙️)\' menüsünden Google ile giriş yapın.</string>
+
+    <string name="tutorial_title_1">Ana Ekran</string>
+    <string name="tutorial_desc_1">Alarm eklemek için ortadaki saate dokunun ve sağ üstten geçmişi ve ayarları kontrol edin.</string>
+
+    <string name="tutorial_title_2">Saat Kontrolleri</string>
+    <string name="tutorial_desc_2">• Dokun : Alarm ayarlarını aç\n• Çift Dokun : Tüm alarmları iptal et\n• Çift Dokun : Çalan alarmı durdur\n• Basılı Tut : Son alarmları titreşimle yeniden başlat</string>
+
+    <string name="tutorial_title_3">Simge Rehberi</string>
+    <string name="tutorial_desc_3">⏳ : Zamanlayıcı (Göreceli zaman) moduna geç\n📈 : Sesi kademeli olarak artır (Crescendo)\n♾️ : Kapatılana kadar sonsuz tekrar\n🗣️ : Metni sesli oku (TTS)</string>
+
+    <string name="tutorial_title_4">Detaylı Alarm Ayarları</string>
+    <string name="tutorial_desc_4">Göreceli zamanı, ses seviyesini, süreyi ve crescendo\'yu istediğiniz gibi özelleştirin.</string>
+
+    <string name="tutorial_title_5">Rutinleri Kaydet ve Paylaş</string>
+    <string name="tutorial_desc_5">Ayarlarınızı ön ayar olarak kaydedin ve havalı makbuzlar ile QR kodlarıyla arkadaşlarınızla paylaşın!</string>
+
+    <string name="tutorial_title_6">Uygulama Ayarları</string>
+    <string name="tutorial_desc_6">Arka plan şeffaflığını ayarlayın veya bu eğitimi istediğiniz zaman tekrar izleyin.</string>
+
+    <string name="tutorial_skip">Atla</string>
+    <string name="tutorial_next">İleri</string>
+    <string name="tutorial_start">Başla</string>
+
+    <string name="tutorial_mock_title">⏰ Alarm Detayları</string>
+
+    <string name="tutorial_mock_crescendo_title">Crescendo</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ Ses yavaş yavaş yükselir!</string>
+
+    <string name="tutorial_mock_infinite_title">Sonsuz Tekrar</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ Siz kapatana kadar çalar!</string>
+
+    <string name="tutorial_mock_tts_title">TTS Modu</string>
+    <string name="tutorial_mock_tts_desc">⬅️ Girdiğiniz metni sesli okur!</string>
+
+    <string name="tutorial_mock_repeat_title">Aralıklı Tekrar</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ Erteleme (n dakika sonra tekrar çalar) özelliği!</string>
+
+    <string name="tutorial_mock_footer">💡 Mükemmel rutininizi oluşturmak için\nsimgelerin yanındaki anahtarları açın!</string>
+
+    <string name="tutorial_title_energy">Ücretsiz Enerji Sistemi</string>
+    <string name="tutorial_desc_energy">Alarmı çalıştırmak için enerji gereklidir.\nEndişelenmeyin! Her gün 5 kez otomatik olarak şarj olur.</string>
+
+    <string name="tutorial_try_alarm_title">Bir alarm kurmayı deneyin!</string>
+    <string name="tutorial_try_alarm_desc">Ayarları açmak için ekrana dokunun.\nSaati ayarlayın ve kaydedin!</string>
+    <string name="tutorial_try_alarm_btn">Dene</string>
+    <string name="tutorial_try_preset_title">Kaydettiğiniz ön ayarı görelim mi?</string>
+    <string name="tutorial_try_preset_desc">Kaydettiğiniz ön ayarı\nyükleme ekranında bulabilirsiniz.</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">Saniye (S) alanına 10 girin</string>
+    <string name="tg_add_alarm">Yeni alarm eklemek için dokunun</string>
+    <string name="tg_input_hours">Saat (H) alanına 10 girin</string>
+    <string name="tg_save_button">Kaydetmek için ✓ dokunun</string>
+    <string name="tg_preset_save_btn">💾 Hazır ayar kaydet düğmesine dokunun</string>
+    <string name="tg_save_confirm">Kaydet düğmesine dokunun</string>
+    <string name="tg_tap_share">Paylaş düğmesine dokunun</string>
+    <string name="tg_tap_name_load">Yüklemek için isme dokunun</string>
+    <string name="tg_preset_loaded_exit">Hazır ayar yüklendi!\nÇıkmak için X dokunun</string>
+    <string name="tg_drag_down">Aşağı kaydırın</string>
+    <string name="tg_qr_share">QR koduyla hazır ayar paylaşabilirsiniz</string>
+    <string name="tg_link_share">Bağlantıyla da paylaşabilirsiniz</string>
+    <string name="tg_close_button">Kapat düğmesine dokunun</string>
+    <string name="tg_tap_presets">Hazır Ayarlara dokunun</string>
+    <string name="tg_try_alarm_title">Alarm kurmayı deneyin!</string>
+    <string name="tg_try_alarm_desc">Ayarları açmak için ekrana dokunun.\nSaati ayarlayın ve kaydedin!</string>
+    <string name="tg_try_it">Deneyin</string>
+    <string name="tg_skip">Atla</string>
+    <string name="tg_check_preset_title">Kaydedilen hazır ayarı kontrol et?</string>
+    <string name="tg_check_preset_desc">Kaydedilen hazır ayarı\nyükleme ekranında bulabilirsiniz.</string>
+    <string name="tg_check_it">Kontrol et</string>
+    <string name="tg_done">Tamam</string>
+    <string name="tg_step1_title">Saate dokunun!</string>
+    <string name="tg_step1_desc">Ortadaki saate dokunarak\nalarm ayarlarını açın.</string>
+    <string name="tg_step2_title">Alarmı ayarlayın!</string>
+    <string name="tg_step2_desc">Alarm saatini kontrol edin\nve kaydet dokunun.</string>
+    <string name="tg_step3_title">Alarmın çalmasını bekleyin</string>
+    <string name="tg_step3_desc">Sarı nokta alarm konumudur.\nYakında çalacak!</string>
+    <string name="tg_step4_title">Ekrana çift dokunun!</string>
+    <string name="tg_step4_desc">Alarm çalıyor.\nDurdurmak için çift dokunun.</string>
+    <string name="tg_step5_title">Saate uzun basın!</string>
+    <string name="tg_step5_desc">Saate uzun basarak\nalarmı anında başlatın.</string>
+    <string name="tg_step6_title">Tekrar çift dokunun!</string>
+    <string name="tg_step6_desc">Uzun basmayla başlatılan alarm\nda çift dokunmayla durur.</string>
+    <string name="tg_step7_title">Saate tekrar dokunun!</string>
+    <string name="tg_step7_desc">Ayarlarınızı hazır ayar\nolarak kaydedin!</string>
+    <string name="tg_step9_title">Menüye dokunun</string>
+    <string name="tg_step9_desc">Geçmişi görmek için\nmenü düğmesine dokunun.</string>
+    <string name="dialog_notice_title">Bildirim</string>
+    <string name="update_title">Güncelleme Bildirimi</string>
+    <string name="update_msg_force">Hizmeti kullanmaya devam etmek için güncelleme gereklidir.</string>
+    <string name="update_msg_optional">Yeni bir sürüm mevcut. Güncellemek ister misiniz?</string>
+    <string name="update_btn_now">Güncelle</string>
+    <string name="update_btn_later">Daha sonra</string>
+</resources>

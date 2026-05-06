@@ -66,13 +66,25 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                 "ko" -> Locale.KOREA
                 "ja" -> Locale.JAPAN
                 "zh" -> Locale.CHINESE
-                else -> Locale.US // 기본은 영어
+                "es" -> Locale("es")
+                "fr" -> Locale.FRANCE
+                "de" -> Locale.GERMANY
+                "pt" -> Locale("pt", "BR")
+                "ru" -> Locale("ru")
+                "it" -> Locale.ITALY
+                "tr" -> Locale("tr")
+                "ar" -> Locale("ar")
+                "hi" -> Locale("hi")
+                "th" -> Locale("th")
+                "vi" -> Locale("vi")
+                "id" -> Locale("id")
+                else -> Locale.US
             }
 
             // 3. TTS 엔진에 언어 적용
             tts?.language = ttsLocale
 
-            val speechRate = prefs.getFloat("tts_speech_rate", 1.0f)
+            val speechRate = prefs.getFloat("tts_speech_rate", 0.7f)
             tts?.setSpeechRate(speechRate)
 
             val isEarphoneMode = prefs.getBoolean("isEarphoneModeEnabled", false)
@@ -358,35 +370,32 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         }
 
         // 4. 히스토리 기록 시작
-        val existingJson = prefs.getString("historyRecords", "[]") ?: "[]"
-        val currentList = try { safeJson.decodeFromString<List<com.set.Chronos.HistoryRecord>>(existingJson) } catch (e: Exception) { emptyList() }.toMutableList()
+        kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.IO) {
+            val dao = com.set.Chronos.data.ChronosDb.get(this@AlarmService).historyDao()
+            val existing = dao.getByTs(sessionId)
 
-        val recordIndex = currentList.indexOfLast { it.timestamp == sessionId }
-        val timeStr = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH).format(java.util.Date())
-        val newLog = com.set.Chronos.AlarmLog(timeStr, getString(R.string.log_alarm_started))
+            val timeStr = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH).format(java.util.Date())
+            val newLog = com.set.Chronos.AlarmLog(timeStr, getString(R.string.log_alarm_started))
 
-        if (recordIndex != -1) {
-            // 같은 루틴 내에서 알람이 겹치거나 이어질 때 (+1)
-            val existing = currentList[recordIndex]
-            currentList[recordIndex] = existing.copy(
-                completedAlarms = existing.completedAlarms + 1,
-                logs = existing.logs + newLog
-            )
-        } else {
-            // 완전히 독립된 새 기록 100% 분리 생성!
-            val savedPresetName = prefs.getString("currentPresetName", "")
-            val presetName = if (savedPresetName.isNullOrEmpty()) getString(R.string.default_preset_name) else savedPresetName
-            val iconName = prefs.getString("currentPresetIcon", "Clock") ?: "Clock"
-            val colorHex = prefs.getString("currentPresetColor", "#E5C07B") ?: "#E5C07B"
+            val updatedRecord = if (existing != null) {
+                val decoded = safeJson.decodeFromString<com.set.Chronos.HistoryRecord>(existing.data)
+                decoded.copy(
+                    completedAlarms = decoded.completedAlarms + 1,
+                    logs = decoded.logs + newLog
+                )
+            } else {
+                val savedPresetName = prefs.getString("currentPresetName", "")
+                val presetName = if (savedPresetName.isNullOrEmpty()) getString(R.string.default_preset_name) else savedPresetName
+                val iconName = prefs.getString("currentPresetIcon", "Clock") ?: "Clock"
+                val colorHex = prefs.getString("currentPresetColor", "#E5C07B") ?: "#E5C07B"
 
-            var calculatedTotal = 0
-            alarmList.forEach { setting ->
-                calculatedTotal += 1
-                if (setting.isRepeatEnabled && !setting.repeatUntilOff) calculatedTotal += setting.repeatCount
-            }
-            val totalAlarmsInPreset = if (calculatedTotal > 0) calculatedTotal else 1
+                var calculatedTotal = 0
+                alarmList.forEach { setting ->
+                    calculatedTotal += 1
+                    if (setting.isRepeatEnabled && !setting.repeatUntilOff) calculatedTotal += setting.repeatCount
+                }
+                val totalAlarmsInPreset = if (calculatedTotal > 0) calculatedTotal else 1
 
-            currentList.add(
                 com.set.Chronos.HistoryRecord(
                     timestamp = sessionId,
                     presetName = presetName,
@@ -397,56 +406,62 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                     logs = listOf(newLog),
                     originalSettings = alarmList
                 )
+            }
+
+            dao.upsert(
+                com.set.Chronos.data.HistoryEntity(
+                    timestamp = sessionId,
+                    data = safeJson.encodeToString(updatedRecord)
+                )
             )
         }
 
-        // 5. 저장 및 루틴 종료 처리
-        val editor = prefs.edit().putString("historyRecords", safeJson.encodeToString(currentList))
+// 5. 루틴 종료 처리 (prefs 부분만, history는 위에서 저장됨)
+        val editor = prefs.edit()
         if (isRoutineFinished) {
-            editor.putBoolean("is_routine_running", false) // ✨ 핵심: 다음 알람(내일)은 완전히 분리된 기록으로!
+            editor.putBoolean("is_routine_running", false)
             editor.putBoolean("isAlarmActive", false)
             editor.putLong("last_modified", System.currentTimeMillis())
-            com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
+            com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)  // 이건 3번 단계에서 suspend로 바뀜
         }
         editor.apply()
     }
     private fun saveStopLogToHistory() {
         val prefs = getSecurePrefs(this)
-        val sessionId = prefs.getLong("ringing_session_id", 0L) // ✨ 새로 만든 ID 사용
+        val sessionId = prefs.getLong("ringing_session_id", 0L)
         if (sessionId == 0L) return
 
         val safeJson = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; isLenient = true }
-        val existingJson = prefs.getString("historyRecords", "[]") ?: "[]"
-        val currentList = try {
-            safeJson.decodeFromString<List<com.set.Chronos.HistoryRecord>>(existingJson)
-        } catch (e: Exception) { emptyList() }.toMutableList()
 
-        val recordIndex = currentList.indexOfLast { it.timestamp == sessionId }
+        kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.IO) {
+            val dao = com.set.Chronos.data.ChronosDb.get(this@AlarmService).historyDao()
+            val existing = dao.getByTs(sessionId) ?: return@runBlocking
 
-        if (recordIndex != -1) {
+            val decoded = safeJson.decodeFromString<com.set.Chronos.HistoryRecord>(existing.data)
             val endTime = System.currentTimeMillis()
-            val dateFormat = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH)
-            val endStr = dateFormat.format(java.util.Date(endTime))
-            val existing = currentList[recordIndex]
+            val endStr = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH).format(java.util.Date(endTime))
 
             val stopLog = com.set.Chronos.AlarmLog(
                 time = endStr,
                 title = getString(R.string.log_routine_stopped),
                 isStopEvent = true
             )
+            val updated = decoded.copy(logs = decoded.logs + stopLog)
 
-            currentList[recordIndex] = existing.copy(
-                logs = existing.logs + stopLog
+            dao.upsert(
+                com.set.Chronos.data.HistoryEntity(
+                    timestamp = sessionId,
+                    data = safeJson.encodeToString(updated)
+                )
             )
-
-            prefs.edit()
-                .putString("historyRecords", safeJson.encodeToString(currentList))
-                .putBoolean("is_routine_running", false) // ✨ 유저가 껐으므로 세션 종료! (다음 번엔 무조건 분리됨)
-                .putBoolean("isAlarmActive", false)
-                .putLong("last_modified", System.currentTimeMillis())
-                .commit()
-
-            com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
         }
+
+        prefs.edit()
+            //.putBoolean("is_routine_running", false)
+            //.putBoolean("isAlarmActive", false)
+            .putLong("last_modified", System.currentTimeMillis())
+            .commit()
+
+        com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
     }
 }

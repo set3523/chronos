@@ -91,6 +91,12 @@
     <string name="toast_battery_opt_needed">为确保闹钟可靠运行，需要 \'忽略电池优化\'！</string>
     <string name="toast_logout_success">已退出登录。</string>
 
+    <string name="toast_session_expired_logout">因在其他设备上登录，您已被登出。</string>
+    <string name="dialog_other_device_title">已在其他设备登录</string>
+    <string name="dialog_other_device_msg">自 %1$s 起，有其他设备登录了此账号。\n是否登出该设备并在此设备上登录？</string>
+    <string name="dialog_force_login">强制登录</string>
+    <string name="toast_session_claim_fail">获取会话失败</string>
+
     ``mainscreen``
     <string name="main_sync_conflict_title">☁️ 数据同步冲突</string>
     <string name="main_sync_conflict_desc">其他设备上保存的记录与当前手机不同。请选择要保留的数据。</string>
@@ -135,7 +141,7 @@
     ``settingsdialog``
     <string name="settings_tutorial_btn">💡 再次查看应用教程</string>
     <string name="settings_account_link">🔗 账号绑定</string>
-    <string name="settings_tos_agree">[必填] 我同意为提供特别优惠的条款和隐私政策。</string>
+    <string name="settings_tos_agree">登录即表示您同意我们的服务条款和隐私政策。</string>
     <string name="settings_google_login">使用 Google 登录</string>
     <string name="settings_linked_account">已绑定账号: %1$s</string>
     <string name="settings_logout">退出登录</string>
@@ -216,4 +222,49 @@
     <string name="update_msg_optional">已有新版本，是否更新？</string>
     <string name="update_btn_now">更新</string>
     <string name="update_btn_later">稍后</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">在秒(S)中输入10</string>
+    <string name="tg_add_alarm">点击添加新闹钟</string>
+    <string name="tg_input_hours">在时(H)中输入10</string>
+    <string name="tg_save_button">点击 ✓ 保存</string>
+    <string name="tg_preset_save_btn">💾 点击预设保存按钮</string>
+    <string name="tg_save_confirm">点击保存按钮</string>
+    <string name="tg_tap_share">点击分享按钮</string>
+    <string name="tg_tap_name_load">点击名称加载</string>
+    <string name="tg_preset_loaded_exit">预设已加载！\n点击X退出</string>
+    <string name="tg_drag_down">向下拖动滚动</string>
+    <string name="tg_qr_share">可以通过QR码分享预设</string>
+    <string name="tg_link_share">也可以通过链接分享</string>
+    <string name="tg_close_button">点击关闭按钮</string>
+    <string name="tg_tap_presets">点击预设</string>
+    <string name="tg_try_alarm_title">试试设置闹钟！</string>
+    <string name="tg_try_alarm_desc">点击屏幕打开闹钟设置。\n设置时间并保存！</string>
+    <string name="tg_try_it">试一试</string>
+    <string name="tg_skip">跳过</string>
+    <string name="tg_check_preset_title">查看已保存的预设？</string>
+    <string name="tg_check_preset_desc">可以在加载页面\n查看刚保存的预设。</string>
+    <string name="tg_check_it">查看</string>
+    <string name="tg_done">完成</string>
+    <string name="tg_step1_title">点击时钟！</string>
+    <string name="tg_step1_desc">点击中间的时钟\n打开闹钟设置。</string>
+    <string name="tg_step2_title">设置闹钟！</string>
+    <string name="tg_step2_desc">确认闹钟时间\n并点击保存。</string>
+    <string name="tg_step3_title">等待闹钟响起</string>
+    <string name="tg_step3_desc">黄色圆点是闹钟位置。\n即将响起！</string>
+    <string name="tg_step4_title">双击屏幕！</string>
+    <string name="tg_step4_desc">闹钟正在响。\n双击可以关闭。</string>
+    <string name="tg_step5_title">长按时钟！</string>
+    <string name="tg_step5_desc">长按时钟\n可以立即启动闹钟。</string>
+    <string name="tg_step6_title">再次双击！</string>
+    <string name="tg_step6_desc">长按启动的闹钟\n也可以双击关闭。</string>
+    <string name="tg_step7_title">再次点击时钟！</string>
+    <string name="tg_step7_desc">将闹钟设置\n保存为预设！</string>
+    <string name="tg_step9_title">点击菜单</string>
+    <string name="tg_step9_desc">点击菜单按钮\n查看历史记录。</string>
+    <string name="tutorial_try_alarm_title">试试设置闹钟！</string>
+    <string name="tutorial_try_alarm_desc">点击屏幕打开闹钟设置。\n设置时间并保存！</string>
+    <string name="tutorial_try_alarm_btn">试一试</string>
+    <string name="tutorial_try_preset_title">查看已保存的预设？</string>
+    <string name="tutorial_try_preset_desc">可以在加载页面\n查看刚保存的预设。</string>
 </resources>

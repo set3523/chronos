@@ -6,7 +6,7 @@ plugins {
 
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
+    id("com.google.devtools.ksp") version "2.3.6"
 
 }
 
@@ -20,8 +20,8 @@ android {
         applicationId = "com.set.Chronos"
         minSdk = 27
         targetSdk = 36
-        versionCode = 38
-        versionName = "2.1.17"
+        versionCode = 41
+        versionName = "2.2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

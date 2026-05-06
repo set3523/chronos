@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">Remover anúncios (Pago)</string>
+    <string name="settings_transparency">Transparência da janela de configurações</string>
+    <string name="language">Idioma</string>
+    <string name="apply">Aplicar</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">Será salvo após assistir ao anúncio (Teste)</string>
+    <string name="toast_ad_fail">Falha ao carregar anúncio</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">Sem anúncios! Recarregado grátis! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">O alarme está tocando!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">O alarme está tocando.</string>
+    <string name="default_notif_text">É hora de acordar!</string>
+    <string name="channel_name_high">Notificação de som do alarme</string>
+    <string name="channel_name_low">Notificação silenciosa do alarme</string>
+    <string name="common_stop">Parar</string>
+    <string name="log_alarm_started">Alarme iniciado</string>
+    <string name="log_routine_stopped">Rotina parada pelo usuário 💨</string>
+    <string name="log_single_alarm_completed">Alarme único concluído 🔥</string>
+    <string name="default_preset_name">Rotina sem nome</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">Permissão para alarme exato é necessária.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">Rotina sem nome</string>
+    <string name="setting_mode_relative">Modo: Tempo Relativo (Timer)</string>
+    <string name="setting_mode_absolute">Modo: Tempo Absoluto (Alarme)</string>
+    <string name="preset_save_title">Salvar Predefinição</string>
+    <string name="preset_name_hint">Nome da predefinição (ex: Manhã)</string>
+    <string name="preset_color_label">Cor da Órbita</string>
+    <string name="preset_icon_label">Ícone Central</string>
+    <string name="toast_preset_saved">Predefinição salva!</string>
+    <string name="common_save">Salvar</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_confirm">Confirmar</string>
+    <string name="setting_unknown_ringtone">Toque desconhecido</string>
+    <string name="setting_default_ringtone">Som Padrão</string>
+    <string name="setting_tts_hint">Texto para falar</string>
+    <string name="setting_ringtone_picker_title">Selecionar Som do Alarme</string>
+    <string name="setting_repeat_times_format">%1$d vezes</string>
+    <string name="setting_duration_format">%1$ds</string>
+    <string name="setting_repeat_h">Repetir(H)</string>
+    <string name="setting_repeat_m">Repetir(M)</string>
+    <string name="setting_repeat_s">Repetir(S)</string>
+    <string name="setting_repeat_count_format">Repetir %1$d vezes</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">Login necessário.</string>
+    <string name="toast_backup_success">Backup na nuvem concluído!</string>
+    <string name="toast_backup_fail">Falha no backup: %1$s</string>
+    <string name="toast_restore_success">Restauração da nuvem concluída!</string>
+    <string name="toast_restore_empty">Nenhum dado de backup encontrado.</string>
+    <string name="toast_restore_fail">Falha na restauração: %1$s</string>
+
+    <string name="profile_update_success">Apelido alterado com sucesso.</string>
+    <string name="profile_update_fail">Falha ao alterar apelido.</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">Redefinir</string>
+    <string name="history_long_press_guide">Pressione e segure um item para ver o menu detalhado.</string>
+    <string name="history_detail_timeline">Detalhes (Linha do tempo)</string>
+    <string name="history_hide_from_calendar">Ocultar tudo do calendário</string>
+    <string name="history_completed_format">%1$d / %2$d Concluído (%3$d%%)</string>
+    <string name="history_default_sound">🎵 Som Padrão</string>
+    <string name="history_infinite_repeat">Repetição infinita</string>
+    <string name="history_repeat_count_format">Repetir %1$d vezes</string>
+    <string name="history_no_repeat">Sem repetição</string>
+    <string name="history_crescendo_active">🔥 Crescendo Ativo</string>
+    <string name="history_close">Fechar</string>
+    <string name="history_unknown_time">Desconhecido</string>
+    <string name="history_aborted">Cancelado</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">Predefinição \'%1$s\' adicionada!</string>
+    <string name="toast_invalid_qr">Código QR inválido.</string>
+    <string name="toast_login_fail">Falha no login: %1$s</string>
+    <string name="toast_login_success">Login bem-sucedido!</string>
+    <string name="toast_auth_fail">Falha na autenticação</string>
+    <string name="toast_alarm_permission_request">Por favor, permita os alarmes exatos.</string>
+    <string name="toast_alarm_set_fail">Falha ao definir o alarme.</string>
+    <string name="toast_exact_alarm_needed">\'Permitir alarmas exatos\' é necessário para alarmes confiáveis!</string>
+    <string name="toast_battery_opt_needed">\'Ignorar otimização de bateria\' é necessário para alarmes confiáveis!</string>
+    <string name="toast_logout_success">Você saiu com sucesso.</string>
+
+    <string name="toast_session_expired_logout">Sessão encerrada por login em outro dispositivo.</string>
+    <string name="dialog_other_device_title">Conectado em outro dispositivo</string>
+    <string name="dialog_other_device_msg">Outro dispositivo conectou nesta conta desde %1$s.\nDeseja desconectá-lo e entrar neste dispositivo?</string>
+    <string name="dialog_force_login">Forçar Login</string>
+    <string name="toast_session_claim_fail">Falha ao garantir a sessão</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ Conflito de Sincronização</string>
+    <string name="main_sync_conflict_desc">Os dados diferem do seu telefone atual. Escolha quais dados manter.</string>
+    <string name="main_sync_local_data">📱 Dados do meu telefone</string>
+    <string name="main_sync_cloud_data">☁️ Dados da nuvem</string>
+    <string name="main_sync_latest_badge"> [Mais Recente ✨]</string>
+    <string name="main_sync_no_record">Sem registros</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ Sobrescrever com a Nuvem (Recomendado)</string>
+    <string name="main_sync_load_cloud">☁️ Carregar dados da nuvem</string>
+    <string name="main_sync_keep_local_rec">📱 Manter dados do telefone (Recomendado)</string>
+    <string name="main_sync_keep_local">📱 Manter dados do telefone</string>
+    <string name="toast_need_charge">⚡ Usos gratuitos esgotados. Toque no raio no canto superior direito para recarregar!</string>
+
+    <string name="toast_preset_load_fail">Falha ao carregar predefinição.</string>
+    <string name="toast_alarm_restarted">Alarme reiniciado.</string>
+    <string name="toast_alarm_saved">Alarme salvo.</string>
+
+    <string name="main_menu_earphone_title">Modo Sala de Estudo (Apenas Fones)</string>
+    <string name="main_menu_earphone_desc">O alarme tocará no volume da mídia.</string>
+    <string name="main_menu_preset">Carregar / Compartilhar predefinição</string>
+    <string name="main_menu_history">Histórico de uso</string>
+    <string name="main_menu_settings">Configurações (Transparência, Conta)</string>
+    <string name="toast_preset_applied">Predefinição \'%1$s\' aplicada.</string>
+
+    <string name="ad_confirm_title">Recarregar Energia</string>
+    <string name="ad_confirm_desc">Deseja assistir a um anúncio para recarregar 3 raios?\n(Até 5 raios são recarregados automaticamente todos os dias.)</string>
+
+    ``preset``
+    <string name="preset_screen_title">Predefinições</string>
+    <string name="preset_empty_message">Nenhuma predefinição salva.</string>
+    <string name="toast_preset_deleted">Predefinição \'%1$s\' excluída.</string>
+    <string name="toast_preset_corrupted">Predefinição corrompida ou antiga. Por favor, salve novamente.</string>
+    <string name="preset_receipt_infinite_repeat">Repetição infinita</string>
+    <string name="preset_receipt_repeat_count">Repetir %1$d vezes</string>
+    <string name="preset_receipt_repeat_interval">🔁 Intervalo %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 Você recebeu a rotina \'%1$s\' do Chronos!\n\nToque no link abaixo para aplicar no seu telefone:\n%2$s</string>
+    <string name="preset_share_intent_title">Compartilhar Rotina</string>
+    <string name="preset_btn_share_link">Compartilhar link pelo Messenger</string>
+    <string name="toast_link_copied">Link copiado! Cole no chat após enviar a imagem.</string>
+    <string name="toast_image_save_fail">Falha ao salvar imagem. Compartilhando como texto.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 Ver tutorial do app novamente</string>
+    <string name="settings_account_link">🔗 Vincular conta</string>
+    <string name="settings_tos_agree">Ao fazer login, você concorda com nossos Termos e Política de Privacidade.</string>
+    <string name="settings_google_login">Fazer login com o Google</string>
+    <string name="settings_linked_account">Conta vinculada: %1$s</string>
+    <string name="settings_logout">Sair</string>
+    <string name="settings_overdrive_title">Modo Overdrive</string>
+    <string name="settings_overdrive_desc">Aumente o volume em 200%% além do limite do sistema (Aviso!)</string>
+    <string name="settings_language">Configurações de Idioma (Language)</string>
+
+    <string name="profile_no_nickname">Sem apelido</string>
+    <string name="profile_new_nickname">Novo apelido</string>
+    <string name="profile_verify">Verificar</string>
+    <string name="profile_msg_empty">Por favor, insira um apelido.</string>
+    <string name="profile_msg_current">Este é o seu apelido atual.</string>
+    <string name="profile_msg_available">✅ Apelido disponível!</string>
+    <string name="profile_msg_taken">❌ Este apelido já está em uso.</string>
+    <string name="profile_msg_prompt_verify">Por favor, toque em verificar.</string>
+    <string name="profile_cancel">Cancelar</string>
+    <string name="profile_save">Salvar</string>
+
+    <string name="toast_nickname_changed">Apelido alterado com sucesso.</string>
+    <string name="toast_nickname_failed">Falha ao alterar apelido.</string>
+    <string name="profile_check_duplicate">Verificar Duplicado</string>
+
+    <string name="profile_image_save_fail">Falha ao salvar a imagem</string>
+    <string name="profile_save_success_toast">Perfil salvo com sucesso.</string>
+
+    <string name="profile_msg_invalid_format">3 a 20 caracteres, apenas letras/números/_</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">Evento Especial de Beta Testers</string>
+    <string name="tutorial_desc_0">Os 1.000 usuários mais ativos ganharão premium grátis no lançamento!\n\nFaça login com o Google nas \'Configurações (⚙️)\' para participar.</string>
+
+    <string name="tutorial_title_1">Tela Principal</string>
+    <string name="tutorial_desc_1">Toque no relógio central para adicionar um alarme e verifique o histórico no canto superior direito.</string>
+
+    <string name="tutorial_title_2">Controles do Relógio</string>
+    <string name="tutorial_desc_2">• Tocar: Abrir configurações\n• Toque duplo: Cancelar todos os alarmes\n• Toque duplo: Parar alarme tocando\n• Pressionar: Reiniciar alarmes recentes com vibração</string>
+
+    <string name="tutorial_title_3">Guia de Ícones</string>
+    <string name="tutorial_desc_3">⏳ : Modo Timer (tempo relativo)\n📈 : Aumento gradual de volume (Crescendo)\n♾️ : Repetir até ser desligado\n🗣️ : Ler texto em voz alta (TTS)</string>
+
+    <string name="tutorial_title_4">Configurações Detalhadas</string>
+    <string name="tutorial_desc_4">Personalize o tempo relativo, volume, duração e crescendo como quiser.</string>
+
+    <string name="tutorial_title_5">Salvar e Compartilhar Rotinas</string>
+    <string name="tutorial_desc_5">Salve suas configurações como uma predefinição e compartilhe com amigos usando códigos QR!</string>
+
+    <string name="tutorial_title_6">Configurações do App</string>
+    <string name="tutorial_desc_6">Ajuste a transparência ou veja este tutorial novamente a qualquer momento.</string>
+
+    <string name="tutorial_skip">Pular</string>
+    <string name="tutorial_next">Próximo</string>
+    <string name="tutorial_start">Começar</string>
+
+    <string name="tutorial_mock_title">⏰ Detalhes do Alarme</string>
+
+    <string name="tutorial_mock_crescendo_title">Crescendo</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ O som aumenta gradualmente!</string>
+
+    <string name="tutorial_mock_infinite_title">Repetição Infinita</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ Toca até você desligar!</string>
+
+    <string name="tutorial_mock_tts_title">Modo TTS</string>
+    <string name="tutorial_mock_tts_desc">⬅️ Lê o seu texto em voz alta!</string>
+
+    <string name="tutorial_mock_repeat_title">Repetição por Intervalo</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ Função Snooze (toca de novo em n min)!</string>
+
+    <string name="tutorial_mock_footer">💡 Ligue os interruptores ao lado dos ícones\npara criar sua rotina perfeita!</string>
+
+    <string name="tutorial_title_energy">Sistema de Energia Grátis</string>
+    <string name="tutorial_desc_energy">Energia é necessária para o alarme.\nMas não se preocupe! Recarrega automaticamente 5 vezes ao dia.</string>
+
+    <string name="tutorial_try_alarm_title">Tente configurar um alarme!</string>
+    <string name="tutorial_try_alarm_desc">Toque na tela para abrir as configurações.\nDefina o horário e salve!</string>
+    <string name="tutorial_try_alarm_btn">Tentar</string>
+    <string name="tutorial_try_preset_title">Quer ver sua predefinição?</string>
+    <string name="tutorial_try_preset_desc">Você encontrará a predefinição salva\nna tela de carregar.</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">Digite 10 em segundos (S)</string>
+    <string name="tg_add_alarm">Toque para adicionar um novo alarme</string>
+    <string name="tg_input_hours">Digite 10 em horas (H)</string>
+    <string name="tg_save_button">Toque ✓ para salvar</string>
+    <string name="tg_preset_save_btn">💾 Toque no botão salvar preset</string>
+    <string name="tg_save_confirm">Toque no botão salvar</string>
+    <string name="tg_tap_share">Toque no botão compartilhar</string>
+    <string name="tg_tap_name_load">Toque no nome para carregar</string>
+    <string name="tg_preset_loaded_exit">Preset carregado!\nToque X para sair</string>
+    <string name="tg_drag_down">Arraste para baixo</string>
+    <string name="tg_qr_share">Compartilhe presets por código QR</string>
+    <string name="tg_link_share">Também pode compartilhar por link</string>
+    <string name="tg_close_button">Toque no botão fechar</string>
+    <string name="tg_tap_presets">Toque em Presets</string>
+    <string name="tg_try_alarm_title">Tente configurar um alarme!</string>
+    <string name="tg_try_alarm_desc">Toque na tela para abrir as configurações.\nDefina o horário e salve!</string>
+    <string name="tg_try_it">Experimentar</string>
+    <string name="tg_skip">Pular</string>
+    <string name="tg_check_preset_title">Verificar seu preset salvo?</string>
+    <string name="tg_check_preset_desc">Encontre o preset salvo\nna tela de carregamento.</string>
+    <string name="tg_check_it">Verificar</string>
+    <string name="tg_done">Concluído</string>
+    <string name="tg_step1_title">Toque no relógio!</string>
+    <string name="tg_step1_desc">Toque no relógio no centro\npara abrir as configurações.</string>
+    <string name="tg_step2_title">Configure o alarme!</string>
+    <string name="tg_step2_desc">Verifique o horário\ne toque em salvar.</string>
+    <string name="tg_step3_title">Aguarde o alarme tocar</string>
+    <string name="tg_step3_desc">O ponto amarelo marca o alarme.\nVai tocar em breve!</string>
+    <string name="tg_step4_title">Toque duplo na tela!</string>
+    <string name="tg_step4_desc">O alarme está tocando.\nToque duplo para parar.</string>
+    <string name="tg_step5_title">Pressione longo no relógio!</string>
+    <string name="tg_step5_desc">Pressione longo no relógio\npara iniciar o alarme instantaneamente.</string>
+    <string name="tg_step6_title">Toque duplo novamente!</string>
+    <string name="tg_step6_desc">Alarmes de pressão longa\ntambém param com toque duplo.</string>
+    <string name="tg_step7_title">Toque no relógio novamente!</string>
+    <string name="tg_step7_desc">Salve suas configurações\ncomo preset!</string>
+    <string name="tg_step9_title">Toque no menu</string>
+    <string name="tg_step9_desc">Toque no botão de menu\npara ver o histórico.</string>
+    <string name="dialog_notice_title">Aviso</string>
+    <string name="update_title">Aviso de atualização</string>
+    <string name="update_msg_force">É necessário atualizar para continuar usando o serviço.</string>
+    <string name="update_msg_optional">Uma nova versão está disponível. Deseja atualizar?</string>
+    <string name="update_btn_now">Atualizar</string>
+    <string name="update_btn_later">Depois</string>
+</resources>

@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">ลบโฆษณา (ชำระเงิน)</string>
+    <string name="settings_transparency">ความโปร่งใสของหน้าต่างการตั้งค่า</string>
+    <string name="language">ภาษา</string>
+    <string name="apply">นำไปใช้</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">จะบันทึกหลังจากดูโฆษณา (ทดสอบ)</string>
+    <string name="toast_ad_fail">โหลดโฆษณาล้มเหลว</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">ไม่มีโฆษณา ชาร์จฟรีแล้ว! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">นาฬิกาปลุกกำลังดัง!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">นาฬิกาปลุกกำลังดัง</string>
+    <string name="default_notif_text">ได้เวลาตื่นแล้ว!</string>
+    <string name="channel_name_high">การแจ้งเตือนเสียงปลุก</string>
+    <string name="channel_name_low">การแจ้งเตือนปลุกแบบเงียบ</string>
+    <string name="common_stop">หยุด</string>
+    <string name="log_alarm_started">เริ่มนาฬิกาปลุกแล้ว</string>
+    <string name="log_routine_stopped">ผู้ใช้หยุดกิจวัตร 💨</string>
+    <string name="log_single_alarm_completed">นาฬิกาปลุกเดี่ยวเสร็จสมบูรณ์ 🔥</string>
+    <string name="default_preset_name">กิจวัตรที่ไม่มีชื่อ</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">จำเป็นต้องมีสิทธิ์การตั้งปลุกที่แน่นอน</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">กิจวัตรที่ไม่มีชื่อ</string>
+    <string name="setting_mode_relative">โหมด: เวลาสัมพัทธ์ (ตัวจับเวลา)</string>
+    <string name="setting_mode_absolute">โหมด: เวลาสัมบูรณ์ (นาฬิกาปลุก)</string>
+    <string name="preset_save_title">บันทึกพรีเซ็ต</string>
+    <string name="preset_name_hint">ชื่อพรีเซ็ต (เช่น เช้าวันธรรมดา)</string>
+    <string name="preset_color_label">สีวงโคจร</string>
+    <string name="preset_icon_label">ไอคอนตรงกลาง</string>
+    <string name="toast_preset_saved">บันทึกพรีเซ็ตแล้ว!</string>
+    <string name="common_save">บันทึก</string>
+    <string name="common_cancel">ยกเลิก</string>
+    <string name="common_confirm">ยืนยัน</string>
+    <string name="setting_unknown_ringtone">เสียงเรียกเข้าที่ไม่รู้จัก</string>
+    <string name="setting_default_ringtone">เสียงเริ่มต้น</string>
+    <string name="setting_tts_hint">ข้อความที่จะให้อ่าน</string>
+    <string name="setting_ringtone_picker_title">เลือกเสียงปลุก</string>
+    <string name="setting_repeat_times_format">%1$d ครั้ง</string>
+    <string name="setting_duration_format">%1$ds</string>
+    <string name="setting_repeat_h">ทำซ้ำ(H)</string>
+    <string name="setting_repeat_m">ทำซ้ำ(M)</string>
+    <string name="setting_repeat_s">ทำซ้ำ(S)</string>
+    <string name="setting_repeat_count_format">ทำซ้ำ %1$d ครั้ง</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">จำเป็นต้องเข้าสู่ระบบ</string>
+    <string name="toast_backup_success">สำรองข้อมูลบนคลาวด์เสร็จสมบูรณ์!</string>
+    <string name="toast_backup_fail">สำรองข้อมูลล้มเหลว: %1$s</string>
+    <string name="toast_restore_success">กู้คืนข้อมูลบนคลาวด์เสร็จสมบูรณ์!</string>
+    <string name="toast_restore_empty">ไม่พบข้อมูลสำรอง</string>
+    <string name="toast_restore_fail">กู้คืนข้อมูลล้มเหลว: %1$s</string>
+
+    <string name="profile_update_success">เปลี่ยนชื่อเล่นสำเร็จแล้ว</string>
+    <string name="profile_update_fail">เปลี่ยนชื่อเล่นล้มเหลว</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">รีเซ็ต</string>
+    <string name="history_long_press_guide">กดค้างที่รายการเพื่อดูเมนูรายละเอียด</string>
+    <string name="history_detail_timeline">รายละเอียด (ไทม์ไลน์)</string>
+    <string name="history_hide_from_calendar">ซ่อนทั้งหมดจากปฏิทิน</string>
+    <string name="history_completed_format">เสร็จสิ้น %1$d / %2$d (%3$d%%)</string>
+    <string name="history_default_sound">🎵 เสียงเริ่มต้น</string>
+    <string name="history_infinite_repeat">ทำซ้ำไม่สิ้นสุด</string>
+    <string name="history_repeat_count_format">ทำซ้ำ %1$d ครั้ง</string>
+    <string name="history_no_repeat">ไม่ทำซ้ำ</string>
+    <string name="history_crescendo_active">🔥 เปิดใช้งาน Crescendo แล้ว</string>
+    <string name="history_close">ปิด</string>
+    <string name="history_unknown_time">ไม่ทราบ</string>
+    <string name="history_aborted">ยกเลิกแล้ว</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">เพิ่มพรีเซ็ต \'%1$s\' แล้ว!</string>
+    <string name="toast_invalid_qr">คิวอาร์โค้ดไม่ถูกต้อง</string>
+    <string name="toast_login_fail">เข้าสู่ระบบล้มเหลว: %1$s</string>
+    <string name="toast_login_success">เข้าสู่ระบบสำเร็จ!</string>
+    <string name="toast_auth_fail">การตรวจสอบสิทธิ์ล้มเหลว</string>
+    <string name="toast_alarm_permission_request">โปรดอนุญาตสิทธิ์สำหรับการตั้งปลุกที่แน่นอน</string>
+    <string name="toast_alarm_set_fail">ตั้งนาฬิกาปลุกล้มเหลว</string>
+    <string name="toast_exact_alarm_needed">ต้องเปิด \'อนุญาตการตั้งปลุกที่แน่นอน\' เพื่อการทำงานที่เชื่อถือได้!</string>
+    <string name="toast_battery_opt_needed">ต้องเปิด \'ละเว้นการเพิ่มประสิทธิภาพแบตเตอรี่\' เพื่อการทำงานที่เชื่อถือได้!</string>
+    <string name="toast_logout_success">ออกจากระบบแล้ว</string>
+
+    <string name="toast_session_expired_logout">ออกจากระบบเนื่องจากมีการเข้าสู่ระบบจากอุปกรณ์อื่น</string>
+    <string name="dialog_other_device_title">เข้าสู่ระบบจากอุปกรณ์อื่น</string>
+    <string name="dialog_other_device_msg">มีอุปกรณ์อื่นเข้าสู่ระบบบัญชีนี้ตั้งแต่ %1$s\nคุณต้องการให้พวกเขาออกจากระบบและเข้าสู่ระบบบนอุปกรณ์นี้หรือไม่?</string>
+    <string name="dialog_force_login">บังคับเข้าสู่ระบบ</string>
+    <string name="toast_session_claim_fail">ไม่สามารถรักษาความปลอดภัยเซสชัน</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ ความขัดแย้งในการซิงค์ข้อมูล</string>
+    <string name="main_sync_conflict_desc">ข้อมูลในอุปกรณ์อื่นแตกต่างจากโทรศัพท์เครื่องนี้ โปรดเลือกข้อมูลที่ต้องการเก็บไว้</string>
+    <string name="main_sync_local_data">📱 ข้อมูลในโทรศัพท์</string>
+    <string name="main_sync_cloud_data">☁️ ข้อมูลบนคลาวด์</string>
+    <string name="main_sync_latest_badge"> [ใหม่ล่าสุด ✨]</string>
+    <string name="main_sync_no_record">ไม่มีบันทึก</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ เขียนทับด้วยข้อมูลคลาวด์ (แนะนำ)</string>
+    <string name="main_sync_load_cloud">☁️ โหลดข้อมูลคลาวด์</string>
+    <string name="main_sync_keep_local_rec">📱 เก็บข้อมูลโทรศัพท์ไว้ (แนะนำ)</string>
+    <string name="main_sync_keep_local">📱 เก็บข้อมูลโทรศัพท์ไว้</string>
+    <string name="toast_need_charge">⚡ สิทธิ์การใช้งานฟรีหมดแล้ว แตะที่ไอคอนสายฟ้าด้านขวาบนเพื่อชาร์จ!</string>
+
+    <string name="toast_preset_load_fail">โหลดพรีเซ็ตล้มเหลว</string>
+    <string name="toast_alarm_restarted">รีสตาร์ทนาฬิกาปลุกแล้ว</string>
+    <string name="toast_alarm_saved">บันทึกนาฬิกาปลุกแล้ว</string>
+
+    <string name="main_menu_earphone_title">โหมดห้องเรียน (เฉพาะหูฟัง)</string>
+    <string name="main_menu_earphone_desc">นาฬิกาปลุกจะเล่นผ่านระดับเสียงสื่อ</string>
+    <string name="main_menu_preset">โหลด / แชร์พรีเซ็ต</string>
+    <string name="main_menu_history">ประวัติการใช้งาน</string>
+    <string name="main_menu_settings">การตั้งค่าแอป (ความโปร่งใส, บัญชี)</string>
+    <string name="toast_preset_applied">ใช้พรีเซ็ต \'%1$s\' แล้ว</string>
+
+    <string name="ad_confirm_title">ชาร์จพลังงาน</string>
+    <string name="ad_confirm_desc">คุณต้องการดูโฆษณาเพื่อชาร์จ 3 สายฟ้าหรือไม่?\n(สายฟ้าจะชาร์จอัตโนมัติ 5 ครั้งทุกวัน)</string>
+
+    ``preset``
+    <string name="preset_screen_title">พรีเซ็ต</string>
+    <string name="preset_empty_message">ไม่มีพรีเซ็ตที่บันทึกไว้</string>
+    <string name="toast_preset_deleted">ลบพรีเซ็ต \'%1$s\' แล้ว</string>
+    <string name="toast_preset_corrupted">พรีเซ็ตเสียหายหรือเก่าเกินไป โปรดบันทึกอีกครั้ง</string>
+    <string name="preset_receipt_infinite_repeat">ทำซ้ำไม่สิ้นสุด</string>
+    <string name="preset_receipt_repeat_count">ทำซ้ำ %1$d ครั้ง</string>
+    <string name="preset_receipt_repeat_interval">🔁 ระยะห่าง %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 คุณได้รับกิจวัตร \'%1$s\' จากแอป Chronos!\n\nแตะลิงก์ด้านล่างเพื่อปรับใช้ในโทรศัพท์ของคุณ:\n%2$s</string>
+    <string name="preset_share_intent_title">แชร์กิจวัตร</string>
+    <string name="preset_btn_share_link">แชร์ลิงก์ผ่าน Messenger</string>
+    <string name="toast_link_copied">คัดลอกลิงก์แล้ว! โปรดวางในแชทหลังจากส่งรูปภาพ</string>
+    <string name="toast_image_save_fail">บันทึกรูปภาพล้มเหลว จะแชร์เป็นข้อความแทน</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 ดูบทช่วยสอนของแอปอีกครั้ง</string>
+    <string name="settings_account_link">🔗 เชื่อมโยงบัญชี</string>
+    <string name="settings_tos_agree">การเข้าสู่ระบบถือว่าคุณยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัว</string>
+    <string name="settings_google_login">เข้าสู่ระบบด้วย Google</string>
+    <string name="settings_linked_account">บัญชีที่เชื่อมโยง: %1$s</string>
+    <string name="settings_logout">ออกจากระบบ</string>
+    <string name="settings_overdrive_title">โหมด Overdrive</string>
+    <string name="settings_overdrive_desc">เพิ่มระดับเสียงเกินขีดจำกัดระบบ 200%% (คำเตือน!)</string>
+    <string name="settings_language">การตั้งค่าภาษา (Language)</string>
+
+    <string name="profile_no_nickname">ไม่มีชื่อเล่น</string>
+    <string name="profile_new_nickname">ชื่อเล่นใหม่</string>
+    <string name="profile_verify">ตรวจสอบ</string>
+    <string name="profile_msg_empty">โปรดป้อนชื่อเล่น</string>
+    <string name="profile_msg_current">นี่คือชื่อเล่นปัจจุบันของคุณ</string>
+    <string name="profile_msg_available">✅ สามารถใช้ชื่อเล่นนี้ได้!</string>
+    <string name="profile_msg_taken">❌ ชื่อนี้ถูกใช้ไปแล้ว</string>
+    <string name="profile_msg_prompt_verify">โปรดกดตรวจสอบการซ้ำซ้อน</string>
+    <string name="profile_cancel">ยกเลิก</string>
+    <string name="profile_save">บันทึก</string>
+
+    <string name="toast_nickname_changed">เปลี่ยนชื่อเล่นสำเร็จแล้ว</string>
+    <string name="toast_nickname_failed">เปลี่ยนชื่อเล่นล้มเหลว</string>
+    <string name="profile_check_duplicate">ตรวจสอบการซ้ำซ้อน</string>
+
+    <string name="profile_image_save_fail">บันทึกรูปภาพล้มเหลว</string>
+    <string name="profile_save_success_toast">บันทึกโปรไฟล์สำเร็จแล้ว</string>
+
+    <string name="profile_msg_invalid_format">3~20 ตัวอักษร, ตัวอักษร/ตัวเลข/_ เท่านั้น</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">กิจกรรมพิเศษสำหรับ Beta Tester</string>
+    <string name="tutorial_desc_0">ผู้ใช้งานสูงสุด 1,000 อันดับแรกจะได้รับฟีเจอร์พรีเมียมฟรีหลังจากการเปิดตัวอย่างเป็นทางการ!\n\nเข้าสู่ระบบด้วย Google ในเมนู \'การตั้งค่า (⚙️)\' ที่มุมขวาบนเพื่อเข้าร่วม</string>
+
+    <string name="tutorial_title_1">หน้าจอหลัก</string>
+    <string name="tutorial_desc_1">แตะนาฬิกาตรงกลางเพื่อเพิ่มการตั้งปลุก และตรวจสอบประวัติและการตั้งค่าที่มุมขวาบน</string>
+
+    <string name="tutorial_title_2">การควบคุมนาฬิกา</string>
+    <string name="tutorial_desc_2">• แตะ : เปิดการตั้งค่านาฬิกาปลุก\n• แตะสองครั้ง : ยกเลิกนาฬิกาปลุกทั้งหมด\n• แตะสองครั้ง : หยุดนาฬิกาปลุกที่กำลังดัง\n• กดค้าง : รีสตาร์ทการปลุกครั้งล่าสุดพร้อมระบบสั่น</string>
+
+    <string name="tutorial_title_3">คู่มือไอคอนการตั้งค่า</string>
+    <string name="tutorial_desc_3">⏳ : เปลี่ยนโหมดตัวจับเวลา (เวลาสัมพัทธ์)\n📈 : เพิ่มระดับเสียงค่อยๆ (Crescendo)\n♾️ : ทำซ้ำไม่สิ้นสุดจนกว่าจะปิด\n🗣️ : อ่านออกเสียง (TTS)</string>
+
+    <string name="tutorial_title_4">การตั้งค่าการปลุกโดยละเอียด</string>
+    <string name="tutorial_desc_4">ปรับแต่งเวลาสัมพัทธ์ ระดับเสียง ระยะเวลา และ Crescendo ได้ตามต้องการ</string>
+
+    <string name="tutorial_title_5">บันทึกและแชร์กิจวัตร</string>
+    <string name="tutorial_desc_5">บันทึกการตั้งค่านาฬิกาปลุกของคุณเป็นพรีเซ็ต และแชร์ให้เพื่อนๆ ด้วยใบเสร็จเท่ๆ และคิวอาร์โค้ด!</string>
+
+    <string name="tutorial_title_6">การตั้งค่าแอป</string>
+    <string name="tutorial_desc_6">ปรับความโปร่งใสของพื้นหลัง หรือดูบทช่วยสอนนี้อีกครั้งได้ตลอดเวลา</string>
+
+    <string name="tutorial_skip">ข้าม</string>
+    <string name="tutorial_next">ถัดไป</string>
+    <string name="tutorial_start">เริ่มต้น</string>
+
+    <string name="tutorial_mock_title">⏰ รายละเอียดการปลุก</string>
+
+    <string name="tutorial_mock_crescendo_title">Crescendo</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ เสียงจะค่อยๆ ดังขึ้น!</string>
+
+    <string name="tutorial_mock_infinite_title">ทำซ้ำไม่สิ้นสุด</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ จะดังจนกว่าคุณจะปิด!</string>
+
+    <string name="tutorial_mock_tts_title">โหมด TTS</string>
+    <string name="tutorial_mock_tts_desc">⬅️ อ่านข้อความที่คุณป้อนออกเสียง!</string>
+
+    <string name="tutorial_mock_repeat_title">ทำซ้ำตามระยะเวลา</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ ฟีเจอร์เลื่อนปลุก (Snooze) จะดังอีกครั้งใน n นาที!</string>
+
+    <string name="tutorial_mock_footer">💡 เปิดสวิตช์ข้างไอคอน\nเพื่อสร้างกิจวัตรที่สมบูรณ์แบบของคุณ!</string>
+
+    <string name="tutorial_title_energy">ระบบพลังงานฟรี</string>
+    <string name="tutorial_desc_energy">ต้องใช้พลังงานในการรันนาฬิกาปลุก\nไม่ต้องกังวล! จะชาร์จอัตโนมัติ 5 ครั้งทุกวัน</string>
+
+    <string name="tutorial_try_alarm_title">ลองตั้งนาฬิกาปลุกเลย!</string>
+    <string name="tutorial_try_alarm_desc">แตะหน้าจอเพื่อเปิดการตั้งค่านาฬิกาปลุก\nตั้งเวลาและบันทึก!</string>
+    <string name="tutorial_try_alarm_btn">ลองทำดู</string>
+    <string name="tutorial_try_preset_title">เรามาดูพรีเซ็ตที่คุณบันทึกไว้ไหม?</string>
+    <string name="tutorial_try_preset_desc">คุณสามารถหาพรีเซ็ตที่คุณเพิ่งบันทึกไว้ได้\nในหน้าจอโหลดพรีเซ็ต</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">ใส่ 10 ในวินาที (S)</string>
+    <string name="tg_add_alarm">แตะเพื่อเพิ่มนาฬิกาปลุกใหม่</string>
+    <string name="tg_input_hours">ใส่ 10 ในชั่วโมง (H)</string>
+    <string name="tg_save_button">แตะ ✓ เพื่อบันทึก</string>
+    <string name="tg_preset_save_btn">💾 แตะปุ่มบันทึกพรีเซ็ต</string>
+    <string name="tg_save_confirm">แตะปุ่มบันทึก</string>
+    <string name="tg_tap_share">แตะปุ่มแชร์</string>
+    <string name="tg_tap_name_load">แตะชื่อเพื่อโหลด</string>
+    <string name="tg_preset_loaded_exit">โหลดพรีเซ็ตแล้ว!\nแตะ X เพื่อออก</string>
+    <string name="tg_drag_down">ลากลงเพื่อเลื่อน</string>
+    <string name="tg_qr_share">แชร์พรีเซ็ตผ่าน QR โค้ด</string>
+    <string name="tg_link_share">แชร์ผ่านลิงก์ได้ด้วย</string>
+    <string name="tg_close_button">แตะปุ่มปิด</string>
+    <string name="tg_tap_presets">แตะพรีเซ็ต</string>
+    <string name="tg_try_alarm_title">ลองตั้งนาฬิกาปลุก!</string>
+    <string name="tg_try_alarm_desc">แตะหน้าจอเพื่อเปิดการตั้งค่า\nตั้งเวลาแล้วบันทึก!</string>
+    <string name="tg_try_it">ลองดู</string>
+    <string name="tg_skip">ข้าม</string>
+    <string name="tg_check_preset_title">ตรวจสอบพรีเซ็ตที่บันทึก?</string>
+    <string name="tg_check_preset_desc">พรีเซ็ตที่บันทึกอยู่\nในหน้าจอโหลด</string>
+    <string name="tg_check_it">ตรวจสอบ</string>
+    <string name="tg_done">เสร็จ</string>
+    <string name="tg_step1_title">แตะนาฬิกา!</string>
+    <string name="tg_step1_desc">แตะนาฬิกาตรงกลาง\nเพื่อเปิดการตั้งค่า</string>
+    <string name="tg_step2_title">ตั้งค่าปลุก!</string>
+    <string name="tg_step2_desc">ตรวจสอบเวลาปลุก\nแล้วแตะบันทึก</string>
+    <string name="tg_step3_title">รอให้นาฬิกาปลุกดัง</string>
+    <string name="tg_step3_desc">จุดสีเหลืองคือตำแหน่งปลุก\nจะดังในไม่ช้า!</string>
+    <string name="tg_step4_title">แตะสองครั้งที่หน้าจอ!</string>
+    <string name="tg_step4_desc">นาฬิกาปลุกกำลังดัง\nแตะสองครั้งเพื่อหยุด</string>
+    <string name="tg_step5_title">กดค้างที่นาฬิกา!</string>
+    <string name="tg_step5_desc">กดค้างที่นาฬิกา\nเพื่อเริ่มปลุกทันที</string>
+    <string name="tg_step6_title">แตะสองครั้งอีก!</string>
+    <string name="tg_step6_desc">ปลุกจากการกดค้าง\nก็หยุดด้วยแตะสองครั้งได้</string>
+    <string name="tg_step7_title">แตะนาฬิกาอีกครั้ง!</string>
+    <string name="tg_step7_desc">บันทึกการตั้งค่า\nเป็นพรีเซ็ต!</string>
+    <string name="tg_step9_title">แตะเมนู</string>
+    <string name="tg_step9_desc">แตะปุ่มเมนู\nเพื่อดูประวัติ</string>
+    <string name="dialog_notice_title">แจ้งเตือน</string>
+    <string name="update_title">แจ้งเตือนอัปเดต</string>
+    <string name="update_msg_force">จำเป็นต้องอัปเดตเพื่อใช้บริการต่อ</string>
+    <string name="update_msg_optional">มีเวอร์ชันใหม่ ต้องการอัปเดตหรือไม่?</string>
+    <string name="update_btn_now">อัปเดต</string>
+    <string name="update_btn_later">ภายหลัง</string>
+</resources>

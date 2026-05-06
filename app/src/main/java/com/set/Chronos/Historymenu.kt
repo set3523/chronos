@@ -52,6 +52,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.filled.Close
 import com.set.Chronos.R
 import androidx.compose.ui.draw.alpha
+import androidx.compose.runtime.collectAsState
 
 // 색상 텍스트("#FF0000")를 Compose Color로 바꿔주는 마법의 헬퍼 함수
 fun hexToColor(hex: String): Color {
@@ -78,19 +79,17 @@ fun HistoryScreen(
     }
     // ✨ [드디어 진짜 데이터를 불러옵니다!]
     val context = LocalContext.current
-    val prefs = remember { com.set.Chronos.getSecurePrefs(context) }
+    val dao = remember { com.set.Chronos.data.ChronosDb.get(context).historyDao() }
 
-    // 달력을 열 때마다 최신 데이터로 업데이트!
-    var historyJson by remember { mutableStateOf(prefs.getString("historyRecords", "[]") ?: "[]") }
-    LaunchedEffect(Unit) {
-        historyJson = prefs.getString("historyRecords", "[]") ?: "[]"
-    }
+// Flow로 DB 변경사항 자동 관찰 (알람 끝나면 자동 갱신)
+    val historyEntities by dao.observeAll().collectAsState(initial = emptyList())
 
-    // JSON 텍스트를 진짜 HistoryRecord 리스트로 조립하고 날짜별로 정리합니다.
-    val monthRecords = remember(historyJson, currentMonth) {
-        val records = try {
-            Json { ignoreUnknownKeys = true }.decodeFromString<List<HistoryRecord>>(historyJson)
-        } catch(e: Exception) { emptyList() }
+    val monthRecords = remember(historyEntities, currentMonth) {
+        val records = historyEntities.mapNotNull { entity ->
+            try {
+                Json { ignoreUnknownKeys = true }.decodeFromString<HistoryRecord>(entity.data)
+            } catch (e: Exception) { null }
+        }
 
         val map = mutableMapOf<Int, MutableList<HistoryRecord>>()
         val cal = Calendar.getInstance()

@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Chronos</string>
+    <string name="remove_ads">Hapus Iklan (Berbayar)</string>
+    <string name="settings_transparency">Transparansi jendela pengaturan</string>
+    <string name="language">Bahasa</string>
+    <string name="apply">Terapkan</string>
+
+    ``Admanager``
+    <string name="toast_ad_watch_to_save">Akan disimpan setelah menonton iklan (Uji)</string>
+    <string name="toast_ad_fail">Gagal memuat iklan</string>
+    <string name="toast_charge_success">⚡ * 3</string>
+    <string name="toast_free_charge_no_ad">Tidak ada iklan, diisi ulang secara gratis! ⚡ * 3</string>
+
+    ``AlarmReceiver``
+    <string name="toast_alarm_ringing">Alarm berbunyi!</string>
+
+    ``AlarmService``
+    <string name="default_tts_text">Alarm berbunyi.</string>
+    <string name="default_notif_text">Waktunya bangun!</string>
+    <string name="channel_name_high">Pemberitahuan Suara Alarm</string>
+    <string name="channel_name_low">Pemberitahuan Alarm Senyap</string>
+    <string name="common_stop">Berhenti</string>
+    <string name="log_alarm_started">Alarm dimulai</string>
+    <string name="log_routine_stopped">Rutinitas dihentikan oleh pengguna 💨</string>
+    <string name="log_single_alarm_completed">Satu alarm selesai 🔥</string>
+    <string name="default_preset_name">Rutinitas Tanpa Nama</string>
+
+    ``AlarmUtils``
+    <string name="toast_exact_alarm_permission">Izin alarm yang tepat diperlukan.</string>
+
+    ``Chronoset``
+    <string name="preset_default_name">Rutinitas Tanpa Nama</string>
+    <string name="setting_mode_relative">Mode: Waktu Relatif (Timer)</string>
+    <string name="setting_mode_absolute">Mode: Waktu Absolut (Alarm)</string>
+    <string name="preset_save_title">Simpan Preset</string>
+    <string name="preset_name_hint">Nama Preset (mis. Pagi Hari)</string>
+    <string name="preset_color_label">Warna Orbit</string>
+    <string name="preset_icon_label">Ikon Tengah</string>
+    <string name="toast_preset_saved">Preset disimpan!</string>
+    <string name="common_save">Simpan</string>
+    <string name="common_cancel">Batal</string>
+    <string name="common_confirm">Konfirmasi</string>
+    <string name="setting_unknown_ringtone">Nada Dering Tidak Dikenal</string>
+    <string name="setting_default_ringtone">Suara Default</string>
+    <string name="setting_tts_hint">Teks untuk diucapkan</string>
+    <string name="setting_ringtone_picker_title">Pilih Suara Alarm</string>
+    <string name="setting_repeat_times_format">%1$d kali</string>
+    <string name="setting_duration_format">%1$ddt</string>
+    <string name="setting_repeat_h">Ulangi(J)</string>
+    <string name="setting_repeat_m">Ulangi(M)</string>
+    <string name="setting_repeat_s">Ulangi(D)</string>
+    <string name="setting_repeat_count_format">Ulangi %1$d kali</string>
+
+    ``CloudSyncManager``
+    <string name="toast_login_required">Login diperlukan.</string>
+    <string name="toast_backup_success">Pencadangan cloud selesai!</string>
+    <string name="toast_backup_fail">Pencadangan gagal: %1$s</string>
+    <string name="toast_restore_success">Pemulihan cloud selesai!</string>
+    <string name="toast_restore_empty">Tidak ada data cadangan yang ditemukan.</string>
+    <string name="toast_restore_fail">Pemulihan gagal: %1$s</string>
+
+    <string name="profile_update_success">Nama panggilan berhasil diubah.</string>
+    <string name="profile_update_fail">Gagal mengubah nama panggilan.</string>
+
+    ``historymenu``
+    <string name="history_refresh_desc">Setel Ulang</string>
+    <string name="history_long_press_guide">Tekan lama item untuk menampilkan menu detail.</string>
+    <string name="history_detail_timeline">Detail (Garis Waktu)</string>
+    <string name="history_hide_from_calendar">Sembunyikan semua dari kalender</string>
+    <string name="history_completed_format">%1$d / %2$d Selesai (%3$d%%)</string>
+    <string name="history_default_sound">🎵 Suara Default</string>
+    <string name="history_infinite_repeat">Pengulangan Tanpa Batas</string>
+    <string name="history_repeat_count_format">Ulangi %1$d kali</string>
+    <string name="history_no_repeat">Tanpa Pengulangan</string>
+    <string name="history_crescendo_active">🔥 Crescendo Aktif</string>
+    <string name="history_close">Tutup</string>
+    <string name="history_unknown_time">Tidak diketahui</string>
+    <string name="history_aborted">Dibatalkan</string>
+
+    ``MainActivity``
+    <string name="toast_preset_added">Preset \'%1$s\' ditambahkan!</string>
+    <string name="toast_invalid_qr">Kode QR tidak valid.</string>
+    <string name="toast_login_fail">Login gagal: %1$s</string>
+    <string name="toast_login_success">Login berhasil!</string>
+    <string name="toast_auth_fail">Otentikasi gagal</string>
+    <string name="toast_alarm_permission_request">Harap izinkan izin untuk alarm yang tepat.</string>
+    <string name="toast_alarm_set_fail">Gagal menyetel alarm.</string>
+    <string name="toast_exact_alarm_needed">\'Izinkan alarm yang tepat\' diperlukan untuk alarm yang andal!</string>
+    <string name="toast_battery_opt_needed">\'Abaikan pengoptimalan baterai\' diperlukan untuk alarm yang andal!</string>
+    <string name="toast_logout_success">Berhasil keluar.</string>
+
+    <string name="toast_session_expired_logout">Keluar karena login dari perangkat lain.</string>
+    <string name="dialog_other_device_title">Login dari perangkat lain</string>
+    <string name="dialog_other_device_msg">Perangkat lain telah masuk ke akun ini sejak %1$s.\nApakah Anda ingin mengeluarkan perangkat tersebut dan masuk di perangkat ini?</string>
+    <string name="dialog_force_login">Paksa Masuk</string>
+    <string name="toast_session_claim_fail">Gagal mengamankan sesi</string>
+
+    ``mainscreen``
+    <string name="main_sync_conflict_title">☁️ Konflik Sinkronisasi Data</string>
+    <string name="main_sync_conflict_desc">Catatan di perangkat lain berbeda dengan ponsel ini. Silakan pilih data yang ingin disimpan.</string>
+    <string name="main_sync_local_data">📱 Data Ponsel Saya</string>
+    <string name="main_sync_cloud_data">☁️ Awan</string>
+    <string name="main_sync_latest_badge"> [Terbaru ✨]</string>
+    <string name="main_sync_no_record">Tidak ada catatan</string>
+    <string name="main_sync_overwrite_cloud_rec">☁️ Timpa dengan Data Awan (Direkomendasikan)</string>
+    <string name="main_sync_load_cloud">☁️ Muat Data Awan</string>
+    <string name="main_sync_keep_local_rec">📱 Simpan Data Ponsel (Direkomendasikan)</string>
+    <string name="main_sync_keep_local">📱 Simpan Data Ponsel</string>
+    <string name="toast_need_charge">⚡ Kehabisan penggunaan gratis. Ketuk ikon petir di kanan atas untuk mengisi ulang!</string>
+
+    <string name="toast_preset_load_fail">Gagal memuat preset.</string>
+    <string name="toast_alarm_restarted">Alarm dimulai ulang.</string>
+    <string name="toast_alarm_saved">Alarm disimpan.</string>
+
+    <string name="main_menu_earphone_title">Mode Ruang Belajar (Hanya Earphone)</string>
+    <string name="main_menu_earphone_desc">Alarm akan diputar melalui volume media.</string>
+    <string name="main_menu_preset">Muat / Bagikan Preset</string>
+    <string name="main_menu_history">Riwayat Penggunaan</string>
+    <string name="main_menu_settings">Pengaturan Aplikasi (Transparansi, Akun)</string>
+    <string name="toast_preset_applied">Preset \'%1$s\' diterapkan.</string>
+
+    <string name="ad_confirm_title">Isi Ulang Energi</string>
+    <string name="ad_confirm_desc">Apakah Anda ingin menonton iklan untuk mengisi ulang 3 petir?\n(5 petir diisi ulang secara otomatis setiap hari.)</string>
+
+    ``preset``
+    <string name="preset_screen_title">Preset</string>
+    <string name="preset_empty_message">Tidak ada preset yang disimpan.</string>
+    <string name="toast_preset_deleted">Preset \'%1$s\' dihapus.</string>
+    <string name="toast_preset_corrupted">Preset rusak atau usang. Silakan simpan lagi.</string>
+    <string name="preset_receipt_infinite_repeat">Pengulangan Tanpa Batas</string>
+    <string name="preset_receipt_repeat_count">Ulangi %1$d kali</string>
+    <string name="preset_receipt_repeat_interval">🔁 Interval %1$s / %2$s</string>
+    <string name="preset_share_message">🔥 Anda menerima rutinitas \'%1$s\' dari aplikasi Chronos!\n\nKetuk tautan di bawah untuk menerapkannya langsung ke ponsel Anda:\n%2$s</string>
+    <string name="preset_share_intent_title">Bagikan Rutinitas</string>
+    <string name="preset_btn_share_link">Bagikan Tautan via Messenger</string>
+    <string name="toast_link_copied">Tautan disalin! Harap tempel di obrolan setelah mengirim gambar.</string>
+    <string name="toast_image_save_fail">Gagal menyimpan gambar. Akan dibagikan sebagai teks.</string>
+
+    ``settingsdialog``
+    <string name="settings_tutorial_btn">💡 Lihat Tutorial Aplikasi Lagi</string>
+    <string name="settings_account_link">🔗 Tautkan Akun</string>
+    <string name="settings_tos_agree">Dengan masuk, Anda menyetujui Ketentuan dan Kebijakan Privasi kami.</string>
+    <string name="settings_google_login">Masuk dengan Google</string>
+    <string name="settings_linked_account">Akun yang Tertaut: %1$s</string>
+    <string name="settings_logout">Keluar</string>
+    <string name="settings_overdrive_title">Mode Overdrive</string>
+    <string name="settings_overdrive_desc">Tingkatkan volume hingga 200%% di luar batas sistem (Peringatan!)</string>
+    <string name="settings_language">Pengaturan Bahasa (Language)</string>
+
+    <string name="profile_no_nickname">Tidak ada nama panggilan</string>
+    <string name="profile_new_nickname">Nama Panggilan Baru</string>
+    <string name="profile_verify">Periksa</string>
+    <string name="profile_msg_empty">Silakan masukkan nama panggilan.</string>
+    <string name="profile_msg_current">Ini adalah nama panggilan Anda saat ini.</string>
+    <string name="profile_msg_available">✅ Nama panggilan tersedia!</string>
+    <string name="profile_msg_taken">❌ Nama panggilan ini sudah digunakan.</string>
+    <string name="profile_msg_prompt_verify">Silakan ketuk periksa duplikat.</string>
+    <string name="profile_cancel">Batal</string>
+    <string name="profile_save">Simpan</string>
+
+    <string name="toast_nickname_changed">Nama panggilan berhasil diubah.</string>
+    <string name="toast_nickname_failed">Gagal mengubah nama panggilan.</string>
+    <string name="profile_check_duplicate">Periksa Duplikat</string>
+
+    <string name="profile_image_save_fail">Gagal menyimpan gambar</string>
+    <string name="profile_save_success_toast">Profil berhasil disimpan.</string>
+
+    <string name="profile_msg_invalid_format">3~20 karakter, hanya huruf/angka/_</string>
+
+    ``tutorial``
+    <string name="tutorial_title_0">Acara Khusus Penguji Beta</string>
+    <string name="tutorial_desc_0">1.000 pengguna paling aktif akan mendapatkan fitur premium gratis setelah rilis resmi!\n\nMasuk dengan Google di menu \'Pengaturan (⚙️)\' di kanan atas untuk berpartisipasi.</string>
+
+    <string name="tutorial_title_1">Layar Utama</string>
+    <string name="tutorial_desc_1">Sentuh jam di tengah untuk menambahkan alarm, dan periksa riwayat serta pengaturan di kanan atas.</string>
+
+    <string name="tutorial_title_2">Kontrol Jam</string>
+    <string name="tutorial_desc_2">• Ketuk : Buka pengaturan alarm\n• Ketuk Ganda : Batalkan semua alarm\n• Ketuk Ganda : Hentikan alarm yang berdering\n• Tekan Lama : Mulai ulang alarm terbaru dengan getaran</string>
+
+    <string name="tutorial_title_3">Panduan Ikon Pengaturan</string>
+    <string name="tutorial_desc_3">⏳ : Beralih Mode Timer (Waktu Relatif)\n📈 : Tingkatkan volume secara bertahap (Crescendo)\n♾️ : Ulangi tanpa batas hingga dimatikan\n🗣️ : Baca teks dengan suara keras (TTS)</string>
+
+    <string name="tutorial_title_4">Pengaturan Alarm Detail</string>
+    <string name="tutorial_desc_4">Sesuaikan waktu relatif, volume, durasi, dan crescendo sesuai keinginan Anda.</string>
+
+    <string name="tutorial_title_5">Simpan &amp; Bagikan Rutinitas</string>
+    <string name="tutorial_desc_5">Simpan pengaturan alarm Anda sebagai preset, dan bagikan dengan teman melalui tanda terima keren dan kode QR!</string>
+
+    <string name="tutorial_title_6">Pengaturan Aplikasi</string>
+    <string name="tutorial_desc_6">Sesuaikan transparansi latar belakang atau lihat tutorial ini lagi kapan saja.</string>
+
+    <string name="tutorial_skip">Lewati</string>
+    <string name="tutorial_next">Berikutnya</string>
+    <string name="tutorial_start">Mulai</string>
+
+    <string name="tutorial_mock_title">⏰ Detail Alarm</string>
+
+    <string name="tutorial_mock_crescendo_title">Crescendo</string>
+    <string name="tutorial_mock_crescendo_desc">⬅️ Suara akan semakin keras!</string>
+
+    <string name="tutorial_mock_infinite_title">Pengulangan Tanpa Batas</string>
+    <string name="tutorial_mock_infinite_desc">⬅️ Akan terus berdering sampai Anda mematikannya!</string>
+
+    <string name="tutorial_mock_tts_title">Mode TTS</string>
+    <string name="tutorial_mock_tts_desc">⬅️ Membaca teks yang Anda masukkan dengan lantang!</string>
+
+    <string name="tutorial_mock_repeat_title">Pengulangan Interval</string>
+    <string name="tutorial_mock_repeat_desc">⬅️ Fitur Tunda (Snooze) berbunyi lagi setelah n menit!</string>
+
+    <string name="tutorial_mock_footer">💡 Nyalakan sakelar di sebelah ikon\nuntuk membuat rutinitas sempurna Anda!</string>
+
+    <string name="tutorial_title_energy">Sistem Energi Gratis</string>
+    <string name="tutorial_desc_energy">Energi diperlukan untuk menjalankan alarm.\nJangan khawatir! Diisi ulang secara otomatis 5 kali setiap hari.</string>
+
+    <string name="tutorial_try_alarm_title">Coba setel alarm!</string>
+    <string name="tutorial_try_alarm_desc">Ketuk layar untuk membuka pengaturan alarm.\nSetel waktu dan simpan!</string>
+    <string name="tutorial_try_alarm_btn">Coba</string>
+    <string name="tutorial_try_preset_title">Mau lihat preset yang Anda simpan?</string>
+    <string name="tutorial_try_preset_desc">Anda dapat menemukan preset yang baru saja Anda simpan\ndi layar muat.</string>
+
+    ``tutorial_guide``
+    <string name="tg_input_seconds">Masukkan 10 di detik (S)</string>
+    <string name="tg_add_alarm">Ketuk untuk menambah alarm baru</string>
+    <string name="tg_input_hours">Masukkan 10 di jam (H)</string>
+    <string name="tg_save_button">Ketuk ✓ untuk menyimpan</string>
+    <string name="tg_preset_save_btn">💾 Ketuk tombol simpan preset</string>
+    <string name="tg_save_confirm">Ketuk tombol simpan</string>
+    <string name="tg_tap_share">Ketuk tombol bagikan</string>
+    <string name="tg_tap_name_load">Ketuk nama untuk memuat</string>
+    <string name="tg_preset_loaded_exit">Preset dimuat!\nKetuk X untuk keluar</string>
+    <string name="tg_drag_down">Geser ke bawah</string>
+    <string name="tg_qr_share">Bagikan preset via kode QR</string>
+    <string name="tg_link_share">Bisa juga bagikan via tautan</string>
+    <string name="tg_close_button">Ketuk tombol tutup</string>
+    <string name="tg_tap_presets">Ketuk Preset</string>
+    <string name="tg_try_alarm_title">Coba atur alarm!</string>
+    <string name="tg_try_alarm_desc">Ketuk layar untuk membuka pengaturan.\nAtur waktu dan simpan!</string>
+    <string name="tg_try_it">Coba</string>
+    <string name="tg_skip">Lewati</string>
+    <string name="tg_check_preset_title">Periksa preset yang disimpan?</string>
+    <string name="tg_check_preset_desc">Temukan preset yang disimpan\ndi layar pemuatan.</string>
+    <string name="tg_check_it">Periksa</string>
+    <string name="tg_done">Selesai</string>
+    <string name="tg_step1_title">Ketuk jam!</string>
+    <string name="tg_step1_desc">Ketuk jam di tengah\nuntuk membuka pengaturan.</string>
+    <string name="tg_step2_title">Atur alarm!</string>
+    <string name="tg_step2_desc">Periksa waktu alarm\ndan ketuk simpan.</string>
+    <string name="tg_step3_title">Tunggu alarm berbunyi</string>
+    <string name="tg_step3_desc">Titik kuning menandai alarm.\nAkan berbunyi segera!</string>
+    <string name="tg_step4_title">Ketuk dua kali layar!</string>
+    <string name="tg_step4_desc">Alarm berbunyi.\nKetuk dua kali untuk berhenti.</string>
+    <string name="tg_step5_title">Tekan lama jam!</string>
+    <string name="tg_step5_desc">Tekan lama jam\nuntuk memulai alarm langsung.</string>
+    <string name="tg_step6_title">Ketuk dua kali lagi!</string>
+    <string name="tg_step6_desc">Alarm dari tekan lama\njuga berhenti dengan ketuk dua kali.</string>
+    <string name="tg_step7_title">Ketuk jam lagi!</string>
+    <string name="tg_step7_desc">Simpan pengaturan\nsebagai preset!</string>
+    <string name="tg_step9_title">Ketuk menu</string>
+    <string name="tg_step9_desc">Ketuk tombol menu\nuntuk melihat riwayat.</string>
+    <string name="dialog_notice_title">Pemberitahuan</string>
+    <string name="update_title">Pemberitahuan Pembaruan</string>
+    <string name="update_msg_force">Pembaruan diperlukan untuk melanjutkan penggunaan.</string>
+    <string name="update_msg_optional">Versi baru tersedia. Apakah Anda ingin memperbarui?</string>
+    <string name="update_btn_now">Perbarui</string>
+    <string name="update_btn_later">Nanti</string>
+</resources>
