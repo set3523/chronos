@@ -3,7 +3,9 @@ package com.set.Chronos
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import kotlinx.coroutines.launch
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.text.style.TextOverflow
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -70,8 +72,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import android.content.SharedPreferences
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.res.stringResource
@@ -86,24 +91,32 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
 
     //val adManager = remember { AdManager(activity!!) }
 
-    val isFirstLaunch = remember { prefs.getBoolean("isFirstLaunch", true) }
-    var showTutorial by remember { mutableStateOf(isFirstLaunch) }
+    var showTutorial by remember { mutableStateOf(false) }
+    var showClockHint by remember { mutableStateOf(!prefs.getBoolean("first_alarm_tracked", false)) }
     var tutorialStartPage by remember { mutableIntStateOf(0) }
     var cameFromTutorial by remember { mutableStateOf(false) }
     var tutorialStep by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        val count = prefs.getInt("app_open_count", 0) + 1
+        prefs.edit().putInt("app_open_count", count).apply()
+    }
 
     val haptic = LocalHapticFeedback.current
     val presetLoadFailMsg = stringResource(R.string.toast_preset_load_fail)
     val alarmRestartedMsg = stringResource(R.string.toast_alarm_restarted)
     val alarmSavedMsg = stringResource(R.string.toast_alarm_saved)
 
-    var showAdConfirmDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        if (isFirstLaunch) {
-            prefs.edit().putBoolean("isFirstLaunch", false).apply()
+    // 튜토리얼 step 변경 추적
+    LaunchedEffect(tutorialStep) {
+        if (cameFromTutorial && tutorialStep > 0) {
+            AnalyticsHelper.tutorialStepViewed(context, tutorialStep)
         }
     }
+
+    var showAdConfirmDialog by remember { mutableStateOf(false) }
+
+
 
     // 튜토리얼 프리셋 자동 생성 (첫 실행 or 설정에서 재진입 시)
     LaunchedEffect(showTutorial) {
@@ -185,12 +198,31 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     var ttsSpeechRate by remember { mutableFloatStateOf(prefs.getFloat("tts_speech_rate", 0.7f)) }
 
     var isAdRemoved by remember { mutableStateOf(prefs.getBoolean("isAdRemoved", false)) }
+
+    // RevenueCat 구매 상태 확인 (앱 시작 시 + 재설치 복원)
+    LaunchedEffect(Unit) {
+        try {
+            com.revenuecat.purchases.Purchases.sharedInstance.getCustomerInfo(
+                object : com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback {
+                    override fun onReceived(customerInfo: com.revenuecat.purchases.CustomerInfo) {
+                        val isEntitled = customerInfo.entitlements["ad_free"]?.isActive == true
+                        if (isEntitled && !isAdRemoved) {
+                            isAdRemoved = true
+                            prefs.edit().putBoolean("isAdRemoved", true).apply()
+                        }
+                    }
+                    override fun onError(error: com.revenuecat.purchases.PurchasesError) { /* 무시 */ }
+                }
+            )
+        } catch (_: Exception) { /* RevenueCat 미초기화 시 무시 */ }
+    }
     var isOverdriveEnabled by remember { mutableStateOf(prefs.getBoolean("isOverdriveEnabled", false)) }
 
     var ringtoneUri by remember { mutableStateOf(prefs.getString("ringtoneUri", null)?.let { Uri.parse(it) }) }
 
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showAnalogClockSettingsDialog by remember { mutableStateOf(false) }
+
     var showHistoryScreen by remember { mutableStateOf(false) }
 
     var showPresetScreen by remember { mutableStateOf(false) }
@@ -198,6 +230,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
     // 메뉴 버튼 좌표 (튜토리얼 step 9에서 구멍 위치용)
     var menuButtonBounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
 
+    var showFeedbackDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var currentPresetName by remember { mutableStateOf(prefs.getString("currentPresetName", "") ?: "") }
     var currentPresetIcon by remember { mutableStateOf(prefs.getString("currentPresetIcon", "Clock") ?: "Clock") }
@@ -229,13 +262,12 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
             apply()
         }
     }
-
     if (showPresetScreen) {
         BackHandler {
             showPresetScreen = false
             if (cameFromTutorial) {
                 cameFromTutorial = false
-                tutorialStartPage = 4
+                tutorialStartPage = 5
                 showTutorial = true
             }
         }
@@ -245,11 +277,11 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 // 튜토리얼 step 13: X 버튼으로 나가기 → 완료
                 if (cameFromTutorial && tutorialStep == 13) {
                     cameFromTutorial = false
-                    tutorialStartPage = 4
+                    tutorialStartPage = 5
                     showTutorial = true
                 } else if (cameFromTutorial) {
                     cameFromTutorial = false
-                    tutorialStartPage = 4
+                    tutorialStartPage = 5
                     showTutorial = true
                 }
             },
@@ -298,6 +330,30 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
         )
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
+        // 피드백 미제출 유저 → 뒤로가기 시 피드백 다이얼로그 표시
+        BackHandler(enabled = !showSettingsDialog && !showAnalogClockSettingsDialog && !showBottomSheet && !showAdConfirmDialog) {
+            val feedbackSubmitted = prefs.getBoolean("feedback_submitted", false)
+            val openCount = prefs.getInt("app_open_count", 0)
+            if (!feedbackSubmitted && openCount % 10 == 0 && !showFeedbackDialog) {
+                showFeedbackDialog = true
+            } else {
+                activity?.finish()
+            }
+        }
+
+        if (showFeedbackDialog) {
+            FeedbackDialog(
+                onDismiss = {
+                    showFeedbackDialog = false
+                    activity?.finish()
+                },
+                onSubmitted = {
+                    showFeedbackDialog = false
+                    activity?.finish()
+                }
+            )
+        }
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Black,
@@ -305,29 +361,30 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 TopAppBar(
                     title = { },
                     actions = {
-                        // ✨ 1. 번개(티켓) 버튼
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .background(Color(0xFF333333), androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
-                                .clickable {
-                                    // 클릭 시: 광고를 띄우고, 다 보면 ticketCount 갱신!
-                                    showAdConfirmDialog = true
-                                }
-                                .padding(horizontal = 12.dp, vertical = 6.dp)
-                        ) {
-                            Text("⚡", fontSize = 16.sp)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "${viewModel.ticketCount}",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
-                        }
+                        // ✨ 1. 번개(티켓) 버튼 — 광고 제거 구매 시 숨김
+                        if (!isAdRemoved) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .background(Color(0xFF333333), androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+                                    .clickable {
+                                        showAdConfirmDialog = true
+                                        AnalyticsHelper.energyStationOpened(context)
+                                    }
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text("⚡", fontSize = 16.sp)
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = "${viewModel.ticketCount}",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
+                                )
+                            }
 
-                        // 두 버튼 사이의 간격
-                        Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
+                        }
 
                         // 🍔 2. 기존 햄버거(메뉴) 버튼
                         IconButton(
@@ -373,6 +430,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                     } else if (cameFromTutorial && tutorialStep == 7) {
                                         // step 7: 시계 탭 → 프리셋 저장 모드로 dialog 열기
                                     }
+                                    AnalyticsHelper.logAlarmSettingsOpened(context)
                                     showAnalogClockSettingsDialog = true
                                 },
                                 onDoubleTap = {
@@ -417,7 +475,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                             // 기존 코드 그대로! XML 리소스를 완벽하게 유지합니다.
                                             Toast.makeText(context, context.getString(R.string.toast_need_charge), Toast.LENGTH_LONG).show()
                                         },
-                                        skipTicket = cameFromTutorial
+                                        skipTicket = cameFromTutorial || isAdRemoved
                                     )
                                     if (cameFromTutorial && tutorialStep == 5) {
                                         tutorialStep = 6
@@ -426,6 +484,13 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             )
                         }
                 )
+                if (showClockHint) {
+                    ClockHintOverlay(onDismiss = {
+                        showClockHint = false
+                        showAnalogClockSettingsDialog = true
+                    })
+                }
+
                 if (showSettingsDialog) {
                     ComplexSettingsDialog(
                         transparency = dialogTransparency,
@@ -510,7 +575,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 onNeedCharge = {
                                     Toast.makeText(context, context.getString(R.string.toast_need_charge), Toast.LENGTH_LONG).show()
                                 },
-                                skipTicket = cameFromTutorial
+                                skipTicket = cameFromTutorial || isAdRemoved
                             )
                         },
                         onDismiss = {
@@ -520,7 +585,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             } else if (cameFromTutorial && tutorialStep == 7) {
                                 // 프리셋 저장 완료 → 페이저로 돌아가서 기록 확인 질문
                                 tutorialStep = 8
-                                tutorialStartPage = 3
+                                tutorialStartPage = 4
                                 showTutorial = true
                             }
                         }
@@ -551,17 +616,20 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                                     Icon(Icons.Default.Headset, contentDescription = "Earphone Mode", tint = Color(0xFFE5C07B))
                                     Spacer(Modifier.width(16.dp))
-                                    Column {
-                                        Text(stringResource(R.string.main_menu_earphone_title), fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.Bold)
-                                        Text(stringResource(R.string.main_menu_earphone_desc), fontSize = 12.sp, color = Color.LightGray)
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(text = stringResource(R.string.main_menu_earphone_title), fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                                        Text(text = stringResource(R.string.main_menu_earphone_desc), fontSize = 11.sp, color = Color.LightGray)
                                     }
                                 }
                                 Switch(
                                     checked = viewModel.isEarphoneModeEnabled,
-                                    onCheckedChange = { viewModel.isEarphoneModeEnabled = it },
+                                    onCheckedChange = {
+                                        viewModel.isEarphoneModeEnabled = it
+                                        AnalyticsHelper.featureToggled(context, "earphone_mode", it)
+                                    },
                                     colors = SwitchDefaults.colors(
                                         checkedThumbColor = Color(0xFFE5C07B),
                                         checkedTrackColor = Color(0xFFE5C07B).copy(alpha = 0.5f),
@@ -601,7 +669,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             ) {
                                 Icon(Icons.Default.Save, contentDescription = "Presets", tint = Color(0xFFE5C07B))
                                 Spacer(Modifier.width(16.dp))
-                                Text(stringResource(R.string.main_menu_preset), fontSize = 18.sp, color = Color.White)
+                                Text(text = stringResource(R.string.main_menu_preset), fontSize = 16.sp, color = Color.White)
                             }
 
                             Row(
@@ -615,7 +683,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             ) {
                                 Icon(Icons.Default.History, contentDescription = "History", tint = Color(0xFFE5C07B))
                                 Spacer(Modifier.width(16.dp))
-                                Text(stringResource(R.string.main_menu_history), fontSize = 18.sp, color = Color.White)
+                                Text(text = stringResource(R.string.main_menu_history), fontSize = 16.sp, color = Color.White)
                             }
 
                             Row(
@@ -631,7 +699,7 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                             ) {
                                 Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color(0xFFE5C07B))
                                 Spacer(Modifier.width(16.dp))
-                                Text(stringResource(R.string.main_menu_settings), fontSize = 18.sp, color = Color.White)
+                                Text(text = stringResource(R.string.main_menu_settings), fontSize = 16.sp, color = Color.White)
                             }
 
                             Spacer(modifier = Modifier.height(32.dp))
@@ -649,38 +717,73 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                     }
                 }
                 if (showAdConfirmDialog) {
-                    androidx.compose.material3.AlertDialog(
-                        onDismissRequest = { showAdConfirmDialog = false },
-                        containerColor = Color(0xFF1E1E1E),
-                        title = {
-                            Text(
-                                text = stringResource(R.string.ad_confirm_title),
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(R.string.ad_confirm_desc),
-                                color = Color.LightGray
-                            )
-                        },
-                        confirmButton = {
-                            androidx.compose.material3.Button(
-                                onClick = {
-                                    showAdConfirmDialog = false
-                                    viewModel.chargeTickets() // 실제 광고 실행
-                                },
-                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFFE5C07B))
-                            ) {
-                                Text(stringResource(R.string.common_confirm), color = Color.Black, fontWeight = FontWeight.Bold)
-                            }
-                        },
-                        dismissButton = {
-                            androidx.compose.material3.TextButton(onClick = { showAdConfirmDialog = false }) {
-                                Text(stringResource(R.string.common_cancel), color = Color.Gray)
-                            }
+                    // 에너지스테이션 열릴 때 광고 로딩 시작
+                    var isAdLoading by remember { mutableStateOf(true) }
+                    LaunchedEffect(Unit) {
+                        viewModel.loadAdWhenReady { loaded ->
+                            isAdLoading = false
                         }
+                    }
+
+                    EnergyStationDialog(
+                        ticketCount = viewModel.ticketCount,
+                        hasReviewed = prefs.getBoolean("has_reviewed", false),
+                        hasReferred = prefs.getBoolean("has_referred", false),
+                        //hasReviewed = true,   // 리뷰 완료 상태 확인
+                        //hasReferred = true,   // 초대 완료 상태 확인
+                        adChargeAmount = viewModel.getAdChargeByTier(),
+                        dailyBaseAmount = viewModel.getDailyBaseByTier(),
+                        isAdLoading = isAdLoading,
+                        onWatchAd = {
+                            showAdConfirmDialog = false
+                            viewModel.chargeTickets()
+                        },
+                        onReviewComplete = {
+                            showAdConfirmDialog = false
+                            viewModel.refreshTicketInfo()
+                        },
+                        onInviteFriend = {
+                            showAdConfirmDialog = false
+                            showPresetScreen = true
+                        },
+                        onPurchaseAdRemoval = { productId ->
+                            val act = context as? Activity ?: return@EnergyStationDialog
+                            AnalyticsHelper.purchaseButtonClicked(context, productId)
+                            try {
+                                com.revenuecat.purchases.Purchases.sharedInstance.getProducts(
+                                    listOf(productId),
+                                    object : com.revenuecat.purchases.interfaces.GetStoreProductsCallback {
+                                        override fun onReceived(storeProducts: List<com.revenuecat.purchases.models.StoreProduct>) {
+                                            val product = storeProducts.firstOrNull() ?: return
+                                            com.revenuecat.purchases.Purchases.sharedInstance.purchase(
+                                                com.revenuecat.purchases.PurchaseParams.Builder(act, product).build(),
+                                                object : com.revenuecat.purchases.interfaces.PurchaseCallback {
+                                                    override fun onCompleted(storeTransaction: com.revenuecat.purchases.models.StoreTransaction, customerInfo: com.revenuecat.purchases.CustomerInfo) {
+                                                        if (customerInfo.entitlements["ad_free"]?.isActive == true) {
+                                                            isAdRemoved = true
+                                                            prefs.edit().putBoolean("isAdRemoved", true).apply()
+                                                            showAdConfirmDialog = false
+                                                            AnalyticsHelper.purchaseCompleted(context, productId)
+                                                        }
+                                                    }
+                                                    override fun onError(error: com.revenuecat.purchases.PurchasesError, userCancelled: Boolean) {
+                                                        if (!userCancelled) {
+                                                            android.widget.Toast.makeText(context, "Purchase failed", android.widget.Toast.LENGTH_SHORT).show()
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        }
+                                        override fun onError(error: com.revenuecat.purchases.PurchasesError) {
+                                            android.widget.Toast.makeText(context, "Error loading product", android.widget.Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                )
+                            } catch (_: Exception) {
+                                android.widget.Toast.makeText(context, "Purchase not available", android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        onDismiss = { showAdConfirmDialog = false }
                     )
                 }
 
@@ -701,6 +804,11 @@ fun MainScreen(onSave: (List<AlarmSetting>, String) -> Unit, onCancelAll: () -> 
                 initialPage = tutorialStartPage,
                 onDismiss = {
                     showTutorial = false
+                    if (tutorialStep >= 13) {
+                        AnalyticsHelper.tutorialCompleted(context)
+                    } else {
+                        AnalyticsHelper.tutorialSkipped(context, tutorialStep)
+                    }
                     tutorialStartPage = 0
                     cameFromTutorial = false
                     tutorialStep = 0

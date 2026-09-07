@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">Salvato dopo aver visto l\'annuncio (Test)</string>
     <string name="toast_ad_fail">Errore annuncio</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">Nessun annuncio! Ricaricato gratis! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">Nessun annuncio! Ricaricato gratis! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">La sveglia sta suonando!</string>
@@ -116,11 +116,11 @@
     <string name="main_menu_earphone_desc">La sveglia suonerà nel volume multimediale.</string>
     <string name="main_menu_preset">Carica / Condividi Preset</string>
     <string name="main_menu_history">Cronologia utilizzo</string>
-    <string name="main_menu_settings">Impostazioni App (Trasparenza, Account)</string>
+    <string name="main_menu_settings">Impostazioni App\n(Trasparenza, Account)</string>
     <string name="toast_preset_applied">Preset \'%1$s\' applicato.</string>
 
     <string name="ad_confirm_title">Ricarica Energia</string>
-    <string name="ad_confirm_desc">Vuoi guardare un annuncio per ricaricare 3 fulmini?\n(Fino a 5 fulmini vengono ricaricati automaticamente ogni giorno).</string>
+    <string name="ad_confirm_desc">Vuoi guardare un annuncio per ricaricare %1$d fulmini?\n(Fino a %2$d fulmini vengono ricaricati automaticamente ogni giorno).</string>
 
     ``preset``
     <string name="preset_screen_title">Preset</string>
@@ -167,6 +167,8 @@
 
     <string name="profile_msg_invalid_format">3~20 caratteri, solo lettere/numeri/_</string>
 
+    <string name="settings_auto_media_volume_title">Volume media automatico</string>
+    <string name="settings_auto_media_volume_desc">Regola il volume media al livello\nsveglia in modalità cuffie</string>
     ``tutorial``
     <string name="tutorial_title_0">Evento Speciale Beta Tester</string>
     <string name="tutorial_desc_0">I primi 1.000 utenti attivi riceveranno le funzioni premium gratuitamente dopo il lancio!\n\nAccedi con Google nelle \'Impostazioni (⚙️)\' per partecipare.</string>
@@ -210,7 +212,7 @@
     <string name="tutorial_mock_footer">💡 Accendi gli interruttori accanto alle icone\nper creare la tua routine perfetta!</string>
 
     <string name="tutorial_title_energy">Sistema di Energia Gratuita</string>
-    <string name="tutorial_desc_energy">L\'energia è necessaria per far funzionare la sveglia.\nNon preoccuparti! Si ricarica automaticamente 5 volte al giorno.</string>
+    <string name="tutorial_desc_energy">L\'energia è necessaria per far funzionare la sveglia.\nNon preoccuparti! Si ricarica automaticamente %1$d volte al giorno.</string>
 
     <string name="tutorial_try_alarm_title">Prova a impostare una sveglia!</string>
     <string name="tutorial_try_alarm_desc">Tocca lo schermo per aprire le impostazioni.\nImposta l\'ora e salvala!</string>
@@ -263,4 +265,60 @@
     <string name="update_msg_optional">È disponibile una nuova versione. Vuoi aggiornare?</string>
     <string name="update_btn_now">Aggiorna</string>
     <string name="update_btn_later">Più tardi</string>
+
+    <string name="tut_time_title">Due modalità temporali</string>
+    <string name="tut_time_subtitle">Cambia liberamente nelle impostazioni</string>
+    <string name="tut_time_relative">Tempo relativo</string>
+    <string name="tut_time_absolute">Tempo assoluto</string>
+    <string name="tut_time_relative_ex">→  \"Inizia tra 30 min\"\n→  Impila: +30m, +1h, +1h30m</string>
+    <string name="tut_time_absolute_ex">→  \"Suona alle 7:00\"\n→  Catena: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">Impostazioni potenti</string>
+    <string name="tut_feat_subtitle">Dentro ogni sveglia</string>
+    <string name="tut_feat_crescendo">Crescendo</string>
+    <string name="tut_feat_crescendo_desc">Il volume sale gradualmente</string>
+    <string name="tut_feat_loop">Loop infinito</string>
+    <string name="tut_feat_loop_desc">Ripete all\'infinito — perfetto per allenamenti</string>
+    <string name="tut_feat_tts">Voce TTS</string>
+    <string name="tut_feat_tts_example">\"5 squat — via!\"</string>
+    <string name="tut_feat_tts_desc">Scrivi testo → la sveglia lo legge ad alta voce</string>
+    <string name="tut_feat_add">＋  Aggiungi altre sveglie</string>
+    <string name="tut_feat_add_desc">Impila più timer in un preset</string>
+
+    <string name="hint_touch_clock">Tocca per impostare la sveglia</string>
+
+    <string name="demo_tts_intro">Puoi usare qualsiasi frase come sveglia</string>
+    <string name="demo_tts_overlap">Puoi anche sovrapporre più sveglie</string>
+    <string name="demo_tts_tap_once">Tocca l\'orologio esterno per fermare la sveglia attuale</string>
+    <string name="demo_tts_tap_again">Tocca ancora per annullare completamente la sveglia</string>
+    <string name="demo_tts_explore">Ci sono tante funzionalità da esplorare</string>
+    <string name="demo_highlight_desc">TTS · Suono sveglia · Ripetizione e altre impostazioni</string>
+    <string name="demo_tts_dismiss">Tocca 2 volte mentre suona per fermare la sveglia, tocca altre 2 volte per annullare tutto</string>
+    <string name="demo_press_play">Premi ▶ per provare</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ Stazione Energia</string>
+    <string name="energy_station_daily_info">%1$d ricaricati automaticamente al giorno</string>
+    <string name="energy_option_ad">Guarda annuncio +%1$d</string>
+    <string name="energy_option_review">Scrivi recensione → +1 permanente</string>
+    <string name="energy_option_review_done">Recensione completata (+1 attivo)</string>
+    <string name="energy_option_invite">Invita un amico → +1 permanente</string>
+    <string name="energy_option_invite_done">Amico invitato (+1 attivo)</string>
+    <string name="energy_option_purchase">Rimuovi annunci ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">Aiutaci a migliorare!</string>
+    <string name="feedback_subtitle">Cosa potremmo fare meglio?</string>
+    <string name="feedback_reason_hard">Difficile da usare</string>
+    <string name="feedback_reason_missing">Funzione mancante</string>
+    <string name="feedback_reason_ads">Troppa pubblicità</string>
+    <string name="feedback_reason_alarm">L\'allarme non funziona</string>
+    <string name="feedback_reason_battery">Consumo batteria</string>
+    <string name="feedback_reason_other">Altro</string>
+    <string name="feedback_hint">Dicci di più (facoltativo)</string>
+    <string name="feedback_skip">Salta</string>
+    <string name="feedback_submit">Invia</string>
+    <string name="feedback_sending">Invio in corso…</string>
+    <string name="feedback_settings_hint">Puoi anche inviare feedback dalle Impostazioni.</string>
+    <string name="feedback_thanks">Grazie per il tuo feedback!</string>
+    <string name="settings_feedback_btn">Invia feedback</string>
 </resources>

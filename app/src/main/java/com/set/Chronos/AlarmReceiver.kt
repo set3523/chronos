@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
+import com.set.Chronos.utils.scheduleExactAt
 import java.util.Calendar
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -56,11 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 val pendingIntent = PendingIntent.getBroadcast(context, requestCode, nextIntent, flags)
 
                 if (calendar.timeInMillis > System.currentTimeMillis()) {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        pendingIntent
-                    )
+                    scheduleExactAt(context, alarmManager, calendar.timeInMillis, pendingIntent)
                 }
             }
         }

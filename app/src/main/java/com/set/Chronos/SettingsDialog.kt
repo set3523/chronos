@@ -164,12 +164,32 @@ fun ComplexSettingsDialog(
                     }
                 }
                 item {
+                    var showFeedbackDialog by remember { mutableStateOf(false) }
+                    Button(
+                        onClick = { showFeedbackDialog = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF333333)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(stringResource(R.string.settings_feedback_btn), color = Color.White)
+                    }
+                    if (showFeedbackDialog) {
+                        FeedbackDialog(
+                            onDismiss = { showFeedbackDialog = false },
+                            onSubmitted = {
+                                showFeedbackDialog = false
+                                Toast.makeText(context, context.getString(R.string.feedback_thanks), Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                }
+                item {
                     HorizontalDivider(color = Color.DarkGray, modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(stringResource(R.string.settings_account_link), color = Color(0xFFE5C07B), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    if (currentUser == null) {
+                    if (currentUser == null || currentUser!!.isAnonymous) {
                         Button(
                             onClick = onSignInClick,
                             modifier = Modifier.fillMaxWidth(),
@@ -517,7 +537,7 @@ fun ComplexSettingsDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(stringResource(R.string.settings_language), color = Color.White, fontWeight = FontWeight.Bold)
+                        com.set.Chronos.ui.components.AutoSizeText(text = stringResource(R.string.settings_language), color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
 
                         Box {
                             // 현재 선택된 언어 표시 버튼
@@ -542,6 +562,7 @@ fun ComplexSettingsDialog(
                                         text = { Text(label, color = Color.White) },
                                         onClick = {
                                             onLanguageChange(code)
+                                            AnalyticsHelper.languageChanged(context, code)
                                             expanded = false
                                         }
                                     )
@@ -551,17 +572,41 @@ fun ComplexSettingsDialog(
                     }
                 }
                 item {
+                    val autoMediaPrefs = remember { getSecurePrefs(context) }
+                    var autoMediaVolume by remember { mutableStateOf(autoMediaPrefs.getBoolean("autoMediaVolumeEnabled", true)) }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(stringResource(R.string.settings_overdrive_title), color = Color.White, fontWeight = FontWeight.Bold)
-                            Text(stringResource(R.string.settings_overdrive_desc), color = Color.Gray, fontSize = 12.sp)
+                            Text(stringResource(R.string.settings_auto_media_volume_title), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            Text(stringResource(R.string.settings_auto_media_volume_desc), color = Color.Gray, fontSize = 12.sp)
+                        }
+                        Switch(
+                            checked = autoMediaVolume,
+                            onCheckedChange = {
+                                autoMediaVolume = it
+                                autoMediaPrefs.edit().putBoolean("autoMediaVolumeEnabled", it).apply()
+                            },
+                            colors = SwitchDefaults.colors(checkedThumbColor = Color(0xFFE5C07B))
+                        )
+                    }
+                }
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            com.set.Chronos.ui.components.AutoSizeText(text = stringResource(R.string.settings_overdrive_title), color = Color.White, fontWeight = FontWeight.Bold)
+                            com.set.Chronos.ui.components.AutoSizeText(text = stringResource(R.string.settings_overdrive_desc), color = Color.Gray, targetTextSize = 12.sp)
                         }
                         Switch(
                             checked = isOverdriveEnabled,
-                            onCheckedChange = onOverdriveChange,
+                            onCheckedChange = {
+                                onOverdriveChange(it)
+                                AnalyticsHelper.featureToggled(context, "overdrive", it)
+                            },
                             colors = SwitchDefaults.colors(checkedThumbColor = Color.Red)
                         )
                     }

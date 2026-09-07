@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">Reklam izlendikten sonra kaydedilir (Test)</string>
     <string name="toast_ad_fail">Reklam başarısız</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">Reklam yok! Ücretsiz şarj edildi! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">Reklam yok! Ücretsiz şarj edildi! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">Alarm çalıyor!</string>
@@ -112,7 +112,7 @@
     <string name="toast_alarm_restarted">Alarm yeniden başlatıldı.</string>
     <string name="toast_alarm_saved">Alarm kaydedildi.</string>
 
-    <string name="main_menu_earphone_title">Çalışma Odası Modu (Sadece Kulaklık)</string>
+    <string name="main_menu_earphone_title">Çalışma Odası Modu\n(Sadece Kulaklık)</string>
     <string name="main_menu_earphone_desc">Alarm medya ses seviyesinde çalar.</string>
     <string name="main_menu_preset">Ön Ayarları Yükle / Paylaş</string>
     <string name="main_menu_history">Kullanım Geçmişi</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">\'%1$s\' ön ayarı uygulandı.</string>
 
     <string name="ad_confirm_title">Enerji Şarjı</string>
-    <string name="ad_confirm_desc">Ödüllü bir reklam izleyip 3 şimşek şarj etmek ister misiniz?\n(Her gün otomatik olarak 5 şimşek şarj edilir.)</string>
+    <string name="ad_confirm_desc">Ödüllü bir reklam izleyip %1$d şimşek şarj etmek ister misiniz?\n(Her gün otomatik olarak %2$d şimşek şarj edilir.)</string>
 
     ``preset``
     <string name="preset_screen_title">Ön Ayarlar</string>
@@ -167,6 +167,9 @@
 
     <string name="profile_msg_invalid_format">3~20 karakter, sadece harf/rakam/_</string>
 
+    <string name="settings_auto_media_volume_title">Otomatik medya sesi</string>
+    <string name="settings_auto_media_volume_desc">Kulaklık modunda medya sesini\nalarm sesine göre otomatik ayarlar</string>
+
     ``tutorial``
     <string name="tutorial_title_0">Beta Test Kullanıcılarına Özel Etkinlik</string>
     <string name="tutorial_desc_0">Resmi lansmandan sonra en çok kullanan 1.000 kişiye premium özellikler ücretsiz verilecek!\n\nKatılmak için sağ üstteki \'Ayarlar (⚙️)\' menüsünden Google ile giriş yapın.</string>
@@ -210,7 +213,7 @@
     <string name="tutorial_mock_footer">💡 Mükemmel rutininizi oluşturmak için\nsimgelerin yanındaki anahtarları açın!</string>
 
     <string name="tutorial_title_energy">Ücretsiz Enerji Sistemi</string>
-    <string name="tutorial_desc_energy">Alarmı çalıştırmak için enerji gereklidir.\nEndişelenmeyin! Her gün 5 kez otomatik olarak şarj olur.</string>
+    <string name="tutorial_desc_energy">Alarmı çalıştırmak için enerji gereklidir.\nEndişelenmeyin! Her gün %1$d kez otomatik olarak şarj olur.</string>
 
     <string name="tutorial_try_alarm_title">Bir alarm kurmayı deneyin!</string>
     <string name="tutorial_try_alarm_desc">Ayarları açmak için ekrana dokunun.\nSaati ayarlayın ve kaydedin!</string>
@@ -263,4 +266,60 @@
     <string name="update_msg_optional">Yeni bir sürüm mevcut. Güncellemek ister misiniz?</string>
     <string name="update_btn_now">Güncelle</string>
     <string name="update_btn_later">Daha sonra</string>
+
+    <string name="tut_time_title">İki Zaman Modu</string>
+    <string name="tut_time_subtitle">Ayarlarda serbestçe geçiş yap</string>
+    <string name="tut_time_relative">Göreceli Zaman</string>
+    <string name="tut_time_absolute">Mutlak Zaman</string>
+    <string name="tut_time_relative_ex">→  \"30 dk sonra başla\"\n→  Yığınla: +30dk, +1sa, +1sa30dk</string>
+    <string name="tut_time_absolute_ex">→  \"Saat 7:00\'de çal\"\n→  Zincir: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">Güçlü Alarm Ayarları</string>
+    <string name="tut_feat_subtitle">Her alarmın içinde</string>
+    <string name="tut_feat_crescendo">Crescendo</string>
+    <string name="tut_feat_crescendo_desc">Ses yavaşça yükselir</string>
+    <string name="tut_feat_loop">Sonsuz Döngü</string>
+    <string name="tut_feat_loop_desc">Sonsuza kadar tekrar — egzersiz için ideal</string>
+    <string name="tut_feat_tts">TTS Ses</string>
+    <string name="tut_feat_tts_example">\"5 squat — başla!\"</string>
+    <string name="tut_feat_tts_desc">Metin yaz → alarm sesli okur</string>
+    <string name="tut_feat_add">＋  Daha fazla alarm ekle</string>
+    <string name="tut_feat_add_desc">Bir presette birden fazla zamanlayıcı yığınla</string>
+
+    <string name="hint_touch_clock">Alarm ayarlamak için dokunun</string>
+
+    <string name="demo_tts_intro">Herhangi bir cümleyi alarm olarak kullanabilirsiniz</string>
+    <string name="demo_tts_overlap">Birden fazla alarmı üst üste bindirebilirsiniz</string>
+    <string name="demo_tts_tap_once">Mevcut alarmı durdurmak için dış saate dokunun</string>
+    <string name="demo_tts_tap_again">Alarmı tamamen iptal etmek için bir kez daha dokunun</string>
+    <string name="demo_tts_explore">Keşfedilecek birçok özellik var</string>
+    <string name="demo_highlight_desc">TTS · Alarm sesi · Tekrar ve daha fazla ayar</string>
+    <string name="demo_tts_dismiss">Çalarken 2 kez dokunun alarmı durdurmak için, 2 kez daha dokunun tümünü iptal etmek için</string>
+    <string name="demo_press_play">Denemek için ▶ düğmesine basın</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ Enerji İstasyonu</string>
+    <string name="energy_station_daily_info">Her gün %1$d otomatik şarj</string>
+    <string name="energy_option_ad">Reklam izle +%1$d</string>
+    <string name="energy_option_review">Yorum yaz → Kalıcı +1</string>
+    <string name="energy_option_review_done">Yorum yazıldı (+1 aktif)</string>
+    <string name="energy_option_invite">Arkadaş davet et → Kalıcı +1</string>
+    <string name="energy_option_invite_done">Arkadaş davet edildi (+1 aktif)</string>
+    <string name="energy_option_purchase">Reklamları kaldır ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">Gelişmemize yardım edin!</string>
+    <string name="feedback_subtitle">Neyi daha iyi yapabiliriz?</string>
+    <string name="feedback_reason_hard">Kullanımı zor</string>
+    <string name="feedback_reason_missing">Eksik özellik</string>
+    <string name="feedback_reason_ads">Çok fazla reklam</string>
+    <string name="feedback_reason_alarm">Alarm çalışmıyor</string>
+    <string name="feedback_reason_battery">Pil tüketimi</string>
+    <string name="feedback_reason_other">Diğer</string>
+    <string name="feedback_hint">Daha fazla bilgi verin (isteğe bağlı)</string>
+    <string name="feedback_skip">Atla</string>
+    <string name="feedback_submit">Gönder</string>
+    <string name="feedback_sending">Gönderiliyor…</string>
+    <string name="feedback_settings_hint">Ayarlardan da istediğiniz zaman geri bildirim gönderebilirsiniz.</string>
+    <string name="feedback_thanks">Geri bildiriminiz için teşekkürler!</string>
+    <string name="settings_feedback_btn">Geri bildirim gönder</string>
 </resources>

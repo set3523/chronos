@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">Se guardará tras ver el anuncio (Prueba)</string>
     <string name="toast_ad_fail">Error en el anuncio</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">¡Sin anuncios! ¡Recargado gratis! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">¡Sin anuncios! ¡Recargado gratis! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">¡La alarma está sonando!</string>
@@ -112,7 +112,7 @@
     <string name="toast_alarm_restarted">Alarma reiniciada.</string>
     <string name="toast_alarm_saved">Alarma guardada.</string>
 
-    <string name="main_menu_earphone_title">Modo Sala de Estudio (Solo auriculares)</string>
+    <string name="main_menu_earphone_title">Modo Sala de Estudio\n(Solo auriculares)</string>
     <string name="main_menu_earphone_desc">La alarma sonará en el volumen multimedia.</string>
     <string name="main_menu_preset">Cargar / Compartir preajuste</string>
     <string name="main_menu_history">Historial de uso</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">Se aplicó el preajuste \'%1$s\'.</string>
 
     <string name="ad_confirm_title">Recargar Rayos</string>
-    <string name="ad_confirm_desc">¿Deseas ver un anuncio para recargar 3 rayos?\n(Se recargan 5 rayos automáticamente cada día).</string>
+    <string name="ad_confirm_desc">¿Deseas ver un anuncio para recargar %1$d rayos?\n(Se recargan %2$d rayos automáticamente cada día).</string>
 
     ``preset``
     <string name="preset_screen_title">Preajustes</string>
@@ -144,8 +144,8 @@
     <string name="settings_linked_account">Cuenta vinculada: %1$s</string>
     <string name="settings_logout">Cerrar sesión</string>
     <string name="settings_overdrive_title">Modo Overdrive</string>
-    <string name="settings_overdrive_desc">Volumen al 200%% más allá del límite del sistema (¡Precaución!)</string>
-    <string name="settings_language">Ajustes de idioma (Language)</string>
+    <string name="settings_overdrive_desc">Volumen al 200%% más allá del límite del sistema</string>
+    <string name="settings_language">Ajustes de idioma</string>
 
     <string name="profile_no_nickname">Sin apodo</string>
     <string name="profile_new_nickname">Nuevo apodo</string>
@@ -166,6 +166,9 @@
     <string name="profile_save_success_toast">Perfil guardado correctamente.</string>
 
     <string name="profile_msg_invalid_format">3~20 caracteres, letras/números/_ solamente</string>
+
+    <string name="settings_auto_media_volume_title">Volumen multimedia automático</string>
+    <string name="settings_auto_media_volume_desc">Ajusta el volumen multimedia\nal nivel de alarma con auriculares</string>
 
     ``tutorial``
     <string name="tutorial_title_0">Evento Especial Beta Testers</string>
@@ -210,13 +213,15 @@
     <string name="tutorial_mock_footer">💡 ¡Enciende los interruptores para\ncrear tu rutina perfecta!</string>
 
     <string name="tutorial_title_energy">Sistema de Energía</string>
-    <string name="tutorial_desc_energy">Se necesita energía para la alarma.\n¡Pero se recarga automáticamente 5 veces al día!</string>
+    <string name="tutorial_desc_energy">Se necesita energía para la alarma.\n¡Pero se recarga automáticamente %1$d veces al día!</string>
 
     <string name="tutorial_try_alarm_title">¡Configura una alarma!</string>
     <string name="tutorial_try_alarm_desc">Toca la pantalla para abrir los ajustes.\n¡Elige la hora y guárdala!</string>
     <string name="tutorial_try_alarm_btn">Probar</string>
     <string name="tutorial_try_preset_title">¿Vemos tu preajuste?</string>
     <string name="tutorial_try_preset_desc">Encontrarás el preajuste que guardaste\nen la pantalla de cargar.</string>
+
+    <string name="hint_touch_clock">Toca para configurar alarma</string>
 
     ``tutorial_guide``
     <string name="tg_input_seconds">Ingresa 10 en segundos (S)</string>
@@ -263,4 +268,60 @@
     <string name="update_msg_optional">Hay una nueva versión disponible. ¿Desea actualizar?</string>
     <string name="update_btn_now">Actualizar</string>
     <string name="update_btn_later">Más tarde</string>
+
+    <string name="tut_time_title">Dos modos de tiempo</string>
+    <string name="tut_time_subtitle">Cambia libremente en ajustes</string>
+    <string name="tut_time_relative">Tiempo relativo</string>
+    <string name="tut_time_absolute">Tiempo absoluto</string>
+    <string name="tut_time_relative_ex">→  "Iniciar en 30 min"\n→  Apilar: +30m, +1h, +1h30m</string>
+    <string name="tut_time_absolute_ex">→  "Sonar a las 7:00"\n→  Cadena: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">Ajustes potentes</string>
+    <string name="tut_feat_subtitle">Dentro de cada alarma</string>
+    <string name="tut_feat_crescendo">Crescendo</string>
+    <string name="tut_feat_crescendo_desc">El volumen sube gradualmente</string>
+    <string name="tut_feat_loop">Bucle infinito</string>
+    <string name="tut_feat_loop_desc">Repite sin fin — perfecto para ejercicio</string>
+    <string name="tut_feat_tts">Voz TTS</string>
+    <string name="tut_feat_tts_example">"5 sentadillas — ¡ya!"</string>
+    <string name="tut_feat_tts_desc">Escribe texto → la alarma lo lee en voz alta</string>
+    <string name="tut_feat_add">＋  Añadir más alarmas</string>
+    <string name="tut_feat_add_desc">Apila varios temporizadores en un preset</string>
+
+    <string name="demo_tts_intro">Puedes usar cualquier frase como alarma</string>
+    <string name="demo_tts_overlap">También puedes superponer varias alarmas</string>
+    <string name="demo_tts_tap_once">Toca el reloj exterior para detener la alarma actual</string>
+    <string name="demo_tts_tap_again">Toca una vez más para cancelar la alarma por completo</string>
+    <string name="demo_tts_explore">Hay muchas funciones por explorar</string>
+    <string name="demo_highlight_desc">TTS · Sonido de alarma · Repetición y más ajustes</string>
+    <string name="demo_tts_dismiss">Toca 2 veces mientras suena para detener la alarma, toca 2 veces más para cancelar todas</string>
+    <string name="demo_press_play">Pulsa ▶ para probarlo</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ Estación de Energía</string>
+    <string name="energy_station_daily_info">%1$d recargados automáticamente al día</string>
+    <string name="energy_option_ad">Ver anuncio +%1$d</string>
+    <string name="energy_option_review">Escribir reseña → +1 permanente</string>
+    <string name="energy_option_review_done">Reseña completada (+1 activo)</string>
+    <string name="energy_option_invite">Invitar amigo → +1 permanente</string>
+    <string name="energy_option_invite_done">Amigo invitado (+1 activo)</string>
+    <string name="energy_option_purchase">Eliminar anuncios ($2.99)</string>
+
+
+    <!-- feedback -->
+    <string name="feedback_title">¡Ayúdanos a mejorar!</string>
+    <string name="feedback_subtitle">¿Qué podríamos hacer mejor?</string>
+    <string name="feedback_reason_hard">Difícil de usar</string>
+    <string name="feedback_reason_missing">Falta una función</string>
+    <string name="feedback_reason_ads">Demasiados anuncios</string>
+    <string name="feedback_reason_alarm">La alarma no funciona</string>
+    <string name="feedback_reason_battery">Consumo de batería</string>
+    <string name="feedback_reason_other">Otro</string>
+    <string name="feedback_hint">Cuéntanos más (opcional)</string>
+    <string name="feedback_skip">Omitir</string>
+    <string name="feedback_submit">Enviar</string>
+    <string name="feedback_sending">Enviando…</string>
+    <string name="feedback_settings_hint">También puedes enviar comentarios en Ajustes.</string>
+    <string name="feedback_thanks">¡Gracias por tu opinión!</string>
+    <string name="settings_feedback_btn">Enviar comentarios</string>
+
 </resources>

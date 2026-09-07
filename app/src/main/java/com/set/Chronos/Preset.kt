@@ -172,6 +172,7 @@ fun PresetScreen(
                                             tutorialPresetStep = 2
                                         } else {
                                             onPresetSelected(presetName)
+                                            AnalyticsHelper.presetApplied(context, presetName)
                                         }
                                     }
                                     .then(
@@ -353,7 +354,12 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
         i = iconName
     )
     val encryptedData = remember { com.set.Chronos.utils.ChronosShareUtils.encryptAndCompressPayload(payload) }
-    val smartLinkUrl = "https://link.chronosroutine.com/?data=$encryptedData"
+    val referralCode = remember { getSecurePrefs(context).getString("my_referral_code", null) ?: "" }
+    val smartLinkUrl = if (referralCode.isNotEmpty()) {
+        "https://link.chronosroutine.com/?data=$encryptedData&ref=$referralCode"
+    } else {
+        "https://link.chronosroutine.com/?data=$encryptedData"
+    }
     val qrBitmap = remember { com.set.Chronos.utils.ChronosShareUtils.generateQRBitmap(smartLinkUrl) }
 
     val appIconBitmap = remember {
@@ -840,6 +846,7 @@ fun RoutineReceiptDialog(presetName: String, alarms: List<AlarmSetting>, creator
                         }
                         if (isSharing) return@Button
                         isSharing = true
+                        AnalyticsHelper.presetShared(context, presetName)
 
                         coroutineScope.launch(Dispatchers.IO) {
                             val bitmap = generateReceiptBitmap(

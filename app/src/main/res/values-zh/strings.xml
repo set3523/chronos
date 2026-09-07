@@ -9,8 +9,8 @@
     <string name="toast_ad_watch_to_save">观看广告后保存 (测试)</string>
 
     <string name="toast_ad_fail">广告加载失败</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">暂无广告，已免费获取！ ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">暂无广告，已免费获取！ ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">闹钟响了！</string>
@@ -77,7 +77,7 @@
     <string name="history_close">关闭</string>
     <string name="history_unknown_time">未知</string>
 
-    <string name="history_aborted">Aborted</string>
+    <string name="history_aborted">已中断</string>
 
     ``MainActivity``
     <string name="toast_preset_added">预设 \'%1$s\' 已添加！</string>
@@ -122,7 +122,7 @@
     <string name="toast_preset_applied">已应用 \'%1$s\' 预设。</string>
 
     <string name="ad_confirm_title">补充能量</string>
-    <string name="ad_confirm_desc">您要观看奖励广告并补充3个能量(⚡)吗？\n(每天会自动补充最多3个能量。)</string>
+    <string name="ad_confirm_desc">您要观看奖励广告并补充%1$d个能量(⚡)吗？\n(每天会自动补充最多%2$d个能量。)</string>
 
     ``preset``
     <string name="preset_screen_title">预设</string>
@@ -170,6 +170,9 @@
 
     <string name="profile_msg_invalid_format">3-20个字符，仅限字母/数字/_</string>
 
+    <string name="settings_auto_media_volume_title">自动调节媒体音量</string>
+    <string name="settings_auto_media_volume_desc">耳机模式下根据闹钟音量\n自动调节媒体音量</string>
+
     ``tutorial``
     <string name="tutorial_title_0">测试用户特别活动</string>
     <string name="tutorial_desc_0">正式发布后，使用量前 1,000 名的用户将免费获得高级功能！\n\n请在右上角的 \'设置 (⚙️)\' 菜单中登录 Google 以参与活动。</string>
@@ -213,7 +216,7 @@
     <string name="tutorial_mock_footer">💡 开启图标旁边的开关\n打造您专属的完美日常！</string>
 
     <string name="tutorial_title_energy">免费能量系统</string>
-    <string name="tutorial_desc_energy">运行闹钟需要消耗能量。\n别担心！每天会自动\n补充3次能量。</string>
+    <string name="tutorial_desc_energy">运行闹钟需要消耗能量。\n别担心！每天会自动\n补充%1$d次能量。</string>
 
     ``PopupManager``
     <string name="dialog_notice_title">通知</string>
@@ -267,4 +270,61 @@
     <string name="tutorial_try_alarm_btn">试一试</string>
     <string name="tutorial_try_preset_title">查看已保存的预设？</string>
     <string name="tutorial_try_preset_desc">可以在加载页面\n查看刚保存的预设。</string>
+
+    <string name="tut_time_title">两种时间模式</string>
+    <string name="tut_time_subtitle">在闹钟设置中自由切换</string>
+    <string name="tut_time_relative">相对时间</string>
+    <string name="tut_time_absolute">绝对时间</string>
+    <string name="tut_time_relative_ex">→  \"30分钟后开始\"\n→  叠加计时: +30分, +1小时, +1小时30分</string>
+    <string name="tut_time_absolute_ex">→  \"早上7:00响铃\"\n→  串联: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">强大的闹钟设置</string>
+    <string name="tut_feat_subtitle">每个闹钟内可单独设置</string>
+    <string name="tut_feat_crescendo">渐强</string>
+    <string name="tut_feat_crescendo_desc">音量逐渐增大 — 温柔唤醒</string>
+    <string name="tut_feat_loop">无限循环</string>
+    <string name="tut_feat_loop_desc">关闭前持续响铃 — 健身必备</string>
+    <string name="tut_feat_tts">TTS语音</string>
+    <string name="tut_feat_tts_example">\"深蹲5次 — 开始！\"</string>
+    <string name="tut_feat_tts_desc">输入文字 → 闹钟大声朗读</string>
+    <string name="tut_feat_add">＋  添加更多闹钟</string>
+    <string name="tut_feat_add_desc">在一个预设中叠加多个计时器</string>
+
+    <string name="hint_touch_clock">触摸设置闹钟</string>
+
+
+    <string name="demo_tts_intro">您可以将任何句子用作闹钟</string>
+    <string name="demo_tts_overlap">还可以叠加多个闹钟</string>
+    <string name="demo_tts_tap_once">点击外部时钟来停止当前闹钟</string>
+    <string name="demo_tts_tap_again">再点一次可以完全取消闹钟</string>
+    <string name="demo_tts_explore">还有很多功能等您探索</string>
+    <string name="demo_highlight_desc">TTS · 闹钟铃声 · 重复等多种设置</string>
+    <string name="demo_tts_dismiss">响铃时点击2次可关闭闹钟，再点击2次可取消全部闹钟</string>
+    <string name="demo_press_play">按 ▶ 试试看</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ 能量站</string>
+    <string name="energy_station_daily_info">每天自动补充%1$d个</string>
+    <string name="energy_option_ad">看广告 +%1$d</string>
+    <string name="energy_option_review">写评价 → 永久+1</string>
+    <string name="energy_option_review_done">评价已完成 (+1生效中)</string>
+    <string name="energy_option_invite">邀请好友 → 永久+1</string>
+    <string name="energy_option_invite_done">邀请完成 (+1生效中)</string>
+    <string name="energy_option_purchase">去除广告 ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">帮助我们改进！</string>
+    <string name="feedback_subtitle">哪些方面可以做得更好？</string>
+    <string name="feedback_reason_hard">不好用</string>
+    <string name="feedback_reason_missing">缺少功能</string>
+    <string name="feedback_reason_ads">广告太多</string>
+    <string name="feedback_reason_alarm">闹钟不响</string>
+    <string name="feedback_reason_battery">耗电严重</string>
+    <string name="feedback_reason_other">其他</string>
+    <string name="feedback_hint">请告诉我们更多（可选）</string>
+    <string name="feedback_skip">跳过</string>
+    <string name="feedback_submit">提交</string>
+    <string name="feedback_sending">发送中…</string>
+    <string name="feedback_settings_hint">您也可以随时在设置中发送反馈。</string>
+    <string name="feedback_thanks">感谢您的反馈！</string>
+    <string name="settings_feedback_btn">发送反馈</string>
 </resources>

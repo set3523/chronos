@@ -8,6 +8,9 @@ import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderF
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.PersistentCacheSettings
+import com.revenuecat.purchases.LogLevel
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesConfiguration
 
 class MyApplication : Application() {
     override fun onCreate() {
@@ -28,6 +31,11 @@ class MyApplication : Application() {
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
         firebaseAppCheck.installAppCheckProviderFactory(
             PlayIntegrityAppCheckProviderFactory.getInstance()
+        )
+        Purchases.logLevel = LogLevel.DEBUG
+        Purchases.configure(
+            PurchasesConfiguration.Builder(this, "goog_igiHUklLJcBpDleKeWebdBjCdXG")
+                .build()
         )
     }
 }

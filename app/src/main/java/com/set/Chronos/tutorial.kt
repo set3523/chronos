@@ -2,6 +2,7 @@ package com.set.Chronos
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.AllInclusive
@@ -62,6 +65,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalConfiguration
+import android.content.Context
 
 
 // ======================================================================
@@ -85,7 +98,7 @@ fun TutorialPagerOverlay(
 ) {
     val pagerState = rememberPagerState(
         initialPage = initialPage,
-        pageCount = { 6 }
+        pageCount = { 7 }
     )
     val lastPageIndex = pagerState.pageCount - 1
     val coroutineScope = rememberCoroutineScope()
@@ -123,29 +136,22 @@ fun TutorialPagerOverlay(
                         Text(stringResource(R.string.tutorial_desc_1), color = Color.LightGray, fontSize = 16.sp, textAlign = TextAlign.Center)
                     }
 
-                    // ── 페이지 1: 알람 설정 기능 설명 (Mock) ──
+                    // ── 페이지 1: 상대시간 / 절대시간 설명 ──
                     1 -> {
-                        TutorialPage4_MockAlarmSettings()
+                        TutorialPage_TimeModes()
                     }
 
-                    // ── 페이지 2: 알람 설정 체험 유도 (스킵 가능) ──
+                    // ── 페이지 2: 설정 기능 (크레센도, TTS, 알람 추가) ──
                     2 -> {
+                        TutorialPage_AlarmFeatures()
+                    }
+
+                    // ── 페이지 3: 알람 설정 체험 유도 (스킵 가능) ──
+                    3 -> {
                         TutorialPage_TryAlarm(
                             onTryAlarm = onTryAlarm,
                             onSkip = {
                                 onSkipAlarm()
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(3)
-                                }
-                            }
-                        )
-                    }
-
-                    // ── 페이지 3: 프리셋 확인 유도 (스킵 가능) ──
-                    3 -> {
-                        TutorialPage_TryPreset(
-                            onTryPreset = onTryPreset,
-                            onSkip = {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(4)
                                 }
@@ -153,14 +159,26 @@ fun TutorialPagerOverlay(
                         )
                     }
 
-                    // ── 페이지 4: 에너지(번개) 설명 ──
+                    // ── 페이지 4: 프리셋 확인 유도 (스킵 가능) ──
                     4 -> {
+                        TutorialPage_TryPreset(
+                            onTryPreset = onTryPreset,
+                            onSkip = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(5)
+                                }
+                            }
+                        )
+                    }
+
+                    // ── 페이지 5: 에너지(번개) 설명 ──
+                    5 -> {
                         Text("⚡", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(stringResource(R.string.tutorial_title_energy), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            stringResource(R.string.tutorial_desc_energy),
+                            stringResource(R.string.tutorial_desc_energy, 3),
                             color = Color.LightGray,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center,
@@ -168,8 +186,8 @@ fun TutorialPagerOverlay(
                         )
                     }
 
-                    // ── 페이지 5: 마무리 ──
-                    5 -> {
+                    // ── 페이지 6: 마무리 ──
+                    6 -> {
                         Text("⚙️", fontSize = 80.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(stringResource(R.string.tutorial_title_6), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -181,8 +199,8 @@ fun TutorialPagerOverlay(
         }
 
         // ── 하단 네비게이션 ──
-        // 인터랙티브 페이지(2, 3)에서는 자체 버튼이 있으므로 하단 네비게이션 숨김
-        if (pagerState.currentPage != 2 && pagerState.currentPage != 3) {
+        // 인터랙티브 페이지(3, 4)에서는 자체 버튼이 있으므로 하단 네비게이션 숨김
+        if (pagerState.currentPage != 3 && pagerState.currentPage != 4) {
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -390,67 +408,179 @@ fun TutorialGuideBanner(
 
 
 // ======================================================================
-// Mock 알람 설정 페이지 (기존 유지)
+// ======================================================================
+// 페이지 1: 상대시간 / 절대시간 설명
 // ======================================================================
 @Composable
-fun TutorialPage4_MockAlarmSettings() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.85f)),
-        contentAlignment = Alignment.Center
+fun TutorialPage_TimeModes() {
+    val accentGold = Color(0xFFE5C07B)
+    val accentPurple = Color(0xFF9D4EDD)
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
+        Icon(
+            imageVector = Icons.Default.HourglassTop,
+            contentDescription = null,
+            tint = accentGold,
+            modifier = Modifier.size(64.dp)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(stringResource(R.string.tut_time_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(stringResource(R.string.tut_time_subtitle), color = Color.Gray, fontSize = 14.sp)
+        Spacer(modifier = Modifier.height(28.dp))
+
+        // 모의 Switch Row
+        Row(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .background(Color(0xFF1E1E1E), RoundedCornerShape(16.dp))
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxWidth()
+                .background(Color(0xFF1E1E1E), RoundedCornerShape(12.dp))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(R.string.tutorial_mock_title),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            HorizontalDivider(color = Color.DarkGray)
-
-            AlarmGuideRow(
-                icon = Icons.AutoMirrored.Filled.TrendingUp,
-                title = stringResource(R.string.tutorial_mock_crescendo_title),
-                description = stringResource(R.string.tutorial_mock_crescendo_desc)
-            )
-
-            AlarmGuideRow(
-                icon = Icons.Default.AllInclusive,
-                title = stringResource(R.string.tutorial_mock_infinite_title),
-                description = stringResource(R.string.tutorial_mock_infinite_desc)
-            )
-
-            AlarmGuideRow(
-                icon = Icons.Default.RecordVoiceOver,
-                title = stringResource(R.string.tutorial_mock_tts_title),
-                description = stringResource(R.string.tutorial_mock_tts_desc)
-            )
-
-            AlarmGuideRow(
-                icon = Icons.Default.Repeat,
-                title = stringResource(R.string.tutorial_mock_repeat_title),
-                description = stringResource(R.string.tutorial_mock_repeat_desc)
-            )
-
-            HorizontalDivider(color = Color.DarkGray)
-
-            Text(
-                text = stringResource(R.string.tutorial_mock_footer),
-                color = Color.LightGray,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                lineHeight = 22.sp
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.HourglassTop, contentDescription = null, tint = accentGold, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.tut_time_relative), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            }
+            Switch(checked = true, onCheckedChange = null, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = accentGold))
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.tut_time_relative_ex),
+            color = Color.LightGray, fontSize = 13.sp, lineHeight = 20.sp,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1E1E1E), RoundedCornerShape(12.dp))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.HourglassTop, contentDescription = null, tint = accentPurple, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.tut_time_absolute), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            }
+            Switch(checked = false, onCheckedChange = null, colors = SwitchDefaults.colors(uncheckedThumbColor = Color.White, uncheckedTrackColor = accentPurple))
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.tut_time_absolute_ex),
+            color = Color.LightGray, fontSize = 13.sp, lineHeight = 20.sp,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+        )
+    }
+}
+
+
+// ======================================================================
+// 페이지 2: 알람 설정 기능 (크레센도, TTS, 알람 추가)
+// ======================================================================
+@Composable
+fun TutorialPage_AlarmFeatures() {
+    val accentColor = Color(0xFFE5C07B)
+    val accentOrange = Color(0xFFF07D22)
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("⚙️", fontSize = 48.sp)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(stringResource(R.string.tut_feat_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(stringResource(R.string.tut_feat_subtitle), color = Color.Gray, fontSize = 14.sp)
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 크레센도
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1E1E1E), RoundedCornerShape(12.dp))
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.AutoMirrored.Filled.TrendingUp, contentDescription = null, tint = accentColor, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(10.dp))
+                Text(stringResource(R.string.tut_feat_crescendo), color = Color.White, fontSize = 14.sp)
+            }
+            Switch(checked = true, onCheckedChange = null, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = accentColor))
+        }
+        Text(stringResource(R.string.tut_feat_crescendo_desc), color = Color.LightGray, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // 무한 반복
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1E1E1E), RoundedCornerShape(12.dp))
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.AllInclusive, contentDescription = null, tint = accentColor, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(10.dp))
+                Text(stringResource(R.string.tut_feat_loop), color = Color.White, fontSize = 14.sp)
+            }
+            Switch(checked = true, onCheckedChange = null, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = accentColor))
+        }
+        Text(stringResource(R.string.tut_feat_loop_desc), color = Color.LightGray, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // TTS
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1E1E1E), RoundedCornerShape(12.dp))
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.RecordVoiceOver, contentDescription = null, tint = accentColor, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(10.dp))
+                Text(stringResource(R.string.tut_feat_tts), color = Color.White, fontSize = 14.sp)
+            }
+            Switch(checked = true, onCheckedChange = null, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = accentColor))
+        }
+        // TTS 입력 예시
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, top = 6.dp)
+                .background(Color(0xFF2A2A2A), RoundedCornerShape(8.dp))
+                .padding(12.dp)
+        ) {
+            Text(stringResource(R.string.tut_feat_tts_example), color = accentOrange, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+        }
+        Text(stringResource(R.string.tut_feat_tts_desc), color = Color.LightGray, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // + 알람 추가 버튼 목업
+        Button(
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E1E1E)),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.tut_feat_add), color = accentColor, fontSize = 14.sp)
+        }
+        Text(stringResource(R.string.tut_feat_add_desc), color = Color.LightGray, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp))
     }
 }
 
@@ -873,4 +1003,130 @@ fun AlarmGuideRow(icon: ImageVector, title: String, description: String) {
         // 직관적인 화살표 설명
         Text(text = description, color = Color(0xFFF07D22), fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+// ======================================================================
+// 첫 실행 시계 힌트 오버레이 (맥동 애니메이션)
+// ======================================================================
+@Composable
+fun ClockHintOverlay(onDismiss: () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition(label = "clockHint")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 0.85f,
+        targetValue = 0.95f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseScale"
+    )
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseAlpha"
+    )
+
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val clockSize = screenWidth * 0.75f
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { onDismiss() },
+        contentAlignment = Alignment.Center
+    ) {
+        // 골드 맥동 원형 테두리
+        Box(
+            modifier = Modifier
+                .size(clockSize)
+                .scale(pulseScale)
+                .alpha(pulseAlpha)
+                .border(
+                    width = 3.dp,
+                    color = Color(0xFFE5C07B),
+                    shape = CircleShape
+                )
+        )
+
+        // 힌트 텍스트
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+                .background(
+                    color = Color(0xCC1A1A2E),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFFE5C07B),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.hint_touch_clock),
+                color = Color(0xFFE5C07B),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+
+// ======================================================================
+// 데모 프리셋 (첫 사용자 체험용)
+// "Demo" 프리셋을 생성·저장하고, 알람 목록을 반환
+// ======================================================================
+fun loadOrCreateDemoPreset(context: Context): List<AlarmSetting> {
+    val prefs = getSecurePrefs(context)
+    val demoPresetName = "Demo"
+    val existingPresets = prefs.getStringSet("preset_names", emptySet()) ?: emptySet()
+
+    if (!existingPresets.contains(demoPresetName)) {
+        val demoAlarms = listOf(
+            AlarmSetting(
+                isRelative = true, relativeTime = "00:00:05",
+                isTtsMode = true, ttsText = context.getString(R.string.demo_tts_intro),
+                volume = 0.7f, duration = 30, ttsRepeatCount = 1, taskLine = 1
+            ),
+            AlarmSetting(
+                isRelative = true, relativeTime = "00:00:10",
+                isTtsMode = false, volume = 0.5f, duration = 301, repeatUntilOff = false,
+                isRepeatEnabled = true, repeatInterval = "00:00:05", repeatCount = 3,
+                taskLine = 0
+            ),
+            AlarmSetting(
+                isRelative = true, relativeTime = "00:00:17",
+                isTtsMode = true, ttsText = context.getString(R.string.demo_tts_overlap),
+                volume = 0.7f, duration = 30, ttsRepeatCount = 1, taskLine = 1
+            ),
+            AlarmSetting(
+                isRelative = true, relativeTime = "00:00:25",
+                isTtsMode = true, ttsText = context.getString(R.string.demo_tts_dismiss),
+                volume = 0.7f, duration = 30, ttsRepeatCount = 1, taskLine = 1
+            ),
+            AlarmSetting(
+                isRelative = true, relativeTime = "01:00:10",
+                isTtsMode = false, volume = 0.5f, duration = 301, repeatUntilOff = false,
+                isRepeatEnabled = true, repeatInterval = "00:10:00", repeatCount = 5,
+                taskLine = 0
+            ),
+
+        )
+        savePresetToPrefs(context, demoPresetName, demoAlarms, "#E5C07B", "Fire")
+    }
+
+    val presetJson = prefs.getString("preset_${demoPresetName}_alarmSettings", null)
+    return if (presetJson != null) {
+        try {
+            kotlinx.serialization.json.Json.decodeFromString<List<AlarmSetting>>(presetJson)
+        } catch (_: Exception) { emptyList() }
+    } else emptyList()
 }

@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 
 // ✨ [핵심] 알람 데이터 클래스 (반드시 .data가 없는 경로여야 합니다!)
 import com.set.Chronos.AlarmSetting
+import com.set.Chronos.utils.computeTriggerTime
 
 // 💾 JSON 직렬화/역직렬화를 위한 import
 import kotlinx.serialization.decodeFromString
@@ -111,36 +112,18 @@ class MainViewModel(
         }
     }
 
+    fun loadAdWhenReady(onResult: (Boolean) -> Unit) {
+        adManager.loadAdWhenReady(onResult)
+    }
+
     fun updatePreCalculatedAlarms() {
-        val sessionStartTime = prefs.getLong("current_session_id", System.currentTimeMillis())
-
         preCalculatedAlarms = alarmSettings.map { alarm ->
-            var targetTimeInMillis = 0L
-            var mainAngle = 0f
-
-            if (alarm.isRelative) {
-                val timeParts = alarm.relativeTime.split(":")
-                val h = timeParts.getOrNull(0)?.toLongOrNull() ?: 0L
-                val m = timeParts.getOrNull(1)?.toLongOrNull() ?: 0L
-                val s = timeParts.getOrNull(2)?.toLongOrNull() ?: 0L
-
-                targetTimeInMillis = sessionStartTime + (h * 3600 + m * 60 + s) * 1000L
-                val tempCal = Calendar.getInstance().apply { timeInMillis = targetTimeInMillis }
-                mainAngle = (tempCal.get(Calendar.HOUR_OF_DAY) % 12 + tempCal.get(Calendar.MINUTE) / 60f) * 30f
-            } else {
-                val tempCal = Calendar.getInstance().apply { timeInMillis = sessionStartTime }
-                val timeParts = alarm.alarmTime.split(":")
-                tempCal.set(Calendar.HOUR_OF_DAY, timeParts.getOrNull(0)?.toIntOrNull() ?: 0)
-                tempCal.set(Calendar.MINUTE, timeParts.getOrNull(1)?.toIntOrNull() ?: 0)
-                tempCal.set(Calendar.SECOND, timeParts.getOrNull(2)?.toIntOrNull() ?: 0)
-                tempCal.set(Calendar.MILLISECOND, 0)
-
-                if (tempCal.timeInMillis <= sessionStartTime) {
-                    tempCal.add(Calendar.DATE, 1)
-                }
-                targetTimeInMillis = tempCal.timeInMillis
-                mainAngle = (tempCal.get(Calendar.HOUR_OF_DAY) % 12 + tempCal.get(Calendar.MINUTE) / 60f) * 30f
-            }
+            // 저장 시 박아둔 절대 발생 시각을 그대로 사용. 아직 실행 안 한 알람만 즉석 변환(버전 무관).
+            val targetTimeInMillis =
+                if (alarm.targetTimeMillis > 0L) alarm.targetTimeMillis
+                else alarm.computeTriggerTime()
+            val mainCal = Calendar.getInstance().apply { timeInMillis = targetTimeInMillis }
+            val mainAngle = (mainCal.get(Calendar.HOUR_OF_DAY) % 12 + mainCal.get(Calendar.MINUTE) / 60f) * 30f
 
             val repeats = mutableListOf<PreCalculatedRepeat>()
             if (alarm.isRepeatEnabled) {
@@ -190,5 +173,12 @@ class MainViewModel(
             },
             onNeedCharge = onNeedCharge
         )
+    }
+
+    fun getAdChargeByTier(): Int = adManager.getAdChargeByTier()
+    fun getDailyBaseByTier(): Int = adManager.getDailyBaseByTier()
+
+    fun refreshTicketInfo() {
+        ticketCount = adManager.getTickets()
     }
 }

@@ -1,6 +1,12 @@
 package com.set.Chronos
 
 import android.app.Activity
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.draw.alpha
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -30,6 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -87,7 +96,10 @@ data class AlarmSetting(
     var isTtsMode: Boolean = false,
     var ttsText: String = "Chronos",
     var ttsRepeatCount: Int = 3,
-    var taskLine: Int = 0
+    var taskLine: Int = 0,
+    // 저장(설정) 시점에 상대/절대 시간을 변환해 박아두는 절대 발생 시각(epoch millis).
+    // 0이면 아직 계산 전(구버전 데이터). 화면 표시·부팅 재등록 모두 이 값을 단일 기준으로 사용한다.
+    var targetTimeMillis: Long = 0L
 )
 
 fun getIconByName(name: String): ImageVector {
@@ -152,6 +164,30 @@ fun AlarmSettingsDialog(
             onAlarmSettingsChange(listOf(
                 AlarmSetting(isRelative = true, relativeTime = "00:00:00")
             ))
+        }
+    }
+
+    val prefs = remember { getSecurePrefs(context) }
+    val showPlayHint = remember { !prefs.getBoolean("first_alarm_tracked", false) && !isTutorialMode }
+    var playHintVisible by remember { mutableStateOf(showPlayHint) }
+
+    // ── 데모 모드: 첫 사용자에게 TTS + 알람 겹치기 체험 프리셋 세팅 ──
+    var demoHighlightStep by remember { mutableIntStateOf(if (showPlayHint) 0 else -1) }
+    // demoHighlightStep: 0=항목반짝, 1=▶맥동, -1=비활성
+
+    LaunchedEffect(showPlayHint) {
+        if (showPlayHint && !isTutorialMode) {
+            // Demo 프리셋 불러오기 (없으면 생성 후 저장)
+            val demoAlarms = loadOrCreateDemoPreset(context)
+            if (demoAlarms.isNotEmpty()) {
+                onAlarmSettingsChange(demoAlarms)
+            }
+
+            // Step 0: 항목 하이라이트 반짝 (3초)
+            demoHighlightStep = 0
+            delay(3000)
+            // Step 1: ▶ 버튼 맥동으로 전환
+            demoHighlightStep = 1
         }
     }
 
@@ -265,29 +301,53 @@ fun AlarmSettingsDialog(
                         ) {
                             Icon(Icons.Default.Save, contentDescription = "Save Preset", tint = ThemeTextPrimary)
                         }
-                        IconButton(
-                            onClick = {
-                                // ✨ [핵심 수정] 저장 버튼을 누르는 순간,
-                                // 뒤죽박죽된 알람 모드들을 상단의 '상대/절대 시간' 스위치 상태로 멱살 잡고 강제 통일시킵니다!
-                                val isGlobalRelative = alarmSettings.firstOrNull()?.isRelative == true
-                                val normalizedAlarms = alarmSettings.map {
-                                    it.normalize().copy(isRelative = isGlobalRelative)
-                                }
-
-                                onAlarmSettingsChange(normalizedAlarms)
-                                onSave()
-                                onDismiss()
-                            },
-                            modifier = if (isTutorialMode && tutorialDialogStep == 3) {
-                                Modifier.onGloballyPositioned { coords ->
-                                    rootCoords?.let { root ->
-                                        val pos = root.localPositionOf(coords, Offset.Zero)
-                                        highlightBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                        Box {
+                            IconButton(
+                                onClick = {
+                                    if (playHintVisible) {
+                                        playHintVisible = false
+                                        demoHighlightStep = -1
+                                        prefs.edit().putBoolean("first_alarm_tracked", true).apply()
+                                        AnalyticsHelper.demoAlarmStarted(context)
                                     }
-                                }
-                            } else Modifier
-                        ) {
-                            Icon(Icons.Default.Check, contentDescription = "Apply", tint = AccentColor)
+                                    // ── 공통: 실제 알람 저장 ──
+                                    val isGlobalRelative = alarmSettings.firstOrNull()?.isRelative == true
+                                    val normalizedAlarms = alarmSettings.map {
+                                        it.normalize().copy(isRelative = isGlobalRelative)
+                                    }
+                                    onAlarmSettingsChange(normalizedAlarms)
+                                    onSave()
+                                    onDismiss()
+                                },
+                                modifier = if (isTutorialMode && tutorialDialogStep == 3) {
+                                    Modifier.onGloballyPositioned { coords ->
+                                        rootCoords?.let { root ->
+                                            val pos = root.localPositionOf(coords, Offset.Zero)
+                                            highlightBounds = Rect(pos, Size(coords.size.width.toFloat(), coords.size.height.toFloat()))
+                                        }
+                                    }
+                                } else Modifier
+                            ) {
+                                Icon(Icons.Default.PlayArrow, contentDescription = "Run", tint = Color(0xFF4CAF50))
+                            }
+                            if (playHintVisible) {
+                                val infiniteTransition = rememberInfiniteTransition(label = "playHint")
+                                val pulseAlpha by infiniteTransition.animateFloat(
+                                    initialValue = 0.2f,
+                                    targetValue = 0.8f,
+                                    animationSpec = infiniteRepeatable(
+                                        animation = tween(800),
+                                        repeatMode = RepeatMode.Reverse
+                                    ),
+                                    label = "playPulse"
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .alpha(pulseAlpha)
+                                        .border(2.dp, Color(0xFF4CAF50), CircleShape)
+                                )
+                            }
                         }
                     }
                 }
@@ -327,10 +387,10 @@ fun AlarmSettingsDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                         Icon(Icons.Default.HourglassTop, contentDescription = "Mode", tint = if (isGlobalRelative) AccentColor else Color.Gray)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(if (isGlobalRelative) stringResource(R.string.setting_mode_relative) else stringResource(R.string.setting_mode_absolute), color = ThemeTextPrimary, fontWeight = FontWeight.Bold)
+                        com.set.Chronos.ui.components.AutoSizeText(text = if (isGlobalRelative) stringResource(R.string.setting_mode_relative) else stringResource(R.string.setting_mode_absolute), color = ThemeTextPrimary, fontWeight = FontWeight.Bold, maxLines = 2, modifier = Modifier.weight(1f))
                     }
                     Switch(
                         checked = isGlobalRelative,
@@ -470,6 +530,52 @@ fun AlarmSettingsDialog(
                     targetBounds = highlightBounds,
                     guideText = stringResource(R.string.tg_preset_save_btn)
                 )
+            }
+
+            // ── 데모 모드 오버레이: 항목 반짝 + 안내 텍스트 ──
+            if (demoHighlightStep == 0) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.6f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val flashAlpha by rememberInfiniteTransition(label = "demoFlash").animateFloat(
+                        initialValue = 0.3f, targetValue = 1f,
+                        animationSpec = infiniteRepeatable(tween(600), RepeatMode.Reverse),
+                        label = "flash"
+                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "TTS  ·  🔔  ·  🔁",
+                            color = Color(0xFFE5C07B).copy(alpha = flashAlpha),
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = stringResource(R.string.demo_highlight_desc),
+                            color = Color.LightGray,
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            tint = Color(0xFF4CAF50).copy(alpha = flashAlpha),
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.demo_press_play),
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
             } // Box 닫기
         }
@@ -692,6 +798,7 @@ fun AlarmSettingItem(
                     result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
                 }
                 onUpdate(alarmSetting.copy(soundUri = uri?.toString()))
+                AnalyticsHelper.ringtoneChanged(context)
             }
         }
     )
@@ -760,20 +867,10 @@ fun AlarmSettingItem(
             Icon(Icons.AutoMirrored.Filled.TrendingUp, contentDescription = "Crescendo", tint = ThemeIconMuted)
             Switch(
                 checked = alarmSetting.isCrescendo,
-                onCheckedChange = { onUpdate(alarmSetting.copy(isCrescendo = it)) },
-                colors = SwitchDefaults.colors(checkedThumbColor = ThemeTextPrimary, checkedTrackColor = AccentColor, uncheckedThumbColor = uncheckedThumbColor, uncheckedTrackColor = ThemeBorder)
-            )
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(Icons.Default.AllInclusive, contentDescription = "Infinite", tint = ThemeIconMuted)
-            Switch(
-                checked = alarmSetting.repeatUntilOff,
-                onCheckedChange = { onUpdate(alarmSetting.copy(repeatUntilOff = it)) },
+                onCheckedChange = {
+                    onUpdate(alarmSetting.copy(isCrescendo = it))
+                    AnalyticsHelper.featureToggled(context, "crescendo", it)
+                },
                 colors = SwitchDefaults.colors(checkedThumbColor = ThemeTextPrimary, checkedTrackColor = AccentColor, uncheckedThumbColor = uncheckedThumbColor, uncheckedTrackColor = ThemeBorder)
             )
         }
@@ -786,7 +883,10 @@ fun AlarmSettingItem(
             Icon(Icons.Default.RecordVoiceOver, contentDescription = "TTS Mode", tint = ThemeIconMuted)
             Switch(
                 checked = alarmSetting.isTtsMode,
-                onCheckedChange = { onUpdate(alarmSetting.copy(isTtsMode = it)) },
+                onCheckedChange = {
+                    onUpdate(alarmSetting.copy(isTtsMode = it))
+                    AnalyticsHelper.featureToggled(context, "tts", it)
+                },
                 colors = SwitchDefaults.colors(checkedThumbColor = ThemeTextPrimary, checkedTrackColor = AccentColor, uncheckedThumbColor = uncheckedThumbColor, uncheckedTrackColor = ThemeBorder)
             )
         }
@@ -819,35 +919,53 @@ fun AlarmSettingItem(
             }
         }
 
-        if (!alarmSetting.repeatUntilOff) {
-            if (alarmSetting.isTtsMode) {
-                Row(
+        if (alarmSetting.isTtsMode) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, top = 4.dp, bottom = 4.dp)
+            ) {
+                // 왼쪽 얇은 세로선
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp, top = 4.dp, bottom = 4.dp)
-                ) {
-                    // 왼쪽 얇은 세로선
-                    Box(
-                        modifier = Modifier
-                            .width(2.dp)
-                            .height(48.dp)
-                            .background(AccentColor.copy(alpha = 0.4f), RoundedCornerShape(1.dp))
-                            .align(Alignment.CenterVertically)
+                        .width(2.dp)
+                        .height(48.dp)
+                        .background(AccentColor.copy(alpha = 0.4f), RoundedCornerShape(1.dp))
+                        .align(Alignment.CenterVertically)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Box(modifier = Modifier.weight(1f)) {
+                    SettingSlider(
+                        icon = Icons.Default.Repeat,
+                        valueText = if (alarmSetting.ttsRepeatCount >= 11) "∞" else stringResource(R.string.setting_repeat_times_format, alarmSetting.ttsRepeatCount),
+                        value = alarmSetting.ttsRepeatCount.toFloat().coerceAtMost(11f),
+                        range = 1f..11f,
+                        onValueChange = {
+                            val newCount = it.toInt()
+                            if (newCount >= 11) {
+                                onUpdate(alarmSetting.copy(ttsRepeatCount = 11, repeatUntilOff = true))
+                            } else {
+                                onUpdate(alarmSetting.copy(ttsRepeatCount = newCount, repeatUntilOff = false))
+                            }
+                        }
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Box(modifier = Modifier.weight(1f)) {
-                        SettingSlider(
-                            icon = Icons.Default.Repeat,
-                            valueText = stringResource(R.string.setting_repeat_times_format, alarmSetting.ttsRepeatCount),
-                            value = alarmSetting.ttsRepeatCount.toFloat(),
-                            range = 1f..10f,
-                            onValueChange = { onUpdate(alarmSetting.copy(ttsRepeatCount = it.toInt())) }
-                        )
+                }
+            }
+        } else {
+            SettingSlider(
+                icon = Icons.Default.Timer,
+                valueText = if (alarmSetting.duration >= 301) "∞" else stringResource(R.string.setting_duration_format, alarmSetting.duration),
+                value = alarmSetting.duration.toFloat().coerceAtMost(301f),
+                range = 1f..301f,
+                onValueChange = {
+                    val newDuration = it.toInt()
+                    if (newDuration >= 301) {
+                        onUpdate(alarmSetting.copy(duration = 301, repeatUntilOff = true))
+                    } else {
+                        onUpdate(alarmSetting.copy(duration = newDuration, repeatUntilOff = false))
                     }
                 }
-            } else {
-                SettingSlider(icon = Icons.Default.Timer, valueText = stringResource(R.string.setting_duration_format, alarmSetting.duration), value = alarmSetting.duration.toFloat(), range = 1f..300f, onValueChange = { onUpdate(alarmSetting.copy(duration = it.toInt())) })
-            }
+            )
         }
         SettingSlider(icon = Icons.AutoMirrored.Filled.VolumeUp, valueText = "${(alarmSetting.volume * 100).toInt()}%", value = alarmSetting.volume, range = 0f..(if (isOverdriveEnabled) 2f else 1f), color = if (alarmSetting.volume > 1.0f) Color.Red else AccentColor,onValueChange = { onUpdate(alarmSetting.copy(volume = it)) })
 
@@ -859,7 +977,10 @@ fun AlarmSettingItem(
             Icon(Icons.Default.Repeat, contentDescription = "Repeat", tint = ThemeIconMuted)
             Switch(
                 checked = alarmSetting.isRepeatEnabled,
-                onCheckedChange = { onUpdate(alarmSetting.copy(isRepeatEnabled = it)) },
+                onCheckedChange = {
+                    onUpdate(alarmSetting.copy(isRepeatEnabled = it))
+                    AnalyticsHelper.featureToggled(context, "repeat", it)
+                },
                 colors = SwitchDefaults.colors(checkedThumbColor = ThemeTextPrimary, checkedTrackColor = AccentColor, uncheckedThumbColor = uncheckedThumbColor, uncheckedTrackColor = ThemeBorder)
             )
         }
@@ -881,15 +1002,20 @@ fun AlarmSettingItem(
                 TimerInput(modifier = Modifier.weight(1f), label = stringResource(R.string.setting_repeat_m), value = rMin, onValueChange = { updateRepeatTime(rHour, it, rSec) })
                 TimerInput(modifier = Modifier.weight(1f), label = stringResource(R.string.setting_repeat_s), value = rSec, onValueChange = { updateRepeatTime(rHour, rMin, it) })
             }
-            if (!alarmSetting.repeatUntilOff) {
-                SettingSlider(
-                    icon = Icons.Default.Filter1,
-                    valueText = stringResource(R.string.setting_repeat_count_format, alarmSetting.repeatCount),
-                    value = alarmSetting.repeatCount.toFloat(),
-                    range = 1f..10f,
-                    onValueChange = { onUpdate(alarmSetting.copy(repeatCount = it.toInt())) }
-                )
-            }
+            SettingSlider(
+                icon = Icons.Default.Filter1,
+                valueText = if (alarmSetting.repeatCount >= 11) "∞" else stringResource(R.string.setting_repeat_count_format, alarmSetting.repeatCount),
+                value = alarmSetting.repeatCount.toFloat().coerceAtMost(11f),
+                range = 1f..11f,
+                onValueChange = {
+                    val newCount = it.toInt()
+                    if (newCount >= 11) {
+                        onUpdate(alarmSetting.copy(repeatCount = 11, repeatUntilOff = true))
+                    } else {
+                        onUpdate(alarmSetting.copy(repeatCount = newCount, repeatUntilOff = false))
+                    }
+                }
+            )
         }
     }
 }
@@ -976,14 +1102,17 @@ fun SettingSlider(
             text = valueText,
             color = color,
             fontSize = 14.sp,
-            modifier = Modifier.clickable {
-                inputText = if (range.endInclusive <= 1f) {
-                    (value * 100).toInt().toString()
-                } else {
-                    value.toInt().toString()
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(48.dp)
+                .clickable {
+                    inputText = if (range.endInclusive <= 1f) {
+                        (value * 100).toInt().toString()
+                    } else {
+                        value.toInt().toString()
+                    }
+                    showDialog = true
                 }
-                showDialog = true
-            }
         )
     }
 }

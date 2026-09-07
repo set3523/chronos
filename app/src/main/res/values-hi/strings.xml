@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">विज्ञापन देखने के बाद सहेजा जाएगा (परीक्षण)</string>
     <string name="toast_ad_fail">विज्ञापन विफल</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">कोई विज्ञापन नहीं है, इसलिए मुफ्त में चार्ज किया गया! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">कोई विज्ञापन नहीं है, इसलिए मुफ्त में चार्ज किया गया! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">अलार्म बज रहा है!</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">\'%1$s\' प्रीसेट लागू किया गया。</string>
 
     <string name="ad_confirm_title">बिजली रिचार्ज</string>
-    <string name="ad_confirm_desc">क्या आप एक विज्ञापन देखकर 3 बिजली (⚡) रिचार्ज करना चाहते हैं?\n(हर दिन 5 बिजली अपने आप रिचार्ज हो जाती है।)</string>
+    <string name="ad_confirm_desc">क्या आप एक विज्ञापन देखकर %1$d बिजली (⚡) रिचार्ज करना चाहते हैं?\n(हर दिन %2$d बिजली अपने आप रिचार्ज हो जाती है।)</string>
 
     ``preset``
     <string name="preset_screen_title">प्रीसेट</string>
@@ -167,6 +167,9 @@
 
     <string name="profile_msg_invalid_format">3~20 अक्षर, केवल अक्षर/संख्या/_</string>
 
+    <string name="settings_auto_media_volume_title">स्वचालित मीडिया वॉल्यूम</string>
+    <string name="settings_auto_media_volume_desc">ईयरफोन मोड में अलार्म वॉल्यूम के अनुसार\nमीडिया वॉल्यूम स्वतः समायोजित करें</string>
+
     ``tutorial``
     <string name="tutorial_title_0">बीटा टेस्टर विशेष कार्यक्रम</string>
     <string name="tutorial_desc_0">शीर्ष 1,000 सक्रिय उपयोगकर्ताओं को आधिकारिक रिलीज़ के बाद प्रीमियम सुविधाएँ मुफ्त में मिलेंगी!\n\nभाग लेने के लिए शीर्ष दाईं ओर \'सेटिंग्स (⚙️)\' मेनू में Google के साथ साइन इन करें।</string>
@@ -210,7 +213,7 @@
     <string name="tutorial_mock_footer">💡 अपना आदर्श रूटीन बनाने के लिए\nआइकन के बगल में स्विच चालू करें!</string>
 
     <string name="tutorial_title_energy">मुफ़्त ऊर्जा प्रणाली</string>
-    <string name="tutorial_desc_energy">अलार्म चलाने के लिए ऊर्जा की आवश्यकता होती है।\nचिंता न करें! यह हर दिन 5 बार अपने आप रिचार्ज हो जाती है।</string>
+    <string name="tutorial_desc_energy">अलार्म चलाने के लिए ऊर्जा की आवश्यकता होती है।\nचिंता न करें! यह हर दिन %1$d बार अपने आप रिचार्ज हो जाती है।</string>
 
     <string name="tutorial_try_alarm_title">अलार्म सेट करने का प्रयास करें!</string>
     <string name="tutorial_try_alarm_desc">सेटिंग्स खोलने के लिए स्क्रीन पर टैप करें।\nसमय निर्धारित करें और सहेजें!</string>
@@ -263,4 +266,62 @@
     <string name="update_msg_optional">नया संस्करण उपलब्ध है। क्या आप अपडेट करना चाहते हैं?</string>
     <string name="update_btn_now">अपडेट करें</string>
     <string name="update_btn_later">बाद में</string>
+
+    <string name="tut_time_title">दो समय मोड</string>
+    <string name="tut_time_subtitle">सेटिंग्स में स्वतंत्र रूप से बदलें</string>
+    <string name="tut_time_relative">सापेक्ष समय</string>
+    <string name="tut_time_absolute">निरपेक्ष समय</string>
+    <string name="tut_time_relative_ex">→  \"30 मिनट बाद शुरू\"\n→  स्टैक: +30मि, +1घं, +1घं30मि</string>
+    <string name="tut_time_absolute_ex">→  \"सुबह 7:00 बजे बजेगा\"\n→  चेन: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">शक्तिशाली अलार्म सेटिंग्स</string>
+    <string name="tut_feat_subtitle">प्रत्येक अलार्म के अंदर</string>
+    <string name="tut_feat_crescendo">क्रेशेंडो</string>
+    <string name="tut_feat_crescendo_desc">आवाज़ धीरे-धीरे बढ़ती है</string>
+    <string name="tut_feat_loop">अनंत लूप</string>
+    <string name="tut_feat_loop_desc">अंतहीन दोहराव — व्यायाम के लिए</string>
+    <string name="tut_feat_tts">TTS आवाज़</string>
+    <string name="tut_feat_tts_example">\"5 स्क्वैट्स — शुरू!\"</string>
+    <string name="tut_feat_tts_desc">टेक्स्ट टाइप करें → अलार्म बोलेगा</string>
+    <string name="tut_feat_add">＋  और अलार्म जोड़ें</string>
+    <string name="tut_feat_add_desc">एक प्रीसेट में कई टाइमर रखें</string>
+
+    <string name="hint_touch_clock">अलार्म सेट करने के लिए टच करें</string>
+
+    <string name="demo_tts_intro">आप किसी भी वाक्य को अलार्म के रूप में उपयोग कर सकते हैं</string>
+    <string name="demo_tts_overlap">आप कई अलार्म को ओवरलैप भी कर सकते हैं</string>
+    <string name="demo_tts_tap_once">वर्तमान अलार्म बंद करने के लिए बाहरी घड़ी पर टैप करें</string>
+    <string name="demo_tts_tap_again">अलार्म पूरी तरह रद्द करने के लिए एक बार और टैप करें</string>
+    <string name="demo_tts_explore">कई सुविधाएँ हैं, खुलकर देखें</string>
+    <string name="demo_highlight_desc">TTS · अलार्म ध्वनि · दोहराव और अधिक सेटिंग्स</string>
+    <string name="demo_tts_dismiss">बजते समय 2 बार टैप करें अलार्म बंद होगा, फिर 2 बार टैप करें सभी अलार्म रद्द होंगे</string>
+    <string name="demo_press_play">▶ दबाकर आज़माएं</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ ऊर्जा स्टेशन</string>
+    <string name="energy_station_daily_info">हर दिन %1$d ऑटो रिचार्ज</string>
+    <string name="energy_option_ad">विज्ञापन देखें +%1$d</string>
+    <string name="energy_option_review">समीक्षा लिखें → स्थायी +1</string>
+    <string name="energy_option_review_done">समीक्षा पूर्ण (+1 सक्रिय)</string>
+    <string name="energy_option_invite">मित्र को आमंत्रित करें → स्थायी +1</string>
+    <string name="energy_option_invite_done">मित्र आमंत्रित (+1 सक्रिय)</string>
+    <string name="energy_option_purchase">विज्ञापन हटाएं ($2.99)</string>
+
+
+
+    <!-- feedback -->
+    <string name="feedback_title">सुधार में मदद करें!</string>
+    <string name="feedback_subtitle">हम क्या बेहतर कर सकते हैं?</string>
+    <string name="feedback_reason_hard">उपयोग करना कठिन</string>
+    <string name="feedback_reason_missing">सुविधा नहीं है</string>
+    <string name="feedback_reason_ads">बहुत ज़्यादा विज्ञापन</string>
+    <string name="feedback_reason_alarm">अलार्म काम नहीं करता</string>
+    <string name="feedback_reason_battery">बैटरी की खपत</string>
+    <string name="feedback_reason_other">अन्य</string>
+    <string name="feedback_hint">और बताएं (वैकल्पिक)</string>
+    <string name="feedback_skip">छोड़ें</string>
+    <string name="feedback_submit">भेजें</string>
+    <string name="feedback_sending">भेजा जा रहा है…</string>
+    <string name="feedback_settings_hint">आप सेटिंग्स से भी कभी भी फ़ीडबैक भेज सकते हैं।</string>
+    <string name="feedback_thanks">आपकी प्रतिक्रिया के लिए धन्यवाद!</string>
+    <string name="settings_feedback_btn">फ़ीडबैक भेजें</string>
 </resources>

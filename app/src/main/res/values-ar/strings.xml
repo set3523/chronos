@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">سيتم الحفظ بعد مشاهدة الإعلان (اختبار)</string>
     <string name="toast_ad_fail">فشل الإعلان</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">لا توجد إعلانات! تم الشحن مجانًا! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">لا توجد إعلانات! تم الشحن مجانًا! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">المنبه يرن!</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">تم تطبيق الإعداد المسبق \'%1$s\'.</string>
 
     <string name="ad_confirm_title">شحن الطاقة</string>
-    <string name="ad_confirm_desc">هل ترغب في مشاهدة إعلان لشحن 3 طاقة (⚡)؟\n(يتم إعادة شحن 5 طاقة تلقائيًا كل يوم.)</string>
+    <string name="ad_confirm_desc">هل ترغب في مشاهدة إعلان لشحن %1$d طاقة (⚡)؟\n(يتم إعادة شحن %2$d طاقة تلقائيًا كل يوم.)</string>
 
     ``preset``
     <string name="preset_screen_title">الإعدادات المسبقة</string>
@@ -167,6 +167,9 @@
 
     <string name="profile_msg_invalid_format">من 3 إلى 20 حرفًا، أحرف/أرقام/_ فقط</string>
 
+    <string name="settings_auto_media_volume_title">ضبط تلقائي لمستوى الصوت</string>
+    <string name="settings_auto_media_volume_desc">ضبط صوت الوسائط تلقائيًا ليتوافق\nمع صوت المنبه في وضع السماعات</string>
+
     ``tutorial``
     <string name="tutorial_title_0">حدث خاص لمختبري الإصدار التجريبي</string>
     <string name="tutorial_desc_0">أفضل 1000 مستخدم سيحصلون على ميزات بريميوم مجانًا بعد الإصدار الرسمي!\n\nيرجى تسجيل الدخول باستخدام Google في قائمة \'الإعدادات (⚙️)\' للمشاركة.</string>
@@ -210,7 +213,7 @@
     <string name="tutorial_mock_footer">💡 قم بتشغيل المفاتيح بجوار الأيقونات\nلإنشاء روتينك المثالي!</string>
 
     <string name="tutorial_title_energy">نظام الطاقة المجاني</string>
-    <string name="tutorial_desc_energy">الطاقة مطلوبة لتشغيل المنبه.\nلا تقلق! يتم إعادة شحنها تلقائيًا 5 مرات كل يوم.</string>
+    <string name="tutorial_desc_energy">الطاقة مطلوبة لتشغيل المنبه.\nلا تقلق! يتم إعادة شحنها تلقائيًا %1$d مرات كل يوم.</string>
 
     <string name="tutorial_try_alarm_title">جرب إعداد منبه!</string>
     <string name="tutorial_try_alarm_desc">اضغط على الشاشة لفتح إعدادات المنبه.\nاضبط الوقت واحفظه!</string>
@@ -263,4 +266,61 @@
     <string name="update_msg_optional">يتوفر إصدار جديد. هل تريد التحديث؟</string>
     <string name="update_btn_now">تحديث</string>
     <string name="update_btn_later">لاحقًا</string>
+
+    <string name="tut_time_title">وضعان للوقت</string>
+    <string name="tut_time_subtitle">بدّل بحرية في الإعدادات</string>
+    <string name="tut_time_relative">وقت نسبي</string>
+    <string name="tut_time_absolute">وقت مطلق</string>
+    <string name="tut_time_relative_ex">→  \"ابدأ بعد 30 دقيقة\"\n→  تكديس: +30د، +1س، +1س30د</string>
+    <string name="tut_time_absolute_ex">→  \"رنين الساعة 7:00\"\n→  سلسلة: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">إعدادات قوية</string>
+    <string name="tut_feat_subtitle">داخل كل منبه</string>
+    <string name="tut_feat_crescendo">تصاعد</string>
+    <string name="tut_feat_crescendo_desc">يرتفع الصوت تدريجياً</string>
+    <string name="tut_feat_loop">تكرار لا نهائي</string>
+    <string name="tut_feat_loop_desc">يتكرر بلا نهاية — مثالي للتمارين</string>
+    <string name="tut_feat_tts">صوت TTS</string>
+    <string name="tut_feat_tts_example">\"5 قرفصاء — ابدأ!\"</string>
+    <string name="tut_feat_tts_desc">اكتب نصاً → المنبه يقرأه بصوت عالٍ</string>
+    <string name="tut_feat_add">＋  إضافة منبهات</string>
+    <string name="tut_feat_add_desc">تكديس عدة مؤقتات في إعداد واحد</string>
+
+    <string name="hint_touch_clock">المس لضبط المنبه</string>
+
+    <string name="demo_tts_intro">يمكنك استخدام أي جملة كمنبه</string>
+    <string name="demo_tts_overlap">يمكنك أيضًا تراكب عدة منبهات</string>
+    <string name="demo_tts_tap_once">اضغط على الساعة الخارجية لإيقاف المنبه الحالي</string>
+    <string name="demo_tts_tap_again">اضغط مرة أخرى لإلغاء المنبه تمامًا</string>
+    <string name="demo_tts_explore">هناك العديد من الميزات لاستكشافها</string>
+    <string name="demo_highlight_desc">TTS · صوت المنبه · تكرار وإعدادات أخرى</string>
+    <string name="demo_tts_dismiss">اضغط مرتين أثناء الرنين لإيقاف المنبه، اضغط مرتين أخرى لإلغاء الكل</string>
+    <string name="demo_press_play">اضغط ▶ للتجربة</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ محطة الطاقة</string>
+    <string name="energy_station_daily_info">يتم شحن %1$d تلقائيًا يوميًا</string>
+    <string name="energy_option_ad">شاهد إعلان +%1$d</string>
+    <string name="energy_option_review">اكتب مراجعة → +1 دائم</string>
+    <string name="energy_option_review_done">تم كتابة المراجعة (+1 مفعّل)</string>
+    <string name="energy_option_invite">ادعُ صديقًا → +1 دائم</string>
+    <string name="energy_option_invite_done">تمت الدعوة (+1 مفعّل)</string>
+    <string name="energy_option_purchase">إزالة الإعلانات ($2.99)</string>
+
+
+    <!-- feedback -->
+    <string name="feedback_title">ساعدنا على التحسين!</string>
+    <string name="feedback_subtitle">ما الذي يمكننا تحسينه؟</string>
+    <string name="feedback_reason_hard">صعب الاستخدام</string>
+    <string name="feedback_reason_missing">ميزة مفقودة</string>
+    <string name="feedback_reason_ads">إعلانات كثيرة</string>
+    <string name="feedback_reason_alarm">المنبه لا يعمل</string>
+    <string name="feedback_reason_battery">استنزاف البطارية</string>
+    <string name="feedback_reason_other">أخرى</string>
+    <string name="feedback_hint">أخبرنا المزيد (اختياري)</string>
+    <string name="feedback_skip">تخطي</string>
+    <string name="feedback_submit">إرسال</string>
+    <string name="feedback_sending">جارٍ الإرسال…</string>
+    <string name="feedback_settings_hint">يمكنك أيضًا إرسال ملاحظاتك من الإعدادات.</string>
+    <string name="feedback_thanks">شكرًا لملاحظاتك!</string>
+    <string name="settings_feedback_btn">إرسال ملاحظات</string>
 </resources>

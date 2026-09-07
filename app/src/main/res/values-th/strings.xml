@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">จะบันทึกหลังจากดูโฆษณา (ทดสอบ)</string>
     <string name="toast_ad_fail">โหลดโฆษณาล้มเหลว</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">ไม่มีโฆษณา ชาร์จฟรีแล้ว! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">ไม่มีโฆษณา ชาร์จฟรีแล้ว! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">นาฬิกาปลุกกำลังดัง!</string>
@@ -30,8 +30,8 @@
 
     ``Chronoset``
     <string name="preset_default_name">กิจวัตรที่ไม่มีชื่อ</string>
-    <string name="setting_mode_relative">โหมด: เวลาสัมพัทธ์ (ตัวจับเวลา)</string>
-    <string name="setting_mode_absolute">โหมด: เวลาสัมบูรณ์ (นาฬิกาปลุก)</string>
+    <string name="setting_mode_relative">โหมด: เวลาสัมพัทธ์\n(ตัวจับเวลา)</string>
+    <string name="setting_mode_absolute">โหมด: เวลาสัมบูรณ์\n(นาฬิกาปลุก)</string>
     <string name="preset_save_title">บันทึกพรีเซ็ต</string>
     <string name="preset_name_hint">ชื่อพรีเซ็ต (เช่น เช้าวันธรรมดา)</string>
     <string name="preset_color_label">สีวงโคจร</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">ใช้พรีเซ็ต \'%1$s\' แล้ว</string>
 
     <string name="ad_confirm_title">ชาร์จพลังงาน</string>
-    <string name="ad_confirm_desc">คุณต้องการดูโฆษณาเพื่อชาร์จ 3 สายฟ้าหรือไม่?\n(สายฟ้าจะชาร์จอัตโนมัติ 5 ครั้งทุกวัน)</string>
+    <string name="ad_confirm_desc">คุณต้องการดูโฆษณาเพื่อชาร์จ %1$d สายฟ้าหรือไม่?\n(สายฟ้าจะชาร์จอัตโนมัติ %2$d ครั้งทุกวัน)</string>
 
     ``preset``
     <string name="preset_screen_title">พรีเซ็ต</string>
@@ -167,6 +167,9 @@
 
     <string name="profile_msg_invalid_format">3~20 ตัวอักษร, ตัวอักษร/ตัวเลข/_ เท่านั้น</string>
 
+    <string name="settings_auto_media_volume_title">ปรับเสียงสื่ออัตโนมัติ</string>
+    <string name="settings_auto_media_volume_desc">ปรับระดับเสียงสื่ออัตโนมัติให้ตรงกับ\nระดับเสียงปลุกในโหมดหูฟัง</string>
+
     ``tutorial``
     <string name="tutorial_title_0">กิจกรรมพิเศษสำหรับ Beta Tester</string>
     <string name="tutorial_desc_0">ผู้ใช้งานสูงสุด 1,000 อันดับแรกจะได้รับฟีเจอร์พรีเมียมฟรีหลังจากการเปิดตัวอย่างเป็นทางการ!\n\nเข้าสู่ระบบด้วย Google ในเมนู \'การตั้งค่า (⚙️)\' ที่มุมขวาบนเพื่อเข้าร่วม</string>
@@ -210,7 +213,7 @@
     <string name="tutorial_mock_footer">💡 เปิดสวิตช์ข้างไอคอน\nเพื่อสร้างกิจวัตรที่สมบูรณ์แบบของคุณ!</string>
 
     <string name="tutorial_title_energy">ระบบพลังงานฟรี</string>
-    <string name="tutorial_desc_energy">ต้องใช้พลังงานในการรันนาฬิกาปลุก\nไม่ต้องกังวล! จะชาร์จอัตโนมัติ 5 ครั้งทุกวัน</string>
+    <string name="tutorial_desc_energy">ต้องใช้พลังงานในการรันนาฬิกาปลุก\nไม่ต้องกังวล! จะชาร์จอัตโนมัติ %1$d ครั้งทุกวัน</string>
 
     <string name="tutorial_try_alarm_title">ลองตั้งนาฬิกาปลุกเลย!</string>
     <string name="tutorial_try_alarm_desc">แตะหน้าจอเพื่อเปิดการตั้งค่านาฬิกาปลุก\nตั้งเวลาและบันทึก!</string>
@@ -263,4 +266,60 @@
     <string name="update_msg_optional">มีเวอร์ชันใหม่ ต้องการอัปเดตหรือไม่?</string>
     <string name="update_btn_now">อัปเดต</string>
     <string name="update_btn_later">ภายหลัง</string>
+
+    <string name="tut_time_title">โหมดเวลาสองแบบ</string>
+    <string name="tut_time_subtitle">สลับได้อย่างอิสระในการตั้งค่านาฬิกาปลุก</string>
+    <string name="tut_time_relative">เวลาสัมพัทธ์</string>
+    <string name="tut_time_absolute">เวลาสัมบูรณ์</string>
+    <string name="tut_time_relative_ex">→  "เริ่มใน 30 นาที"\n→  ซ้อนตัวจับเวลา: +30น., +1ชม., +1ชม.30น.</string>
+    <string name="tut_time_absolute_ex">→  "ดังเวลา 7:00 น."\n→  เชื่อมโยงนาฬิกาปลุก: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">การตั้งค่านาฬิกาปลุกทรงพลัง</string>
+    <string name="tut_feat_subtitle">ตั้งค่าได้ภายในนาฬิกาปลุกแต่ละตัว</string>
+    <string name="tut_feat_crescendo">เสียงค่อยๆ ดังขึ้น</string>
+    <string name="tut_feat_crescendo_desc">ระดับเสียงจะค่อยๆ ดังขึ้น — ปลุกอย่างนุ่มนวล</string>
+    <string name="tut_feat_loop">วนซ้ำไม่สิ้นสุด</string>
+    <string name="tut_feat_loop_desc">ทำซ้ำไม่สิ้นสุดจนกว่าจะปิด — เหมาะสำหรับออกกำลังกาย</string>
+    <string name="tut_feat_tts">เสียง TTS</string>
+    <string name="tut_feat_tts_example">"สควอท 5 ครั้ง — เริ่ม!"</string>
+    <string name="tut_feat_tts_desc">พิมพ์ข้อความ → นาฬิกาปลุกจะอ่านออกเสียง</string>
+    <string name="tut_feat_add">＋  เพิ่มนาฬิกาปลุก</string>
+    <string name="tut_feat_add_desc">ซ้อนตัวจับเวลาหลายตัวในพรีเซ็ตเดียว</string>
+
+    <string name="hint_touch_clock">แตะเพื่อตั้งปลุก</string>
+
+    <string name="demo_tts_intro">คุณสามารถใช้ประโยคใดก็ได้เป็นเสียงปลุก</string>
+    <string name="demo_tts_overlap">คุณยังสามารถซ้อนเสียงปลุกหลายรายการได้</string>
+    <string name="demo_tts_tap_once">แตะนาฬิกาด้านนอกเพื่อหยุดเสียงปลุกปัจจุบัน</string>
+    <string name="demo_tts_tap_again">แตะอีกครั้งเพื่อยกเลิกเสียงปลุกทั้งหมด</string>
+    <string name="demo_tts_explore">มีฟีเจอร์มากมายให้สำรวจ</string>
+    <string name="demo_highlight_desc">TTS · เสียงปลุก · ตั้งซ้ำ และการตั้งค่าอื่นๆ</string>
+    <string name="demo_tts_dismiss">แตะ 2 ครั้งขณะดังเพื่อปิดเสียงปลุก แตะอีก 2 ครั้งเพื่อยกเลิกทั้งหมด</string>
+    <string name="demo_press_play">กด ▶ เพื่อลองใช้</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ สถานีพลังงาน</string>
+    <string name="energy_station_daily_info">ชาร์จอัตโนมัติ %1$d ครั้งต่อวัน</string>
+    <string name="energy_option_ad">ดูโฆษณา +%1$d</string>
+    <string name="energy_option_review">เขียนรีวิว → +1 ถาวร</string>
+    <string name="energy_option_review_done">รีวิวเสร็จแล้ว (+1 ใช้งานอยู่)</string>
+    <string name="energy_option_invite">เชิญเพื่อน → +1 ถาวร</string>
+    <string name="energy_option_invite_done">เชิญเพื่อนแล้ว (+1 ใช้งานอยู่)</string>
+    <string name="energy_option_purchase">ลบโฆษณา ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">ช่วยเราปรับปรุง!</string>
+    <string name="feedback_subtitle">เราควรปรับปรุงอะไร?</string>
+    <string name="feedback_reason_hard">ใช้งานยาก</string>
+    <string name="feedback_reason_missing">ขาดฟีเจอร์</string>
+    <string name="feedback_reason_ads">โฆษณามากเกินไป</string>
+    <string name="feedback_reason_alarm">นาฬิกาปลุกไม่ทำงาน</string>
+    <string name="feedback_reason_battery">แบตเตอรี่หมดเร็ว</string>
+    <string name="feedback_reason_other">อื่น ๆ</string>
+    <string name="feedback_hint">บอกเราเพิ่มเติม (ไม่บังคับ)</string>
+    <string name="feedback_skip">ข้าม</string>
+    <string name="feedback_submit">ส่ง</string>
+    <string name="feedback_sending">กำลังส่ง…</string>
+    <string name="feedback_settings_hint">คุณสามารถส่งความคิดเห็นได้ตลอดเวลาจากการตั้งค่า</string>
+    <string name="feedback_thanks">ขอบคุณสำหรับความคิดเห็น!</string>
+    <string name="settings_feedback_btn">ส่งความคิดเห็น</string>
 </resources>

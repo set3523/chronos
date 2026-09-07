@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">Akan disimpan setelah menonton iklan (Uji)</string>
     <string name="toast_ad_fail">Gagal memuat iklan</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">Tidak ada iklan, diisi ulang secara gratis! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">Tidak ada iklan, diisi ulang secara gratis! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">Alarm berbunyi!</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">Preset \'%1$s\' diterapkan.</string>
 
     <string name="ad_confirm_title">Isi Ulang Energi</string>
-    <string name="ad_confirm_desc">Apakah Anda ingin menonton iklan untuk mengisi ulang 3 petir?\n(5 petir diisi ulang secara otomatis setiap hari.)</string>
+    <string name="ad_confirm_desc">Apakah Anda ingin menonton iklan untuk mengisi ulang %1$d petir?\n(%2$d petir diisi ulang secara otomatis setiap hari.)</string>
 
     ``preset``
     <string name="preset_screen_title">Preset</string>
@@ -145,7 +145,7 @@
     <string name="settings_logout">Keluar</string>
     <string name="settings_overdrive_title">Mode Overdrive</string>
     <string name="settings_overdrive_desc">Tingkatkan volume hingga 200%% di luar batas sistem (Peringatan!)</string>
-    <string name="settings_language">Pengaturan Bahasa (Language)</string>
+    <string name="settings_language">Pengaturan Bahasa</string>
 
     <string name="profile_no_nickname">Tidak ada nama panggilan</string>
     <string name="profile_new_nickname">Nama Panggilan Baru</string>
@@ -167,6 +167,8 @@
 
     <string name="profile_msg_invalid_format">3~20 karakter, hanya huruf/angka/_</string>
 
+    <string name="settings_auto_media_volume_title">Volume media otomatis</string>
+    <string name="settings_auto_media_volume_desc">Otomatis menyesuaikan volume media\nke level alarm dalam mode earphone</string>
     ``tutorial``
     <string name="tutorial_title_0">Acara Khusus Penguji Beta</string>
     <string name="tutorial_desc_0">1.000 pengguna paling aktif akan mendapatkan fitur premium gratis setelah rilis resmi!\n\nMasuk dengan Google di menu \'Pengaturan (⚙️)\' di kanan atas untuk berpartisipasi.</string>
@@ -210,7 +212,7 @@
     <string name="tutorial_mock_footer">💡 Nyalakan sakelar di sebelah ikon\nuntuk membuat rutinitas sempurna Anda!</string>
 
     <string name="tutorial_title_energy">Sistem Energi Gratis</string>
-    <string name="tutorial_desc_energy">Energi diperlukan untuk menjalankan alarm.\nJangan khawatir! Diisi ulang secara otomatis 5 kali setiap hari.</string>
+    <string name="tutorial_desc_energy">Energi diperlukan untuk menjalankan alarm.\nJangan khawatir! Diisi ulang secara otomatis %1$d kali setiap hari.</string>
 
     <string name="tutorial_try_alarm_title">Coba setel alarm!</string>
     <string name="tutorial_try_alarm_desc">Ketuk layar untuk membuka pengaturan alarm.\nSetel waktu dan simpan!</string>
@@ -263,4 +265,61 @@
     <string name="update_msg_optional">Versi baru tersedia. Apakah Anda ingin memperbarui?</string>
     <string name="update_btn_now">Perbarui</string>
     <string name="update_btn_later">Nanti</string>
+
+    <string name="tut_time_title">Dua Mode Waktu</string>
+    <string name="tut_time_subtitle">Beralih bebas di pengaturan</string>
+    <string name="tut_time_relative">Waktu Relatif</string>
+    <string name="tut_time_absolute">Waktu Absolut</string>
+    <string name="tut_time_relative_ex">→  \"Mulai setelah 30 menit\"\n→  Tumpuk: +30m, +1j, +1j30m</string>
+    <string name="tut_time_absolute_ex">→  \"Berbunyi pukul 7:00\"\n→  Rantai: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">Pengaturan Alarm Canggih</string>
+    <string name="tut_feat_subtitle">Di dalam setiap alarm</string>
+    <string name="tut_feat_crescendo">Crescendo</string>
+    <string name="tut_feat_crescendo_desc">Volume naik perlahan</string>
+    <string name="tut_feat_loop">Loop Tak Terbatas</string>
+    <string name="tut_feat_loop_desc">Berulang tanpa henti — cocok untuk olahraga</string>
+    <string name="tut_feat_tts">Suara TTS</string>
+    <string name="tut_feat_tts_example">\"5 squat — mulai!\"</string>
+    <string name="tut_feat_tts_desc">Ketik teks → alarm membacakannya</string>
+    <string name="tut_feat_add">＋  Tambah alarm lagi</string>
+    <string name="tut_feat_add_desc">Tumpuk beberapa timer dalam satu preset</string>
+
+    <string name="hint_touch_clock">Sentuh untuk atur alarm</string>
+
+    <string name="demo_tts_intro">Anda bisa menggunakan kalimat apa saja sebagai alarm</string>
+    <string name="demo_tts_overlap">Anda juga bisa menumpuk beberapa alarm</string>
+    <string name="demo_tts_tap_once">Ketuk jam luar untuk menghentikan alarm saat ini</string>
+    <string name="demo_tts_tap_again">Ketuk sekali lagi untuk membatalkan alarm sepenuhnya</string>
+    <string name="demo_tts_explore">Ada banyak fitur untuk dijelajahi</string>
+    <string name="demo_highlight_desc">TTS · Suara alarm · Pengulangan dan pengaturan lainnya</string>
+    <string name="demo_tts_dismiss">Ketuk 2 kali saat berbunyi untuk menghentikan alarm, ketuk 2 kali lagi untuk membatalkan semua</string>
+    <string name="demo_press_play">Tekan ▶ untuk mencoba</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ Stasiun Energi</string>
+    <string name="energy_station_daily_info">%1$d diisi ulang otomatis setiap hari</string>
+    <string name="energy_option_ad">Tonton iklan +%1$d</string>
+    <string name="energy_option_review">Tulis ulasan → +1 permanen</string>
+    <string name="energy_option_review_done">Ulasan selesai (+1 aktif)</string>
+    <string name="energy_option_invite">Undang teman → +1 permanen</string>
+    <string name="energy_option_invite_done">Teman diundang (+1 aktif)</string>
+    <string name="energy_option_purchase">Hapus iklan ($2.99)</string>
+
+
+    <!-- feedback -->
+    <string name="feedback_title">Bantu kami menjadi lebih baik!</string>
+    <string name="feedback_subtitle">Apa yang bisa kami perbaiki?</string>
+    <string name="feedback_reason_hard">Sulit digunakan</string>
+    <string name="feedback_reason_missing">Fitur kurang</string>
+    <string name="feedback_reason_ads">Terlalu banyak iklan</string>
+    <string name="feedback_reason_alarm">Alarm tidak berbunyi</string>
+    <string name="feedback_reason_battery">Boros baterai</string>
+    <string name="feedback_reason_other">Lainnya</string>
+    <string name="feedback_hint">Ceritakan lebih lanjut (opsional)</string>
+    <string name="feedback_skip">Lewati</string>
+    <string name="feedback_submit">Kirim</string>
+    <string name="feedback_sending">Mengirim…</string>
+    <string name="feedback_settings_hint">Anda juga bisa mengirim masukan kapan saja dari Pengaturan.</string>
+    <string name="feedback_thanks">Terima kasih atas masukan Anda!</string>
+    <string name="settings_feedback_btn">Kirim masukan</string>
 </resources>

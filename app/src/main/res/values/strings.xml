@@ -9,8 +9,8 @@
     <string name="toast_ad_watch_to_save">광고 시청 후 저장됩니다 (테스트)</string>
 
     <string name="toast_ad_fail">광고 실패</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">광고가 없어 무료 충전되었습니다! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">광고가 없어 무료 충전되었습니다! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">알람이 울립니다!</string>
@@ -121,7 +121,7 @@
     <string name="toast_preset_applied">\'%1$s\' 프리셋을 적용했습니다.</string>
 
     <string name="ad_confirm_title">번개 충전</string>
-    <string name="ad_confirm_desc">보상 광고를 시청하고 번개 3개를 충전하시겠습니까?\n(번개는 매일 3개까지 자동 충전됩니다.)</string>
+    <string name="ad_confirm_desc">보상 광고를 시청하고 번개 %1$d개를 충전하시겠습니까?\n(번개는 매일 %2$d개까지 자동 충전됩니다.)</string>
 
     ``preset``
     <string name="preset_screen_title">프리셋</string>
@@ -168,6 +168,9 @@
 
     <string name="profile_msg_invalid_format">3~20자, 문자/숫자/_만 가능합니다</string>
 
+    <string name="settings_auto_media_volume_title">미디어 볼륨 자동 조절</string>
+    <string name="settings_auto_media_volume_desc">이어폰 모드에서 알람 볼륨에 맞춰\n미디어 볼륨을 자동 조절합니다</string>
+
     ``tutorial``
     <string name="tutorial_title_0">베타 테스터 특별 이벤트</string>
     <string name="tutorial_desc_0">상위 사용량 1,000분께 정식 출시 후\n유료 기능을 무료로 개방합니다!\n\n이벤트 참여를 위한 구글 로그인은\n우측 상단의 \'설정(⚙️)\' 메뉴에서 진행해 주세요.</string>
@@ -211,7 +214,7 @@
     <string name="tutorial_mock_footer">💡 아이콘 옆 스위치를 켜서\n나만의 완벽한 루틴을 만들어보세요!</string>
 
     <string name="tutorial_title_energy">무료 에너지 시스템</string>
-    <string name="tutorial_desc_energy">알람 실행에는 에너지가 필요합니다.\n하지만 걱정 마세요! 매일 3번\n자동으로 에너지를 충전해 드립니다.</string>
+    <string name="tutorial_desc_energy">알람 실행에는 에너지가 필요합니다.\n하지만 걱정 마세요! 매일 %1$d번\n자동으로 에너지를 충전해 드립니다.</string>
 
     ``PopupManager``
     <string name="dialog_notice_title">알림</string>
@@ -265,4 +268,60 @@
     <string name="tutorial_try_alarm_btn">직접 해보기</string>
     <string name="tutorial_try_preset_title">저장한 프리셋을 확인해볼까요?</string>
     <string name="tutorial_try_preset_desc">방금 저장한 프리셋을\n불러오기 화면에서 확인할 수 있어요.</string>
+
+    <string name="tut_time_title">두 가지 시간 모드</string>
+    <string name="tut_time_subtitle">알람 설정에서 자유롭게 전환</string>
+    <string name="tut_time_relative">상대 시간</string>
+    <string name="tut_time_absolute">절대 시간</string>
+    <string name="tut_time_relative_ex">→  "30분 후에 시작"\n→  타이머 쌓기: +30분, +1시간, +1시간30분</string>
+    <string name="tut_time_absolute_ex">→  "오전 7:00에 울림"\n→  알람 연결: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">강력한 알람 설정</string>
+    <string name="tut_feat_subtitle">각 알람 안에서 설정 가능</string>
+    <string name="tut_feat_crescendo">크레센도</string>
+    <string name="tut_feat_crescendo_desc">볼륨이 점점 커집니다 — 부드러운 기상</string>
+    <string name="tut_feat_loop">무한 반복</string>
+    <string name="tut_feat_loop_desc">끌 때까지 무한 반복 — 운동에 딱</string>
+    <string name="tut_feat_tts">TTS 음성</string>
+    <string name="tut_feat_tts_example">"스쿼트 5회 — 시작!"</string>
+    <string name="tut_feat_tts_desc">텍스트 입력 → 알람이 소리 내어 읽어줍니다</string>
+    <string name="tut_feat_add">＋  알람 더 추가하기</string>
+    <string name="tut_feat_add_desc">하나의 프리셋에 여러 타이머를 쌓기</string>
+
+    <string name="hint_touch_clock">터치하여 알람 설정</string>
+
+    <string name="demo_tts_intro">원하시는 문장을 알람으로 쓸 수 있어요</string>
+    <string name="demo_tts_overlap">알람을 겹치게 할 수도 있어요</string>
+    <string name="demo_tts_tap_once">바깥 시계를 눌러 현재 알람을 종료해보세요</string>
+    <string name="demo_tts_tap_again">한 번 더 누르면 알람을 완전히 취소할 수 있어요</string>
+    <string name="demo_tts_explore">여러 기능이 있으니 맘껏 둘러보세요</string>
+    <string name="demo_highlight_desc">TTS · 알람음 · 반복 등 다양한 설정이 가능합니다</string>
+    <string name="demo_tts_dismiss">소리가 날 때 2번 누르면 알람이 꺼지고, 다시 2번 누르면 전체 알람이 취소됩니다</string>
+    <string name="demo_press_play">▶ 버튼을 눌러 체험해보세요</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ 에너지 충전소</string>
+    <string name="energy_station_daily_info">매일 %1$d개 자동 충전</string>
+    <string name="energy_option_ad">광고 보고 +%1$d 충전</string>
+    <string name="energy_option_review">리뷰 작성 → 영구 +1</string>
+    <string name="energy_option_review_done">리뷰 작성 완료 (+1 적용 중)</string>
+    <string name="energy_option_invite">친구 초대 → 영구 +1</string>
+    <string name="energy_option_invite_done">친구 초대 완료 (+1 적용 중)</string>
+    <string name="energy_option_purchase">광고 제거 ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">개선에 도움을 주세요!</string>
+    <string name="feedback_subtitle">어떤 점을 개선하면 좋을까요?</string>
+    <string name="feedback_reason_hard">사용이 어려워요</string>
+    <string name="feedback_reason_missing">기능이 부족해요</string>
+    <string name="feedback_reason_ads">광고가 너무 많아요</string>
+    <string name="feedback_reason_alarm">알람이 안 울려요</string>
+    <string name="feedback_reason_battery">배터리 소모가 심해요</string>
+    <string name="feedback_reason_other">기타</string>
+    <string name="feedback_hint">더 자세히 알려주세요 (선택)</string>
+    <string name="feedback_skip">건너뛰기</string>
+    <string name="feedback_submit">보내기</string>
+    <string name="feedback_sending">전송 중…</string>
+    <string name="feedback_settings_hint">설정에서 언제든 피드백을 보낼 수 있습니다.</string>
+    <string name="feedback_thanks">피드백 감사합니다!</string>
+    <string name="settings_feedback_btn">피드백 보내기</string>
 </resources>

@@ -22,6 +22,11 @@ class AdManager(private val activity: Activity) {
     // SharedPreferences 이름도 AdPrefs로 통일했습니다.
     private val prefs = activity.getSharedPreferences("ChronosAdPrefs", Context.MODE_PRIVATE)
     private var rewardedAd: RewardedAd? = null
+    private var isMobileAdsInitialized = false
+
+    // 광고 로딩 상태를 외부에서 관찰할 수 있도록
+    var isAdLoaded: Boolean = false
+        private set
 
     // ✨ 구글 애드몹 공식 테스트 '보상형' 광고 ID (나중에 본인 ID로 변경!)
     private val REWARDED_AD_UNIT_ID = if (BuildConfig.DEBUG) {
@@ -33,11 +38,9 @@ class AdManager(private val activity: Activity) {
     init {
         checkDailyReset() // 날짜 확인해서 번개 리필
 
-        // ✨ 1. 여기서 애드몹 엔진 시동을 직접 겁니다!
+        // ✨ 애드몹 엔진 시동만 걸어둠 (광고 로딩은 에너지스테이션 열 때!)
         MobileAds.initialize(activity) { initializationStatus ->
-
-            // ✨ 2. 시동이 '완벽하게 켜진 직후에' 광고를 장전합니다! (에러 방지)
-            loadRewardedAd()
+            isMobileAdsInitialized = true
         }
     }
 
@@ -50,9 +53,10 @@ class AdManager(private val activity: Activity) {
 
         if (today != lastDate) {
             val currentTickets = getTickets()
-            // 3개 미만일 때만 3개로 채워줌! (밤새워 9개 모은 유저 건 안 뺏음)
-            if (currentTickets < 5) {
-                setTickets(5)
+            val dailyBase = getDailyBaseByTier()
+            // dailyBase 미만일 때만 채워줌! (밤새워 모은 유저 건 안 뺏음)
+            if (currentTickets < dailyBase) {
+                setTickets(dailyBase)
             }
             prefs.edit().putString("last_reset_date", today).apply()
         }
@@ -61,25 +65,47 @@ class AdManager(private val activity: Activity) {
     // ==========================================
     // 2. 보상형 광고 로딩 로직
     // ==========================================
-    private fun loadRewardedAd() {
+    private fun loadRewardedAd(onResult: ((Boolean) -> Unit)? = null) {
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(activity, REWARDED_AD_UNIT_ID, adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 rewardedAd = null
+                isAdLoaded = false
+                onResult?.invoke(false)
             }
             override fun onAdLoaded(ad: RewardedAd) {
                 rewardedAd = ad
+                isAdLoaded = true
+                onResult?.invoke(true)
             }
         })
     }
 
     // ==========================================
-    // 3. 앱이 포그라운드로 돌아올 때 광고 재장전
+    // 3. 에너지스테이션 열릴 때 광고 로딩 시작
+    // ==========================================
+    fun loadAdWhenReady(onResult: (Boolean) -> Unit) {
+        if (rewardedAd != null) {
+            isAdLoaded = true
+            onResult(true)
+            return
+        }
+        if (isMobileAdsInitialized) {
+            loadRewardedAd(onResult)
+        } else {
+            // 아직 MobileAds 초기화 안 됐으면 초기화 후 로딩
+            MobileAds.initialize(activity) {
+                isMobileAdsInitialized = true
+                loadRewardedAd(onResult)
+            }
+        }
+    }
+
+    // ==========================================
+    // 앱이 포그라운드로 돌아올 때 (더 이상 자동 로딩 안 함)
     // ==========================================
     fun reloadIfNeeded() {
-        if (rewardedAd == null) {
-            loadRewardedAd()
-        }
+        // 빈 함수 유지 (호출부 호환)
     }
 
     // ==========================================
@@ -89,14 +115,14 @@ class AdManager(private val activity: Activity) {
         if (rewardedAd != null) {
             rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
-                    // 유저가 창을 닫으면 다음 광고를 위해 다시 장전
                     rewardedAd = null
-                    loadRewardedAd()
+                    isAdLoaded = false
                 }
                 override fun onAdFailedToShowFullScreenContent(e: AdError) {
                     rewardedAd = null
-                    loadRewardedAd()
-                    setTickets(getTickets() + 3)
+                    isAdLoaded = false
+                    val chargeAmount = getAdChargeByTier()
+                    setTickets(getTickets() + chargeAmount)
                     onChargeSuccess()
                     Toast.makeText(activity, activity.getString(R.string.toast_ad_fail), Toast.LENGTH_SHORT).show()
                 }
@@ -104,22 +130,19 @@ class AdManager(private val activity: Activity) {
 
             // 📺 광고 화면 띄우기! (유저가 끝까지 다 보면 콜백 실행됨)
             rewardedAd?.show(activity) { rewardItem ->
-                // ✨ 보상 지급: 기존 횟수 + 3개!
-                setTickets(getTickets() + 3)
-                Toast.makeText(activity, activity.getString(R.string.toast_charge_success), Toast.LENGTH_SHORT).show()
-                onChargeSuccess() // Compose UI 새로고침을 위한 콜백
+                val chargeAmount = getAdChargeByTier()
+                setTickets(getTickets() + chargeAmount)
+                Toast.makeText(activity, "⚡ * $chargeAmount", Toast.LENGTH_SHORT).show()
+                onChargeSuccess()
             }
         } else {
             if (isNetworkAvailable(activity)) {
-                // ✅ 인터넷이 잘 되는데 광고가 없는 경우 -> 구글 잘못이므로 꽁짜 번개 지급!
-                setTickets(getTickets() + 3)
+                val chargeAmount = getAdChargeByTier()
+                setTickets(getTickets() + chargeAmount)
                 onChargeSuccess()
-                Toast.makeText(activity, activity.getString(R.string.toast_free_charge_no_ad), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "⚡ * $chargeAmount", Toast.LENGTH_SHORT).show()
             } else {
-                // ❌ 인터넷이 끊겨 있는 경우 -> 꼼수 차단! 번개 안 줌!
                 Toast.makeText(activity, "Network disconnected", Toast.LENGTH_SHORT).show()
-                // (필요하다면 여기서 다시 loadRewardedAd()를 호출해둬도 좋습니다)
-                loadRewardedAd()
             }
         }
     }
@@ -147,6 +170,22 @@ class AdManager(private val activity: Activity) {
     private fun setTickets(count: Int) {
         prefs.edit().putInt("ticket_count", count).apply()
     }
+
+    // ==========================================
+    // 보상 시스템: 리뷰 +1, 친구초대 +1 (각각 독립)
+    // 기본 3 + 리뷰(+1) + 초대(+1) = 최대 5
+    // ==========================================
+    private fun getBonusCount(): Int {
+        val securePrefs = getSecurePrefs(activity)
+        var bonus = 0
+        if (securePrefs.getBoolean("has_reviewed", false)) bonus++
+        if (securePrefs.getBoolean("has_referred", false)) bonus++
+        return bonus
+    }
+
+    fun getDailyBaseByTier(): Int = 3 + getBonusCount()
+
+    fun getAdChargeByTier(): Int = 3 + getBonusCount()
 
     private fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -29,6 +29,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
     private val mediaPlayers = mutableListOf<MediaPlayer>()
     private val loudnessEnhancers = mutableListOf<android.media.audiofx.LoudnessEnhancer>()
     private var vibrator: Vibrator? = null
+    private var previousMediaVolume: Int = -1
     private val handler = Handler(Looper.getMainLooper())
 
     private var tts: TextToSpeech? = null
@@ -88,6 +89,18 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             tts?.setSpeechRate(speechRate)
 
             val isEarphoneMode = prefs.getBoolean("isEarphoneModeEnabled", false)
+            // TTS에서도 이어폰 모드 + 자동 볼륨일 때 미디어 볼륨 조절
+            val autoMediaVolume = prefs.getBoolean("autoMediaVolumeEnabled", true)
+            if (isEarphoneMode && autoMediaVolume && previousMediaVolume < 0) {
+                val am = getSystemService(AUDIO_SERVICE) as android.media.AudioManager
+                previousMediaVolume = am.getStreamVolume(android.media.AudioManager.STREAM_MUSIC)
+                val alarmVol = am.getStreamVolume(android.media.AudioManager.STREAM_ALARM)
+                val alarmMax = am.getStreamMaxVolume(android.media.AudioManager.STREAM_ALARM)
+                val mediaMax = am.getStreamMaxVolume(android.media.AudioManager.STREAM_MUSIC)
+                val target = (alarmVol.toFloat() / alarmMax * mediaMax).toInt()
+                am.setStreamVolume(android.media.AudioManager.STREAM_MUSIC, target, 0)
+            }
+
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(if (isEarphoneMode) AudioAttributes.USAGE_MEDIA else AudioAttributes.USAGE_ALARM)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
@@ -103,7 +116,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                         remainingTtsCount--
                         playTts()
                     } else {
-                        handler.post { stopSelf() } // 자연스럽게 다 끝나서 종료!
+                        // duration 타이머가 서비스 종료를 처리함
                     }
                 }
                 override fun onError(utteranceId: String?) {}
@@ -121,7 +134,8 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
         // ✨ 사용자가 "끄기"를 눌러서 강제로 멈추는 경우!
         if (action == "STOP_ALARM") {
-            isForceStopped = true // 👈 사용자가 버튼 눌러서 끈 경우
+            isForceStopped = true
+            AnalyticsHelper.alarmDismissed(this)
             stopSelf()
             return START_NOT_STICKY
         }
@@ -148,6 +162,8 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         currentAlarmId = intent?.getStringExtra("ALARM_ID")
         showNotification(notifTitle, notifText)
 
+        AnalyticsHelper.alarmTriggered(this)
+
         if (isTts) {
             startTtsAlarm(ttsText, volume, isCrescendo, totalCount, repeatUntilOff)
         } else {
@@ -166,6 +182,20 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         try {
             var alert = if (ringtoneUriString != null) Uri.parse(ringtoneUriString) else android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI
             if (alert == null) alert = android.provider.Settings.System.DEFAULT_NOTIFICATION_URI
+
+            // 이어폰 모드 + 자동 볼륨일 때 미디어 볼륨을 알람 볼륨 비율로 임시 조절
+            val prefsForVolume = getSecurePrefs(this@AlarmService)
+            val isEarphoneModeForVolume = prefsForVolume.getBoolean("isEarphoneModeEnabled", false)
+            val autoMediaVolume = prefsForVolume.getBoolean("autoMediaVolumeEnabled", true)
+            if (isEarphoneModeForVolume && autoMediaVolume && previousMediaVolume < 0) {
+                val am = getSystemService(AUDIO_SERVICE) as android.media.AudioManager
+                previousMediaVolume = am.getStreamVolume(android.media.AudioManager.STREAM_MUSIC)
+                val alarmVol = am.getStreamVolume(android.media.AudioManager.STREAM_ALARM)
+                val alarmMax = am.getStreamMaxVolume(android.media.AudioManager.STREAM_ALARM)
+                val mediaMax = am.getStreamMaxVolume(android.media.AudioManager.STREAM_MUSIC)
+                val target = (alarmVol.toFloat() / alarmMax * mediaMax).toInt()
+                am.setStreamVolume(android.media.AudioManager.STREAM_MUSIC, target, 0)
+            }
 
             // ✨ [수정] 여러 소리가 겹쳐도 통제할 수 있도록 개별 카세트(currentPlayer)를 만듭니다.
             val currentPlayer = MediaPlayer().apply {
@@ -333,6 +363,15 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         vibrator?.cancel()
         tts?.stop()
         tts?.shutdown()
+
+        // 미디어 볼륨 복원
+        if (previousMediaVolume >= 0) {
+            try {
+                val am = getSystemService(AUDIO_SERVICE) as android.media.AudioManager
+                am.setStreamVolume(android.media.AudioManager.STREAM_MUSIC, previousMediaVolume, 0)
+            } catch (_: Exception) {}
+            previousMediaVolume = -1
+        }
 
         // ✨ [수정] 시간 계산 로직(60000ms 등)은 싹 다 지웠습니다!
         // 오직 사용자가 '직접 껐을 때(isForceStopped)'만 로그를 남깁니다.

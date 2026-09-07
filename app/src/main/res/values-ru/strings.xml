@@ -8,8 +8,8 @@
     ``Admanager``
     <string name="toast_ad_watch_to_save">Будет сохранено после просмотра рекламы (Тест)</string>
     <string name="toast_ad_fail">Ошибка рекламы</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">Нет рекламы! Заряжено бесплатно! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">Нет рекламы! Заряжено бесплатно! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">Будильник звонит!</string>
@@ -112,7 +112,7 @@
     <string name="toast_alarm_restarted">Будильник перезапущен.</string>
     <string name="toast_alarm_saved">Будильник сохранен.</string>
 
-    <string name="main_menu_earphone_title">Режим читального зала (только наушники)</string>
+    <string name="main_menu_earphone_title">Режим читального зала\n(только наушники)</string>
     <string name="main_menu_earphone_desc">Будильник будет воспроизводиться на громкости медиа.</string>
     <string name="main_menu_preset">Загрузить / Поделиться пресетом</string>
     <string name="main_menu_history">История использования</string>
@@ -120,7 +120,7 @@
     <string name="toast_preset_applied">Пресет \'%1$s\' применен.</string>
 
     <string name="ad_confirm_title">Зарядка энергии</string>
-    <string name="ad_confirm_desc">Посмотреть рекламу, чтобы зарядить 3 молнии?\n(Каждый день автоматически заряжается до 5 молний.)</string>
+    <string name="ad_confirm_desc">Посмотреть рекламу, чтобы зарядить %1$d молнии?\n(Каждый день автоматически заряжается до %2$d молний.)</string>
 
     ``preset``
     <string name="preset_screen_title">Пресеты</string>
@@ -167,6 +167,9 @@
 
     <string name="profile_msg_invalid_format">3~20 символов, только буквы/цифры/_</string>
 
+    <string name="settings_auto_media_volume_title">Автогромкость медиа</string>
+    <string name="settings_auto_media_volume_desc">Автоматически регулирует громкость медиа\nпод уровень будильника в режиме наушников</string>
+
     ``tutorial``
     <string name="tutorial_title_0">Особое событие для бета-тестеров</string>
     <string name="tutorial_desc_0">1000 самых активных пользователей получат бесплатный премиум после релиза!\n\nВойдите через Google в \'Настройках (⚙️)\', чтобы участвовать.</string>
@@ -210,7 +213,7 @@
     <string name="tutorial_mock_footer">💡 Включите переключатели рядом со значками,\nчтобы создать свою идеальную рутину!</string>
 
     <string name="tutorial_title_energy">Бесплатная система энергии</string>
-    <string name="tutorial_desc_energy">Для работы будильника нужна энергия.\nНе волнуйтесь! Она автоматически пополняется 5 раз в день.</string>
+    <string name="tutorial_desc_energy">Для работы будильника нужна энергия.\nНе волнуйтесь! Она автоматически пополняется %1$d раз в день.</string>
 
     <string name="tutorial_try_alarm_title">Попробуйте установить будильник!</string>
     <string name="tutorial_try_alarm_desc">Коснитесь экрана, чтобы открыть настройки.\nУстановите время и сохраните!</string>
@@ -263,4 +266,60 @@
     <string name="update_msg_optional">Доступна новая версия. Хотите обновить?</string>
     <string name="update_btn_now">Обновить</string>
     <string name="update_btn_later">Позже</string>
+
+    <string name="tut_time_title">Два режима времени</string>
+    <string name="tut_time_subtitle">Свободно переключайте в настройках</string>
+    <string name="tut_time_relative">Относительное время</string>
+    <string name="tut_time_absolute">Абсолютное время</string>
+    <string name="tut_time_relative_ex">→  «Через 30 мин»\n→  Стек: +30м, +1ч, +1ч30м</string>
+    <string name="tut_time_absolute_ex">→  «В 7:00»\n→  Цепочка: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">Мощные настройки</string>
+    <string name="tut_feat_subtitle">Внутри каждого будильника</string>
+    <string name="tut_feat_crescendo">Крещендо</string>
+    <string name="tut_feat_crescendo_desc">Громкость плавно нарастает</string>
+    <string name="tut_feat_loop">Бесконечный цикл</string>
+    <string name="tut_feat_loop_desc">Повторяется бесконечно — для тренировок</string>
+    <string name="tut_feat_tts">TTS голос</string>
+    <string name="tut_feat_tts_example">«5 приседаний — старт!»</string>
+    <string name="tut_feat_tts_desc">Введите текст → будильник прочитает</string>
+    <string name="tut_feat_add">＋  Добавить будильники</string>
+    <string name="tut_feat_add_desc">Несколько таймеров в одном пресете</string>
+
+    <string name="hint_touch_clock">Нажмите для настройки будильника</string>
+
+    <string name="demo_tts_intro">Вы можете использовать любую фразу как будильник</string>
+    <string name="demo_tts_overlap">Также можно наложить несколько будильников</string>
+    <string name="demo_tts_tap_once">Нажмите на внешние часы, чтобы остановить текущий будильник</string>
+    <string name="demo_tts_tap_again">Нажмите ещё раз, чтобы полностью отменить будильник</string>
+    <string name="demo_tts_explore">Множество функций ждут вас</string>
+    <string name="demo_highlight_desc">TTS · Звук будильника · Повтор и другие настройки</string>
+    <string name="demo_tts_dismiss">Нажмите 2 раза во время звонка чтобы остановить, ещё 2 раза чтобы отменить все будильники</string>
+    <string name="demo_press_play">Нажмите ▶, чтобы попробовать</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ Энергостанция</string>
+    <string name="energy_station_daily_info">%1$d заряжается автоматически каждый день</string>
+    <string name="energy_option_ad">Смотреть рекламу +%1$d</string>
+    <string name="energy_option_review">Написать отзыв → Навсегда +1</string>
+    <string name="energy_option_review_done">Отзыв написан (+1 активен)</string>
+    <string name="energy_option_invite">Пригласить друга → Навсегда +1</string>
+    <string name="energy_option_invite_done">Друг приглашён (+1 активен)</string>
+    <string name="energy_option_purchase">Убрать рекламу ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">Помогите нам стать лучше!</string>
+    <string name="feedback_subtitle">Что можно улучшить?</string>
+    <string name="feedback_reason_hard">Сложно использовать</string>
+    <string name="feedback_reason_missing">Не хватает функции</string>
+    <string name="feedback_reason_ads">Слишком много рекламы</string>
+    <string name="feedback_reason_alarm">Будильник не работает</string>
+    <string name="feedback_reason_battery">Расход батареи</string>
+    <string name="feedback_reason_other">Другое</string>
+    <string name="feedback_hint">Расскажите подробнее (необязательно)</string>
+    <string name="feedback_skip">Пропустить</string>
+    <string name="feedback_submit">Отправить</string>
+    <string name="feedback_sending">Отправка…</string>
+    <string name="feedback_settings_hint">Вы также можете отправить отзыв в Настройках.</string>
+    <string name="feedback_thanks">Спасибо за ваш отзыв!</string>
+    <string name="settings_feedback_btn">Отправить отзыв</string>
 </resources>

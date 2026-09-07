@@ -9,8 +9,8 @@
     <string name="toast_ad_watch_to_save">広告視聴後に保存されます（テスト）</string>
 
     <string name="toast_ad_fail">広告の読み込みに失敗しました</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">広告の在庫がないため、無料でチャージしました！ ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">広告の在庫がないため、無料でチャージしました！ ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">アラームが鳴っています！</string>
@@ -31,8 +31,8 @@
 
     ``Chronoset``
     <string name="preset_default_name">名前のないルーティン</string>
-    <string name="setting_mode_relative">モード: 相対時間 (タイマー)</string>
-    <string name="setting_mode_absolute">モード: 絶対時間 (アラーム)</string>
+    <string name="setting_mode_relative">モード: 相対時間\n(タイマー)</string>
+    <string name="setting_mode_absolute">モード: 絶対時間\n(アラーム)</string>
     <string name="preset_save_title">プリセットを保存</string>
     <string name="preset_name_hint">プリセット名 (例: 朝のルーティン)</string>
     <string name="preset_color_label">軌道カラー</string>
@@ -78,7 +78,7 @@
     <string name="history_unknown_time">不明</string>
 
 
-    <string name="history_aborted">Aborted</string>
+    <string name="history_aborted">中断</string>
 
     ``MainActivity``
     <string name="toast_preset_added">プリセット \'%1$s\' を追加しました！</string>
@@ -123,7 +123,7 @@
     <string name="toast_preset_applied">\'%1$s\' プリセットを適用しました。</string>
 
     <string name="ad_confirm_title">エネルギー充電</string>
-    <string name="ad_confirm_desc">動画広告を視聴して、エネルギー(⚡)を3個充電しますか？\n(エネルギーは毎日3個まで自動的に補充されます。)</string>
+    <string name="ad_confirm_desc">動画広告を視聴して、エネルギー(⚡)を%1$d個充電しますか？\n(エネルギーは毎日%2$d個まで自動的に補充されます。)</string>
 
     ``preset``
     <string name="preset_screen_title">プリセット</string>
@@ -147,7 +147,7 @@
     <string name="settings_linked_account">連携済みアカウント: %1$s</string>
     <string name="settings_logout">ログアウト</string>
     <string name="settings_overdrive_title">オーバードライブモード</string>
-    <string name="settings_overdrive_desc">システムの限界を超えて音量を200%%増幅させます (注意！)</string>
+    <string name="settings_overdrive_desc">システムの限界を超えて音量を200%%増幅させます</string>
     <string name="settings_language">言語設定 (Language)</string>
 
     <string name="profile_no_nickname">ニックネームなし</string>
@@ -170,6 +170,9 @@
     <string name="profile_save_success_toast">プロフィールが保存されました。</string>
 
     <string name="profile_msg_invalid_format">3〜20文字、文字・数字・_のみ使用可能</string>
+
+    <string name="settings_auto_media_volume_title">メディア音量の自動調整</string>
+    <string name="settings_auto_media_volume_desc">イヤホンモードでアラーム音量に合わせて\nメディア音量を自動調整します</string>
 
     ``tutorial``
     <string name="tutorial_title_0">ベータテスター特別イベント</string>
@@ -214,7 +217,7 @@
     <string name="tutorial_mock_footer">💡 アイコンの横のスイッチをオンにして\n自分だけの完璧なルーティンを作りましょう！</string>
 
     <string name="tutorial_title_energy">無料エネルギーシステム</string>
-    <string name="tutorial_desc_energy">アラームの実行にはエネルギーが必要です。\nご安心ください！毎日3回、\n自動でエネルギーが補充されます。</string>
+    <string name="tutorial_desc_energy">アラームの実行にはエネルギーが必要です。\nご安心ください！毎日%1$d回、\n自動でエネルギーが補充されます。</string>
 
     ``PopupManager``
     <string name="dialog_notice_title">お知らせ</string>
@@ -268,4 +271,60 @@
     <string name="tutorial_try_alarm_btn">やってみる</string>
     <string name="tutorial_try_preset_title">保存したプリセットを確認しますか？</string>
     <string name="tutorial_try_preset_desc">保存したプリセットを\n読み込み画面で確認できます。</string>
+
+    <string name="tut_time_title">2つのタイムモード</string>
+    <string name="tut_time_subtitle">アラーム設定で自由に切替</string>
+    <string name="tut_time_relative">相対時間</string>
+    <string name="tut_time_absolute">絶対時間</string>
+    <string name="tut_time_relative_ex">→  「30分後にスタート」\n→  タイマー積み重ね: +30分, +1時間, +1時間30分</string>
+    <string name="tut_time_absolute_ex">→  「午前7:00に鳴る」\n→  アラームチェーン: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">パワフルなアラーム設定</string>
+    <string name="tut_feat_subtitle">各アラーム内で設定可能</string>
+    <string name="tut_feat_crescendo">クレッシェンド</string>
+    <string name="tut_feat_crescendo_desc">音量が徐々に上がります</string>
+    <string name="tut_feat_loop">無限ループ</string>
+    <string name="tut_feat_loop_desc">無限に繰り返し — ワークアウトに最適</string>
+    <string name="tut_feat_tts">TTS音声</string>
+    <string name="tut_feat_tts_example">「スクワット5回 — スタート！」</string>
+    <string name="tut_feat_tts_desc">テキスト入力 → アラームが読み上げます</string>
+    <string name="tut_feat_add">＋  アラームを追加</string>
+    <string name="tut_feat_add_desc">1つのプリセットに複数タイマーを積み重ね</string>
+
+    <string name="hint_touch_clock">タッチしてアラーム設定</string>
+
+    <string name="demo_tts_intro">好きな文章をアラームにできます</string>
+    <string name="demo_tts_overlap">アラームを重ねることもできます</string>
+    <string name="demo_tts_tap_once">外側の時計をタップして現在のアラームを止めてください</string>
+    <string name="demo_tts_tap_again">もう一度タップするとアラームを完全にキャンセルできます</string>
+    <string name="demo_tts_explore">たくさんの機能がありますので、ぜひお試しください</string>
+    <string name="demo_highlight_desc">TTS · アラーム音 · リピートなど様々な設定が可能です</string>
+    <string name="demo_tts_dismiss">鳴っている時に2回タップするとアラームが止まり、もう2回タップすると全てキャンセルされます</string>
+    <string name="demo_press_play">▶ を押して体験してみましょう</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ エネルギーステーション</string>
+    <string name="energy_station_daily_info">毎日%1$d個自動補充</string>
+    <string name="energy_option_ad">広告を見て+%1$d充電</string>
+    <string name="energy_option_review">レビュー作成 → 永久+1</string>
+    <string name="energy_option_review_done">レビュー完了 (+1適用中)</string>
+    <string name="energy_option_invite">友達を招待 → 永久+1</string>
+    <string name="energy_option_invite_done">招待完了 (+1適用中)</string>
+    <string name="energy_option_purchase">広告削除 ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">改善にご協力ください！</string>
+    <string name="feedback_subtitle">どこを改善すればよいですか？</string>
+    <string name="feedback_reason_hard">使いにくい</string>
+    <string name="feedback_reason_missing">機能が足りない</string>
+    <string name="feedback_reason_ads">広告が多すぎる</string>
+    <string name="feedback_reason_alarm">アラームが鳴らない</string>
+    <string name="feedback_reason_battery">バッテリー消耗が激しい</string>
+    <string name="feedback_reason_other">その他</string>
+    <string name="feedback_hint">詳しく教えてください（任意）</string>
+    <string name="feedback_skip">スキップ</string>
+    <string name="feedback_submit">送信</string>
+    <string name="feedback_sending">送信中…</string>
+    <string name="feedback_settings_hint">設定からいつでもフィードバックを送れます。</string>
+    <string name="feedback_thanks">フィードバックありがとうございます！</string>
+    <string name="settings_feedback_btn">フィードバックを送る</string>
 </resources>

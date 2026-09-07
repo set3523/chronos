@@ -31,6 +31,9 @@ import androidx.activity.SystemBarStyle
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.GoogleAuthProvider
 import com.set.Chronos.utils.toAlarmSetting
+import com.set.Chronos.utils.computeTriggerTime
+import com.set.Chronos.utils.buildAlarmIntent
+import com.set.Chronos.utils.scheduleExactAt
 import kotlinx.coroutines.launch
 import android.app.AlertDialog
 import java.util.Date
@@ -77,7 +80,7 @@ class MainActivity : ComponentActivity() {
 
         // ★ K: 다른 기기에 뺏겼으면 강제 로그아웃
         val user = auth.currentUser
-        if (user != null) {
+        if (user != null && !user.isAnonymous) {
             lifecycleScope.launch {
                 val stillOurs = CloudSyncManager.verifySessionOwnership(this@MainActivity, user.uid)
                 if (!stillOurs) {
@@ -119,6 +122,8 @@ class MainActivity : ComponentActivity() {
         val currentUser = auth.currentUser
         val prefs = getSecurePrefs(this)
         val savedUsername = prefs.getString("username", "")
+
+        // 익명 로그인은 실제 필요한 시점(피드백/리뷰/공유)에만 실행 → ensureAnonymousAuth() 사용
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -179,6 +184,7 @@ class MainActivity : ComponentActivity() {
                     // [Gate 3] 살균 (Sanitize): 복호화된 데이터 내부의 텍스트 검증
                     val safeCreatorName = sanitizeText(sharedPreset.cn, 20) // 닉네임 길이 제한
                     val safePresetName = sanitizeText(sharedPreset.pn, 30)  // 프리셋 이름 길이 제한
+                    AnalyticsHelper.presetReceivedViaQR(this, safePresetName)
 
                     // 알람 리스트 내부의 텍스트(TTS 등)도 일일이 살균 처리
                     val alarms = sharedPreset.a.map { minAlarm ->
@@ -213,6 +219,14 @@ class MainActivity : ComponentActivity() {
                     com.set.Chronos.CloudSyncManager.backupDataToCloudSilent(this)
                     Toast.makeText(this, getString(R.string.toast_preset_added, newPresetName), Toast.LENGTH_LONG).show()
 
+                    // Referral 처리: 공유 링크에 ref 코드가 있으면 서버에 기록
+                    val refCode = data.getQueryParameter("ref")
+                    if (!refCode.isNullOrBlank()) {
+                        lifecycleScope.launch {
+                            ReferralManager.processReferral(this@MainActivity, refCode)
+                        }
+                    }
+
                 } else {
                     Toast.makeText(this, getString(R.string.toast_invalid_qr), Toast.LENGTH_SHORT).show()
                 }
@@ -239,37 +253,73 @@ class MainActivity : ComponentActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
+        val wasAnonymous = auth.currentUser?.isAnonymous == true
+        val anonymousUid = if (wasAnonymous) auth.currentUser?.uid else null
+
+        val authTask = if (wasAnonymous && auth.currentUser != null) {
+            auth.currentUser!!.linkWithCredential(credential)
+        } else {
+            auth.signInWithCredential(credential)
+        }
+
+        authTask
             .addOnCompleteListener(this) { task ->
                 if (!task.isSuccessful) {
+                    // linkWithCredential 실패 시 (이미 다른 계정에 연결된 경우) 일반 로그인으로 폴백
+                    if (wasAnonymous) {
+                        auth.signInWithCredential(credential)
+                            .addOnCompleteListener(this) { fallbackTask ->
+                                if (fallbackTask.isSuccessful) {
+                                    val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+                                    // 익명 문서 삭제
+                                    if (anonymousUid != null) {
+                                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                            .collection("anonymous").document(anonymousUid).delete()
+                                    }
+                                    handlePostLogin(uid)
+                                } else {
+                                    Toast.makeText(this, getString(R.string.toast_auth_fail), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        return@addOnCompleteListener
+                    }
                     Toast.makeText(this, getString(R.string.toast_auth_fail), Toast.LENGTH_SHORT).show()
                     return@addOnCompleteListener
                 }
                 val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
 
-                lifecycleScope.launch {
-                    // ★ K: 세션 점유 먼저
-                    when (val result = CloudSyncManager.claimDeviceSession(this@MainActivity, uid)) {
-                        CloudSyncManager.SessionResult.Acquired, CloudSyncManager.SessionResult.AlreadyMine -> {
-                            // ★ G: 세션 확보 후 통합 초기화
-                            CloudSyncManager.initializeUserSession(this@MainActivity, uid)
-                            Toast.makeText(this@MainActivity,
-                                getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
-                            recreate()
-                        }
-                        is CloudSyncManager.SessionResult.Conflict -> {
-                            // 다른 기기 점유 중 → 다이얼로그로 "강제 로그인" 옵션 제공
-                            showOtherDeviceDialog(uid, result.otherDeviceSince)
-                            //auth.signOut()  // 일단 로컬 인증 해제
-                        }
-                        is CloudSyncManager.SessionResult.Error -> {
-                            //Toast.makeText(this@MainActivity,
-                            //    getString(R.string.toast_session_check_fail, result.msg), Toast.LENGTH_SHORT).show()
-                            auth.signOut()
-                        }
-                    }
+                // 익명→구글 연결 성공 시 anonymous 컬렉션에서 제거
+                if (wasAnonymous && anonymousUid != null) {
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("anonymous").document(anonymousUid).delete()
+                }
+
+                handlePostLogin(uid)
+            }
+    }
+
+    private fun handlePostLogin(uid: String) {
+        lifecycleScope.launch {
+            // ★ K: 세션 점유 먼저
+            when (val result = CloudSyncManager.claimDeviceSession(this@MainActivity, uid)) {
+                CloudSyncManager.SessionResult.Acquired, CloudSyncManager.SessionResult.AlreadyMine -> {
+                    // ★ G: 세션 확보 후 통합 초기화
+                    CloudSyncManager.initializeUserSession(this@MainActivity, uid)
+                    // 보상 상태 동기화 (리뷰/초대 +1 반영)
+                    ReferralManager.syncRewardStatus(this@MainActivity)
+                    Toast.makeText(this@MainActivity,
+                        getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
+                    recreate()
+                }
+                is CloudSyncManager.SessionResult.Conflict -> {
+                    // 다른 기기 점유 중 → 다이얼로그로 "강제 로그인" 옵션 제공
+                    showOtherDeviceDialog(uid, result.otherDeviceSince)
+                }
+                is CloudSyncManager.SessionResult.Error -> {
+                    auth.signOut()
                 }
             }
+        }
     }
 
     private fun showOtherDeviceDialog(uid: String, otherSince: Long) {
@@ -289,6 +339,7 @@ class MainActivity : ComponentActivity() {
                         CloudSyncManager.SessionResult.Acquired,
                         CloudSyncManager.SessionResult.AlreadyMine -> {
                             CloudSyncManager.initializeUserSession(this@MainActivity, uid)
+                            ReferralManager.syncRewardStatus(this@MainActivity)
                             Toast.makeText(this@MainActivity, getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show()
                             recreate()
                         }
@@ -379,6 +430,16 @@ class MainActivity : ComponentActivity() {
         }
         analytics.logEvent("alarm_save_event", params)
 
+        // 알람 개수 추적
+        AnalyticsHelper.alarmCount(this, mainAlarmCount + totalAdditionalAlarms)
+
+        // 첫 알람 설정 추적 (getSecurePrefs로 통일 — ChronosSet과 동일 pref 사용)
+        val trackPrefs = getSecurePrefs(this)
+        if (!trackPrefs.getBoolean("first_alarm_tracked", false)) {
+            AnalyticsHelper.firstAlarmSet(this)
+            trackPrefs.edit().putBoolean("first_alarm_tracked", true).apply()
+        }
+
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // 1. Check for necessary permissions/settings before proceeding
@@ -412,16 +473,14 @@ class MainActivity : ComponentActivity() {
                      // Ignore if old format is unreadable
                 }
             }
+            // ✅ 저장 '순간'을 단일 기준(anchor)으로 잡아, 모든 알람의 절대 발생 시각을 한 번만 계산해 박아둔다.
+            val saveAnchor = System.currentTimeMillis()
             alarmSettings.forEach { setting ->
+                // 상대시간은 그대로 두고, 변환 함수로 절대 발생 시각만 산출해 저장
+                setting.targetTimeMillis = setting.computeTriggerTime(saveAnchor)
                 if (setting.isRelative) {
-                    val cal = Calendar.getInstance()
-                    val parts = setting.relativeTime.split(":")
-                    if (parts.size == 3) {
-                        cal.add(Calendar.HOUR_OF_DAY, parts[0].toIntOrNull() ?: 0)
-                        cal.add(Calendar.MINUTE, parts[1].toIntOrNull() ?: 0)
-                        cal.add(Calendar.SECOND, parts[2].toIntOrNull() ?: 0)
-                    }
-                    // 1. 타겟 시간을 계산해서 "HH:mm:ss" 형태로 덮어씌움
+                    // 표시/분석용 alarmTime도 동일 기준으로 갱신
+                    val cal = Calendar.getInstance().apply { timeInMillis = setting.targetTimeMillis }
                     setting.alarmTime = String.format(Locale.getDefault(), "%02d:%02d:%02d",
                         cal.get(Calendar.HOUR_OF_DAY),
                         cal.get(Calendar.MINUTE),
@@ -444,52 +503,15 @@ class MainActivity : ComponentActivity() {
 
             // 4. Set new alarms using their stable IDs
             alarmSettings.forEach { setting ->
-                val calendar = Calendar.getInstance().apply {
-                    if (setting.isRelative) {
-                        // 🚨 [핵심 수술 2] 문자열 오차를 없애고, 밀리초 단위까지 정확하게 현재 시간에서 더합니다!
-                        val timeParts = setting.relativeTime.split(":")
-                        if (timeParts.size == 3) {
-                            timeInMillis = System.currentTimeMillis() // ✨ 현재 시간의 밀리초를 그대로 가져옴!
-                            add(Calendar.HOUR_OF_DAY, timeParts[0].toIntOrNull() ?: 0)
-                            add(Calendar.MINUTE, timeParts[1].toIntOrNull() ?: 0)
-                            add(Calendar.SECOND, timeParts[2].toIntOrNull() ?: 0)
-                        }
-                    } else {
-                        // 절대 시간은 기존 방식 그대로 유지
-                        val timeParts = setting.alarmTime.split(":")
-                        if (timeParts.size == 3) {
-                            set(Calendar.HOUR_OF_DAY, timeParts[0].toInt())
-                            set(Calendar.MINUTE, timeParts[1].toInt())
-                            set(Calendar.SECOND, timeParts[2].toInt())
-                            set(Calendar.MILLISECOND, 0)
+                // ✅ 위에서 박아둔 절대 발생 시각을 그대로 사용 (다시 '지금' 기준으로 계산하지 않음)
+                val triggerAt = setting.targetTimeMillis
 
-                            if (System.currentTimeMillis() > timeInMillis) {
-                                add(Calendar.DATE, 1)
-                            }
-                        }
-                    }
-                }
-
-                val alarmIntent = Intent(this, AlarmReceiver::class.java).apply {
-                    putExtra("ALARM_ID", setting.id)
-                    putExtra("ALARM_TIME", setting.alarmTime)
-                    putExtra("RINGTONE_URI", setting.soundUri)
-                    putExtra("ALARM_VOLUME", setting.volume)
-                    putExtra("ALARM_DURATION", setting.duration)
-                    putExtra("IS_REPEAT_ENABLED", setting.isRepeatEnabled)
-                    putExtra("REPEAT_INTERVAL", setting.repeatInterval)
-                    putExtra("REPEAT_COUNT", setting.repeatCount)
-                    putExtra("IS_CRESCENDO", setting.isCrescendo)
-                    putExtra("REPEAT_UNTIL_OFF", setting.repeatUntilOff)
-                    putExtra("IS_TTS_MODE", setting.isTtsMode)
-                    putExtra("TTS_TEXT", setting.ttsText)
-                    putExtra("TTS_REPEAT_COUNT", setting.ttsRepeatCount)
-                }
+                val alarmIntent = buildAlarmIntent(this, setting)
 
                 val requestCode = setting.id.hashCode()
                 val pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, flags)
 
-                val delayMillis = calendar.timeInMillis - System.currentTimeMillis()
+                val delayMillis = triggerAt - System.currentTimeMillis()
 
                 if (delayMillis in 0..4999) {
                     // 5초 미만이면 앱 내부 타이머(Handler)로 다이렉트 슛!
@@ -497,8 +519,8 @@ class MainActivity : ComponentActivity() {
                         sendBroadcast(alarmIntent) // AlarmManager 대신 내가 직접 리시버 호출!
                     }, delayMillis)
                 } else {
-                    // 5초 이상이거나 과거 시간이면 원래대로 AlarmManager에게 맡김
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                    // 5초 이상이거나 과거 시간이면 AlarmManager에게 맡김 (알람앱 정석: setAlarmClock)
+                    scheduleExactAt(this, alarmManager, triggerAt, pendingIntent)
                 }
             }
 

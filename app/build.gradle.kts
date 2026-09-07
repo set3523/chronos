@@ -20,8 +20,8 @@ android {
         applicationId = "com.set.Chronos"
         minSdk = 27
         targetSdk = 36
-        versionCode = 41
-        versionName = "2.2.2"
+        versionCode = 58
+        versionName = "2.4.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -91,7 +91,13 @@ dependencies {
     implementation("com.google.firebase:firebase-appcheck-playintegrity")
 
     implementation("com.google.firebase:firebase-firestore")
+
+    implementation("com.google.android.play:review-ktx:2.0.2")
     //implementation(libs.androidx.compose.foundation)
+
+    implementation("com.google.firebase:firebase-functions-ktx:21.2.1")
+
+    implementation("com.revenuecat.purchases:purchases:10.4.0")
 
 
 

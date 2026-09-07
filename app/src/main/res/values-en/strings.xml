@@ -9,8 +9,8 @@
     <string name="toast_ad_watch_to_save">Saved after watching ad (Test)</string>
 
     <string name="toast_ad_fail">Failed to load ad</string>
-    <string name="toast_charge_success">⚡ * 3</string>
-    <string name="toast_free_charge_no_ad">No ads available.\nCharged for free! ⚡ * 3</string>
+    <string name="toast_charge_success">⚡ * %1$d</string>
+    <string name="toast_free_charge_no_ad">No ads available.\nCharged for free! ⚡ * %1$d</string>
 
     ``AlarmReceiver``
     <string name="toast_alarm_ringing">Alarm is ringing!</string>
@@ -89,7 +89,7 @@
     <string name="toast_alarm_set_fail">Failed to set alarm.</string>
     <string name="toast_exact_alarm_needed">\'Allow exact alarms\' is required for reliable alarms!</string>
     <string name="toast_battery_opt_needed">\'Ignore battery optimization\' is required for reliable alarms!</string>
-    <string name="toast_logout_success">로그아웃 되었습니다.</string>
+    <string name="toast_logout_success">Logged out successfully.</string>
 
     <string name="toast_session_expired_logout">Logged out because your account was accessed from another device.</string>
     <string name="dialog_other_device_title">Logged in from another device</string>
@@ -122,7 +122,7 @@
     <string name="toast_preset_applied">Applied \'%1$s\' preset.</string>
 
     <string name="ad_confirm_title">Charge Energy</string>
-    <string name="ad_confirm_desc">Would you like to watch a rewarded ad and charge 3 Energy(⚡)?\n(Up to 3 Energy are recharged automatically every day.)</string>
+    <string name="ad_confirm_desc">Would you like to watch a rewarded ad and charge %1$d Energy(⚡)?\n(Up to %2$d Energy are recharged automatically every day.)</string>
 
     ``preset``
     <string name="preset_screen_title">Presets</string>
@@ -146,7 +146,7 @@
     <string name="settings_linked_account">Linked Account: %1$s</string>
     <string name="settings_logout">Logout</string>
     <string name="settings_overdrive_title">Overdrive Mode</string>
-    <string name="settings_overdrive_desc">Boost volume to 200%% beyond system limits (Warning!)</string>
+    <string name="settings_overdrive_desc">Boost volume to 200%% beyond system limits</string>
     <string name="settings_language">Language</string>
 
     <string name="profile_no_nickname">No Nickname</string>
@@ -170,6 +170,8 @@
 
     <string name="profile_msg_invalid_format">3–20 characters, letters/numbers/_ only</string>
 
+    <string name="settings_auto_media_volume_title">Auto Media Volume</string>
+    <string name="settings_auto_media_volume_desc">Adjust media volume to alarm level\nwhen earphone mode is on</string>
     ``tutorial``
     <string name="tutorial_title_0">Beta Tester Special Event</string>
     <string name="tutorial_desc_0">Top 1,000 active users will get premium features for free upon official release!\n\nPlease sign in with Google in the \'Settings (⚙️)\' menu at the top right to participate.</string>
@@ -213,7 +215,7 @@
     <string name="tutorial_mock_footer">💡 Turn on the switches next to the icons\nto create your perfect routine!</string>
 
     <string name="tutorial_title_energy">Free Energy System</string>
-    <string name="tutorial_desc_energy">Energy is required to run the alarm.\nDon\'t worry! It recharges automatically\n3 times every day.</string>
+    <string name="tutorial_desc_energy">Energy is required to run the alarm.\nDon\'t worry! It recharges automatically\n%1$d times every day.</string>
 
     ``PopupManager``
     <string name="dialog_notice_title">Notice</string>
@@ -267,4 +269,60 @@
     <string name="tutorial_try_alarm_btn">Try it</string>
     <string name="tutorial_try_preset_title">Check your saved preset?</string>
     <string name="tutorial_try_preset_desc">You can find the preset you just saved\nin the load screen.</string>
+
+    <string name="tut_time_title">Two Time Modes</string>
+    <string name="tut_time_subtitle">Switch freely in alarm settings</string>
+    <string name="tut_time_relative">Relative Time</string>
+    <string name="tut_time_absolute">Absolute Time</string>
+    <string name="tut_time_relative_ex">→  "Start after 30 min"\n→  Stack timers: +30m, +1h, +1h30m</string>
+    <string name="tut_time_absolute_ex">→  "Ring at 7:00 AM"\n→  Chain alarms: 7:00 → 7:10 → 7:20</string>
+    <string name="tut_feat_title">Powerful Alarm Settings</string>
+    <string name="tut_feat_subtitle">Found inside each alarm</string>
+    <string name="tut_feat_crescendo">Crescendo</string>
+    <string name="tut_feat_crescendo_desc">Volume rises gradually — gentle wake up</string>
+    <string name="tut_feat_loop">Infinite Loop</string>
+    <string name="tut_feat_loop_desc">Alarm repeats endlessly — perfect for workouts</string>
+    <string name="tut_feat_tts">TTS Voice</string>
+    <string name="tut_feat_tts_example">"5 squats — start!"</string>
+    <string name="tut_feat_tts_desc">Type any text → alarm speaks it aloud</string>
+    <string name="tut_feat_add">＋  Add more alarms to stack</string>
+    <string name="tut_feat_add_desc">Stack multiple timers in one preset</string>
+
+    <string name="hint_touch_clock">Touch to set alarm</string>
+
+    <string name="demo_tts_intro">You can use any sentence as your alarm</string>
+    <string name="demo_tts_overlap">You can also stack multiple alarms</string>
+    <string name="demo_tts_tap_once">Tap the outer clock to stop the current alarm</string>
+    <string name="demo_tts_tap_again">Tap once more to cancel the alarm entirely</string>
+    <string name="demo_tts_explore">There are many features to explore</string>
+    <string name="demo_highlight_desc">TTS · Alarm sound · Repeat and more settings available</string>
+    <string name="demo_tts_dismiss">Tap twice while it\'s ringing to stop the alarm, tap twice again to cancel all alarms</string>
+    <string name="demo_press_play">Press ▶ to try it out</string>
+
+    <!-- EnergyStationDialog -->
+    <string name="energy_station_title">⚡ Energy Station</string>
+    <string name="energy_station_daily_info">%1$d auto-recharged daily</string>
+    <string name="energy_option_ad">Watch ad for +%1$d</string>
+    <string name="energy_option_review">Write a review → Permanent +1</string>
+    <string name="energy_option_review_done">Review completed (+1 active)</string>
+    <string name="energy_option_invite">Invite a friend → Permanent +1</string>
+    <string name="energy_option_invite_done">Friend invited (+1 active)</string>
+    <string name="energy_option_purchase">Remove Ads ($2.99)</string>
+
+    <!-- feedback -->
+    <string name="feedback_title">Help us improve!</string>
+    <string name="feedback_subtitle">What could we do better?</string>
+    <string name="feedback_reason_hard">Hard to use</string>
+    <string name="feedback_reason_missing">Missing feature</string>
+    <string name="feedback_reason_ads">Too many ads</string>
+    <string name="feedback_reason_alarm">Alarm not working</string>
+    <string name="feedback_reason_battery">Battery drain</string>
+    <string name="feedback_reason_other">Other</string>
+    <string name="feedback_hint">Tell us more (optional)</string>
+    <string name="feedback_skip">Skip</string>
+    <string name="feedback_submit">Submit</string>
+    <string name="feedback_sending">Sending…</string>
+    <string name="feedback_settings_hint">You can also send feedback anytime from Settings.</string>
+    <string name="feedback_thanks">Thank you for your feedback!</string>
+    <string name="settings_feedback_btn">Send Feedback</string>
 </resources>

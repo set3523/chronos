@@ -35,6 +35,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
 
 @Composable
 fun TimerInput(label: String, value: String, onValueChange: (String) -> Unit) {
@@ -123,22 +127,36 @@ fun AutoSizeText(
     targetTextSize: TextUnit = 18.sp,
     fontWeight: FontWeight? = null,
     maxLines: Int = 1,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null,
+    minTextSize: TextUnit = 8.sp,
+    maxTextSize: TextUnit = targetTextSize
 ) {
-    var textSize by remember(text) { mutableStateOf(targetTextSize) }
-    Text(
-        text = text,
-        color = color,
-        fontSize = textSize,
-        fontWeight = fontWeight,
-        maxLines = maxLines,
-        softWrap = maxLines > 1,
-        textAlign = textAlign,
-        modifier = modifier,
-        onTextLayout = { textLayoutResult ->
-            if (textLayoutResult.hasVisualOverflow) {
-                textSize *= 0.95f
+    val textMeasurer = rememberTextMeasurer()
+    val style = TextStyle(fontSize = maxTextSize, fontWeight = fontWeight)
+
+    BoxWithConstraints(modifier = modifier) {
+        var fontSize = maxTextSize
+        if (constraints.maxWidth < Int.MAX_VALUE && constraints.maxWidth > 0) {
+            while (fontSize > minTextSize) {
+                val result = textMeasurer.measure(
+                    text = text,
+                    style = style.copy(fontSize = fontSize),
+                    maxLines = maxLines,
+                    constraints = Constraints(maxWidth = (constraints.maxWidth * 0.9f).toInt())
+                )
+                if (!result.hasVisualOverflow) break
+                fontSize *= 0.95f
             }
+            if (fontSize < minTextSize) fontSize = minTextSize
         }
-    )
+        Text(
+            text = text,
+            color = color,
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+            maxLines = maxLines,
+            softWrap = maxLines > 1,
+            textAlign = textAlign
+        )
+    }
 }
